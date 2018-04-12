@@ -1,0 +1,95 @@
+<div class="page-list" ng-init="databaseAction.getExport()">
+  <div class="page-title">
+    <h3>数据库备份</h3>
+  </div>
+
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-success" 
+              ng-click="databaseAction.export()"
+              ng-if="page_permission['config.database.export']">立即备份</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="database_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>备份名称</th>
+          <th>卷数</th>
+          <th>压缩</th>
+          <th>数据大小</th>
+          <th>备份时间</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!database_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="database_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="database_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="database in database_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !database.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="database.checked">
+          </td>
+          <td>{{ database.id }}</td>
+          <td>{{ database.organization.name }}</td>
+          <td>{{ database.category.name }}</td>
+          <td>{{ database.name }}</td>
+          <td>{{ database.rel_price }}</td>
+          <td><a href="">{{ database.teacher.name }}</a></td>
+          <td>
+            <span class="text-success no-animation" 
+                  ng-if="database.x_status">正常</span>
+            <span class="text-danger no-animation" 
+                  ng-if="!database.x_status">已下架</span>
+          </td>
+          <td>
+            <a href="" 
+               class="text-warning" 
+               ng-show="database.x_status" 
+               ng-if="page_permission['database.manage.list.batch']"
+               ng-click="databaseAction.disable({ batch: false, database: this })">[ 下架 ]</a>
+            <a href="" 
+               class="text-warning" 
+               ng-show="!database.x_status" 
+               ng-if="page_permission['database.manage.list.batch']"
+               ng-click="databaseAction.enable({ batch: false, database: this })">[ 上架 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="database_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="database_list.pagination.total" 
+         items-per-page="database_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="databaseAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

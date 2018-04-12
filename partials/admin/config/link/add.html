@@ -1,0 +1,47 @@
+<div class="row" ng-controller="ConfigController">
+  <div class="col-xs-9">
+    <div class="register-form">
+      <form class="form-horizontal" 
+            name="addLinkForm" 
+            role="form" 
+            method="POST">
+        <div class="form-group">
+          <label for="link_name" class="col-xs-3 control-label">链接名称</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="link_name" 
+                   class="form-control" 
+                   name="link_name" 
+                   maxlength="140" 
+                   placeholder="请您输入链接名称" 
+                   ng-model="link.name" 
+                   validator="required" 
+                   required-error-message="请您输入链接名称">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="link_url" class="col-xs-3 control-label">链接地址</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="link_url" 
+                   class="form-control" 
+                   name="link_url" 
+                   maxlength="70" 
+                   placeholder="请您输入http://开头的链接地址" 
+                   ng-model="link.url" 
+                   validator="required" 
+                   required-error-message="请您输入链接地址">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-9 col-xs-offset-3">
+            <button class="btn btn-primary" 
+                    validation-submit="addLinkForm" 
+                    ng-click="linkAction.add({ modal: false })">提交保存</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

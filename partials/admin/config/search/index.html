@@ -1,0 +1,87 @@
+<div class="page-list" ng-init="searchAction.getHot()">
+  <div class="page-title">
+    <h3>搜索管理({{ search_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <div class="btn-group">
+        <button type="button" 
+          class="btn btn-sm btn-warning dropdown-toggle" 
+          ng-click="search_init_menu = !search_init_menu">初始化索引 <span class="caret"></span></button>
+        <ul class="dropdown-menu toggle"
+          ng-if="search_init_menu">
+          <li>
+            <a href="#"
+              ng-click="searchAction.searchInit({ type: 'course' })">初始化课程索引</a>
+          </li>
+          <li>
+            <a href="#"
+              ng-click="searchAction.searchInit({ type: 'organization' })">初始化学校索引</a>
+          </li>
+        </ul>
+      </div>
+      <div class="btn-group">
+        <button type="button" 
+          class="btn btn-sm btn-danger dropdown-toggle" 
+          ng-click="search_clean_menu = !search_clean_menu">清空现有索引 <span class="caret"></span></button>
+        <ul class="dropdown-menu toggle"
+          ng-if="search_clean_menu">
+          <li>
+            <a href="#"
+              ng-click="searchAction.searchClean({ type: 'course' })">清空课程索引</a>
+          </li>
+          <li>
+            <a href="#"
+              ng-click="searchAction.searchClean({ type: 'organization' })">清空学校索引</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="row">
+      <div class="col-xs-6">
+        <form class="form-field" 
+              name="searchHotForm" 
+              role="form" 
+              method="POST">
+          <div class="form-group">
+            <label for="search_hot_courses" class="control-label">
+              课程搜索热词<span class="text-muted">（搜索热词以半角逗号,分隔）</span>
+            </label>
+            <div class="control-group">
+              <textarea id="search_hot_courses"
+                        class="form-control input-50" 
+                        name="courses" 
+                        rows="4" 
+                        placeholder="请您输入课程搜索热词" 
+                        validator="required" 
+                        required-error-message="请您输入课程搜索热词" 
+                        ng-model="search_hot.courses">
+              </textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="search_hot_organizations" class="control-label">
+              学校搜索热词<span class="text-muted">（搜索热词以半角逗号,分隔）</span>
+            </label>
+            <div class="control-group">
+              <textarea id="search_hot_organizations"
+                        class="form-control input-50" 
+                        name="organizations" 
+                        rows="4" 
+                        placeholder="请您输入学校搜索热词" 
+                        validator="required" 
+                        required-error-message="请您输入学校搜索热词" 
+                        ng-model="search_hot.organizations">
+              </textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" 
+            validation-submit="searchHotForm" 
+            ng-click="searchAction.hot()">提交保存</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

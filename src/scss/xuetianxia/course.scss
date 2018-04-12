@@ -1,0 +1,2143 @@
+// course-filter
+.course-filter {
+  margin-bottom: $gauge;
+  padding: ($gauge / 2) ($gauge);
+  border: 1px solid $gray-xlightest;
+
+  > .dl-horizontal {
+    margin-bottom: $gauge * 0.7;
+
+    > dt {
+      padding: ($line-height-computed / 4) 0;
+    }
+
+    > dd {
+
+      > .filter-list {
+
+        > li {
+          float: left;
+          margin-right: ($line-height-computed / 2);
+          
+          > a {
+            display: block;
+            padding: ($line-height-computed / 4) ($line-height-computed / 2);
+            border: 1px solid #fff;
+          }
+        }
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.category {
+
+      .filter-list {
+
+        > li {
+
+          &.active {
+
+            > a {
+              color: $brand-primary;
+            }
+          }
+        }
+      }
+    }
+
+    &.labels {
+
+      .filter-list {
+
+        > li {
+
+          > a {
+            position: relative;
+            padding-right: ($line-height-computed * 1.5);
+
+            &:hover {
+              border: 1px solid $gray-xlightest;
+            }
+          }
+
+          &.active {
+
+            > a {
+              border: 1px solid $brand-primary;
+
+              &:after {
+                position: absolute;
+                right: 0;
+                top: 50%;
+                margin-top: -10px;
+                width: 20px;
+                height: 20px;
+                font-family: 'iconfont' !important;
+                content: '\e63a';
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// course-order
+.course-order {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: $line-height-computed;
+  background-color: $gray-xlightest;
+
+  > ul {
+
+    &.sort {
+      float: left;
+      
+      > li {
+        float: left;
+
+        > a {
+          display: block;
+          padding: ($line-height-computed / 2) $line-height-computed;
+
+          .icon {
+            margin-left: $gauge / 4;
+            color: $gray-lighter;
+          }
+        }
+
+        &.active {
+          background-color: $brand-primary;
+
+          > a {
+            color: #fff;
+
+            .icon {
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+
+    &.pager {
+      float: right;
+      padding: ($grid-gutter-width / 4) ($grid-gutter-width / 2);
+      margin: 0;
+
+      > li {
+
+        &.previous {
+
+          > a {
+            margin-right: 6px;
+          }
+        }
+
+        > .current {
+          float: left;
+          // margin-right: ($line-height-computed / 2);
+          padding: 5px 14px;
+          border: none;
+          background: none;
+        }
+      }
+    }
+
+    &.filter {
+      float: right;
+
+      > li {
+        float: left;
+        display: block;
+        opacity: .7;
+
+        > a {
+          display: block;
+          margin-top: ($line-height-computed / 2) - 1;
+          color: #fff;
+
+          .icon {
+            color: #fff;
+          }
+        }
+
+        &.active {
+          opacity: 1;
+          // color: $brand-primary;
+
+          > a {
+            // color: $brand-primary;
+
+            .icon {
+              // color: $brand-primary;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.course-content {
+  margin-bottom: $gauge;
+}
+
+// 错误提示
+.err-msg {
+  min-height: $gauge * 9;
+  // border: 1px solid $gray-xlightest;
+  text-align: center;
+  color: $gray-lighter;
+}
+
+// course-lists
+.course-lists {
+
+  .item {
+    position: relative;
+    height: $gauge * 14.3;
+    margin-bottom: $line-height-computed;
+    min-height: $gauge * 13.5 + 4;
+    border: 1px solid $gray-xlightest;
+    overflow: hidden;
+
+    &:hover {
+
+      .pic {
+
+        .mask {
+          opacity: 1;
+        }
+
+        img {
+          @include scale(1.2);
+        }
+      }
+    }
+
+    > .pic {
+      display: block;
+      height: 132px;
+      overflow: hidden;
+      position: relative;
+      background-color: $gray-xlightest;
+
+      .mask {
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.75);
+        text-align: center;
+        opacity: 0;
+
+        .play {
+          display: inline-block;
+          width: $gauge * 2.5;
+          height: $gauge * 2.5;
+          line-height: $gauge * 2.5;
+          margin-top: 17%;
+          background-color: rgba(0,0,0,0.6);
+          border-radius: 100%;
+          text-align: center;
+
+          .icon {
+            font-size: $font-size-h2;
+            opacity: .5;
+          }
+        }
+      }
+    }
+
+    > .organization {
+      position: absolute;
+      display: block;
+      width: 100%;
+
+      > .logo {
+        display: block;
+        width: 45px;
+        height: 45px;
+        margin: 0 auto;
+        margin-top: -22px;
+
+        img {
+          max-width: 100%;
+          border-radius: 100%;
+          border: 2px solid $gray-lightest;
+        }
+      }
+    }
+
+    > .info {
+      padding: ($line-height-computed / 2);
+
+      > .name {
+        @include text-overflow;
+        margin: $gauge 0;
+        margin-top: 25px;
+        padding: 0 $gauge * 0.8;
+        text-align: center;
+
+        > a {
+          color: $gray;
+
+          &:hover {
+            color: $brand-primary;
+          }
+        }
+      }
+
+      > .line {
+        height: 1px;
+        background-color: $gray-xlightest;
+        width: 100%;
+        position: relative;
+
+        > .ornament {
+          display: block;
+          margin: 0 auto;
+          width: 40px;
+          height: 3px;
+
+          &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: -1px;
+            background-color: $brand-warning;
+            width: 40px;
+            height: 3px;
+            border-radius: 3px;
+          }
+        }
+      }
+
+      > .price {
+        margin: 0;
+        padding: 5px;
+
+        > .study-count {
+          line-height: 24px;
+          font-size: $font-size-base;
+        }
+
+        > .text-price {
+          padding: 2px 12px;
+          background-color: $brand-danger;
+          border-radius: 24px;
+          color: #fff;
+          font-size: $font-size-base;
+          // font-weight: bold;
+
+          &.free {
+            background-color: $brand-success;
+          }
+        }
+      }
+
+      > .description {
+        height: 24px;
+        line-height: 24px;
+        @include text-overflow;
+      }
+    }
+
+    > .duration {
+      position: absolute;
+      top: ($line-height-computed / 4);
+      right: -($line-height-computed / 4);
+      padding: 0 ($line-height-computed / 2);
+      background-color: rgba(0,0,0,.4);
+      line-height: 180%;
+      color: #fff;
+      font-size: 12px;
+      @include opacity(0);
+      @include transition(.25s linear);
+    }
+
+    > .live {
+      position: absolute;
+      // top: ($line-height-computed / 4);
+      top: 0;
+      // left: ($line-height-computed / 4);
+      left: 0;
+      padding: ($line-height-computed / 4) ($line-height-computed / 2);
+      background-color: $brand-danger;
+      color: $body-bg;
+
+      &:after {
+        position: absolute;
+        content: " ";
+        border: transparent 8px solid;
+        border-right: 24px solid $brand-danger;
+        bottom: -8px;
+        right: 0px;
+        height: 0px;
+        width: 0px;
+      }
+
+      &:before {
+        position: absolute;
+        content: " ";
+        border: transparent 8px solid;
+        border-left: 24px solid $brand-danger;
+        bottom: -8px;
+        left: 0px;
+        height: 0px;
+        width: 0px;
+      }
+    }
+
+    &:hover {
+      @include box-shadow(0 0 10px lighten($gray, 50%));
+
+      > .duration {
+        right: ($line-height-computed / 4);
+        @include opacity(1);
+      }
+    }
+  }
+  
+  @media (min-width: $screen-sm-min) {
+    .item {
+      min-height: 212px;
+
+      > .pic {
+        height: 98px;
+      }
+    }
+  }
+
+  @media (min-width: $screen-lg-min) {
+    .item {
+      min-height: 276px;
+
+      > .pic {
+        height: 162px;
+      }
+    }
+  }
+}
+
+// course-thumb
+.course-thumb {
+  position: relative;
+  padding-bottom: $grid-gutter-width;
+
+  > .live {
+    position: absolute;
+    // top: ($line-height-computed / 4);
+    top: 0;
+    // left: ($line-height-computed / 4);
+    left: 0;
+    padding: ($line-height-computed / 3) ($line-height-computed / 2);
+    background-color: $brand-danger;
+    color: $body-bg;
+
+    &:after {
+      position: absolute;
+      content: " ";
+      border: transparent 8px solid;
+      border-right: 38px solid $brand-danger;
+      bottom: -8px;
+      right: 0px;
+      height: 0px;
+      width: 0px;
+    }
+
+    &:before {
+      position: absolute;
+      content: " ";
+      border: transparent 8px solid;
+      border-left: 38px solid $brand-danger;
+      bottom: -8px;
+      left: 0px;
+      height: 0px;
+      width: 0px;
+    }
+
+    &.live-xs {
+      padding: ($line-height-computed / 9) ($line-height-computed / 3);
+
+      &:after {
+        border: transparent 4px solid;
+        border-right: 20px solid $brand-danger;
+        bottom: -4px;
+      }
+
+      &:before {
+        border: transparent 4px solid;
+        border-left: 20px solid $brand-danger;
+        bottom: -4px;
+      }
+    }
+  }
+}
+
+// course-info
+.course-info {
+  position: relative;
+  padding-left: $line-height-computed;
+  padding-bottom: $line-height-computed;
+
+  > .name {
+    margin-top: 0;
+    margin-bottom: $gauge / 2;
+    color: $gray;
+  }
+
+  > .info {
+    margin: $gauge 0;
+    display: block;
+    height: ($gauge * 2) + 8;
+    overflow: hidden;
+
+    > li {
+      float: left;
+      padding: 0 $gauge;
+      display: inline-block;
+      border-right: 1px solid $gray-xlightest;
+
+      .title,
+      .content {
+        display: block;
+        height: $gauge + 4;
+        padding: 0 10px;
+        text-align: center;
+      }
+
+      .title {
+        color: $gray-light;
+      }
+
+      &:last-child {
+        border: none;
+      }
+    }
+
+    > .organization,
+    > .teacher {
+
+      > .avatar,
+      > .logo {
+        float: left;
+        margin-right: $gauge / 2;
+        width: ($gauge * 2) + 8;
+        height: ($gauge * 2) + 8;
+        border: 2px solid $gray-xlightest;
+        border-radius: (($gauge * 2) + 8) / 2;
+      }
+    }
+
+    > .organization {
+      padding-left: 0;
+    }
+  }
+
+  > .description {
+    height: 66px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: $line-height-computed * 1.2;
+    color: $gray-light;
+  }
+
+  > .price {
+    margin-top: $gauge * 0.5;
+    margin-bottom: $gauge * 0.6;
+    // padding: $gauge / 3 $gauge * 0.8;
+    font-size: 24px;
+    // background-color: $gray-lightsuper;
+
+    > .share {
+      margin-left: $gauge * 2;
+
+      > .share-title {
+        font-size: $font-size-base;
+        color: $gray-light;
+      }
+
+      > .icon {
+        margin-right: $gauge / 4;
+        font-size: 20px;
+
+        > .jiathis_txt {
+          display: none!important;
+        }
+      }
+    }
+  }
+
+  > .classes {
+    margin-bottom: $line-height-computed;
+    padding: $padding-large-vertical $padding-base-horizontal;
+    background-color: $gray-lightest;
+  }
+
+  > .act {
+
+    .btn-lg {
+      margin-right: ($line-height-computed / 2);
+      padding: $padding-large-vertical ($padding-large-horizontal * 1.5);
+      // border-radius: $gauge;
+    }
+
+    > .btn-follow {
+      color: $gray-light;
+
+      > .icon-like {
+        color: $gray-light;
+      }
+
+      &:hover {
+        color: $brand-primary;
+      }
+    }
+
+    > .btn-live {
+      color: $gray-light;
+
+      > .icon {
+        color: $gray-light;
+      }
+
+      &:hover,
+      &.active {
+        color: $brand-primary;
+
+        > .icon {
+          color: $brand-primary;
+        }
+      }
+    }
+  }
+}
+
+.course-progress {
+  padding-top: $grid-gutter-width - 5;
+  margin-bottom: $grid-gutter-width;
+  height: $grid-gutter-width * 3;
+  @include transition(.5s);
+
+  &:hover,
+  &.active {
+    // height: $grid-gutter-width * 2;
+    height: $grid-gutter-width * 4 + 5;
+    transform: translateY($grid-gutter-width * 1.5);
+    // margin-top: ($grid-gutter-width * 2.5);
+    @include transition(.5s);
+  }
+}
+
+// course-detail
+.course-detail {
+  padding: $grid-gutter-width 0;
+  background-color: $gray-xlightsuper;
+
+  // 公用父框架
+  .inner {
+    background-color: $body-bg;
+  }
+
+  // 优化第一个选项卡的边距显示
+  .tab-content {
+
+    >.tab-pane:first-of-type {
+
+      > .content {
+        padding-top: 0px;
+
+        > .section,
+        > .comment, {
+          padding: 0 $gauge;
+        }
+      }
+    }
+  }
+
+  // 总父元素
+  .main {
+
+    .nav {
+      background-color: $gray-lightest;
+
+    }
+
+    .content {
+      padding: $line-height-computed;
+      line-height: 180%;
+      
+      > .title {
+        margin: $line-height-computed 0;
+        color: $gray;
+        font-size: $font-size-large;
+
+        > .icon {
+          margin-right: $gauge / 4;
+          font-size: $font-size-h4;
+          color: $brand-warning;
+        }
+
+        &:first-of-type {
+          margin-top: $line-height-computed + 10;
+        }
+      }
+
+      // 课程概述
+      > .intro {
+        padding: 0 $line-height-computed;
+        // padding-top: $line-height-computed;
+        p,
+        a,
+        span,
+        div {
+          white-space: pre-wrap!important;
+        }
+        
+        // 编辑器部分样式
+        > ul,
+        > ol {
+          margin-left: 20px;
+        }
+
+        > ul {
+          list-style: disc !important;
+        }
+
+        > ol {
+          list-style: decimal !important;
+        }
+
+        > i,
+        > em {
+          font-style: italic !important;
+        }
+
+        > table {
+          width: 100% !important;
+
+          td {
+            padding: 5px 10px;
+            border: 1px solid $gray-xlightest !important;
+          }
+        }
+
+        img {
+          @include center-block;
+        }
+      }
+
+      // 课程目录
+      .section {
+
+        > .item-list {
+
+          // 章
+          > .active {
+            margin-bottom: ($line-height-computed / 2);
+            counter-increment: chapter;
+            counter-reset: section;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+            
+            > .item {
+              position: relative;
+              display: block;
+              padding: 0 $line-height-computed;
+              padding-left: $line-height-computed * 4.3;
+              height: $line-height-computed * 2;
+              // border-left: 3px solid $brand-primary;
+              line-height: $line-height-computed * 2;
+              background-color: $brand-color-light;
+              color: $gray;
+
+              &:hover {
+                background-color: darken($brand-color-light, 5%);
+              }
+
+              // 章计数器
+              &:before {
+                content: "第" counter(chapter) "章";
+                display: block;
+                position: absolute;
+                left: 0;
+                width: 70px;
+                text-align: center;
+                background-color: darken($brand-color-light, 5%);
+              }
+
+              > .icon {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                margin-top: -$line-height-computed;
+              }
+            }
+
+            // 节
+            .sub-section {
+              display: none;
+              margin-left: 30px;
+
+              > li {
+                margin-top: ($line-height-computed / 2);
+                position: relative;
+                // border-left: 3px solid #ddd;
+                counter-increment: section;
+
+                > .progress {
+                  @include position(absolute,bottom 0 left 0);
+                  @include square(100%);
+
+                  > .progress-bar {
+                    background-color: #E2E2E2;
+                  }
+                }
+                
+                > a {
+                  display: block;
+                  position: relative;
+                  cursor: pointer;
+                  padding: 0 $line-height-computed;
+                  padding-left: $line-height-computed * 4;
+                  line-height: $line-height-computed * 2 - 2;
+
+                  // 节计数器
+                  &:before {
+                    content: counter(chapter) "." counter(section) "节";
+                    position: absolute;
+                    left: 0;
+                    width: $line-height-computed * 3.5;
+                    text-align: center;
+                    background-color: #E2E2E2;
+                  }
+
+                  &:hover {
+                    color: $gray-dark;
+                    background-color: #E2E2E2;
+
+                    > i {
+                      color: $brand-primary;
+                    }
+                  }
+
+                  .icon {
+                    margin-right: $gauge / 2;
+                  }
+
+                  .video-type-slug {
+                    margin-right: $gauge / 4;
+                  }
+                }
+              }
+            }
+
+            &.active {
+
+              > .sub-section {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+
+      // 学员评论
+      .comment {
+
+        // 评论提交
+        > .comment-add {
+          overflow: hidden;
+
+          .comment-score {
+            padding: 0 $gauge / 2;
+            background-color: $gray-lightsuper;
+          }
+
+          .submit-comment {
+            width: $grid-gutter-width * 6;
+            padding: $gauge * 0.4 $gauge / 2;
+          }
+        }
+
+        .media-body {
+
+          > .comment-score {
+            overflow: hidden;
+
+            > .score-content {
+              display: block;
+              width: 33%;
+              float: left;
+            }
+          }
+        }
+
+        > .media-list {
+
+          > .media {
+            padding: ($line-height-computed / 2) 0;
+            border-bottom: 1px solid $gray-xlightest;
+
+            &:last-child {
+              border: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 课程购买页的边栏
+  .sidebar {
+
+    > .inner {
+
+      // 机构评价模块
+      > .org {
+
+          > .score-lists {
+
+            > li {
+              height: $grid-gutter-width * 1.5;
+              line-height: $grid-gutter-width * 1.5;
+              color: $gray;
+
+              > .score {
+                margin-left: $gauge / 4;
+                // font-size: $font-size-h4;
+                color: $brand-warning;
+              }
+
+              .icon {
+                margin-right: $gauge / 4;
+                font-size: $font-size-large;
+              }
+            }
+          }
+        }
+
+      // 其他相关课程
+      > .course-list-grid {
+
+         > .media {
+
+           > .media-body {
+
+             > .media-heading {
+                
+                line-height: 1.2;
+                color: $gray;
+              }
+
+             > a {
+                @include position(absolute,bottom 0);
+                color:$gray;
+              }
+            }
+          }
+        }
+      }
+
+    > .box {
+      margin-bottom: ($line-height-computed / 2);
+
+      > h4 {
+        margin: 0;
+        padding: $gauge * 0.75 $gauge;
+        color: $gray;
+        background-color: $gray-xlightest;
+
+        > span {
+          padding-left: $gauge / 2;
+          border-left: 2px solid $brand-warning;
+        }
+      }
+
+      > .course-list-grid,
+      > .students-list,
+      > .org {
+        padding: $line-height-computed;
+      }
+
+      > .students-list {
+
+        > li {
+          float: left;
+          margin: ($line-height-computed / 4) 0;
+          width: 25%;
+          text-align: center;
+
+          .name {
+            margin-top: $gauge;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 课程播放页面的顶部导航栏
+.course-player-navbar {
+  height: 50px;
+  border: none;
+  background-color: darken($gray-darker, 3%);
+  line-height: 50px;
+  overflow: hidden;
+  z-index: 99;
+  
+  // 返回按钮
+  > .back {
+    display: block;
+    width: $grid-gutter-width * 4;
+    line-height: 50px;
+    color: darken($gray-light, 10%);
+
+    &:hover {
+      background-color: lighten($gray-darker, 4%);
+    }
+  }
+
+  // 课程信息
+  > .course {
+
+    .title {
+      padding: 0 $gauge / 2;
+      line-height: 30px;
+      color: darken($gray-light, 10%);
+    }
+  }
+
+  // 分享 & 收藏
+  > .action {
+    margin-right: $grid-gutter-width;
+    line-height: 50px;
+
+    > .favorite {
+      margin-right: $grid-gutter-width;
+      padding: 0 $grid-gutter-width;
+      display: block;
+      min-width: $grid-gutter-width * 6;
+      color: darken($gray-light, 10%);
+      
+      > .icon {
+        width: 20px;
+        height: 20px;
+        color: darken($gray-light, 10%);
+      }
+
+      &:hover {
+        color: $brand-primary;
+        background-color: lighten($gray-darker, 4%);
+
+        > .icon {
+          color: $brand-primary;
+        }
+      }
+
+      &.favorited {
+        color: $gray;
+
+        > .icon {
+          color: $gray !important;
+        }
+      }
+    }
+
+    > .share {
+
+      > .title {
+        margin-right: $grid-gutter-width / 4;
+
+        > .icon {
+          color: $gray !important;
+        }
+      }
+      
+      > .icon {
+        float: left;
+        width: 40px;
+        font-size: 20px;
+        text-align: center;
+        color: darken($gray-light, 10%);
+        
+        &:hover {
+          color: $brand-primary;
+          // background-color: lighten($gray-darker, 4%);
+        }
+
+        &.icon-weibo {
+          
+          &:hover {
+            color: #f8505a !important;
+          }
+        }
+
+        &.icon-wechat {
+
+          &:hover {
+            color: #3bd33d !important
+          }
+        }
+
+        &.icon-qq {
+
+          &:hover {
+            color: #2aaee9 !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 播放器盒子
+.course-player-box{
+  background-color: #303030;
+}
+
+.course-player-toolbar {
+  background-color: #333;
+
+  .player-toolbar {
+    height: $gauge * 2.5;
+
+    .support,
+    .share {
+      display: block;
+      height: $gauge * 2.5;
+      line-height: $gauge * 2.5;
+      font-size: $font-size-h4;
+      color: $gray-lighter;
+
+      .icon {
+        font-size: $font-size-h4;
+      }
+
+      a {
+        font-size: $font-size-h4;
+        color: $gray-lighter;
+      }
+
+      a:hover {
+        color: $gray-lightest;
+      }
+    }
+
+    .support {
+
+      > a {
+        display: block;
+        float: left;
+        padding: 0 $gauge;
+      }
+    }
+
+    .share {
+
+      > a {
+        display: block;
+        float: right;
+        padding: 0 $gauge / 2;
+        font-size: $font-size-h3!important;
+      }
+    }
+  }
+}
+
+// course-video
+.course-video {
+  width: 100%;
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  background-color: $gray-base;
+
+  .course-video-box-left {
+    position: relative;
+    width: 100%;
+    @include transition(width .5s cubic-bezier(0, 0, 0.2, 1));
+
+    &.active {
+      width: 70%;
+      @include transition(width .5s cubic-bezier(0, 0, 0.2, 1));
+    }
+
+    // 功能遮罩层
+    > .action-box {
+      display: block;
+      position: absolute;
+      @include square(100%);
+      z-index: 49;
+      padding: 160px 0;
+      background-color: $gray-base;
+      text-align: center;
+
+      > .title,
+      > .next,
+      > .refresh {
+        margin-bottom: $gauge * 2;
+      }
+
+      > .title {
+        color: $gray-lighter;
+      }
+
+      > .refresh {
+
+        > a {
+          color: $gray-lighter;
+
+          &:hover {
+            color: $brand-primary;
+
+            .icon {
+              color: $brand-primary;
+            }
+          }
+        }
+        
+      }
+    }
+
+    // 视频播放器
+    > .player-box {
+    }
+  }
+
+  .course-video-box-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 30%;
+    z-index: 999;
+    background-color: rgba(51, 51, 51, .93);
+    transform: translateX(100%);
+    @include transition(transform .5s cubic-bezier(0, 0, 0.2, 1));
+
+    &.active {
+      transform: translateX(0);
+      @include transition(transform .5s cubic-bezier(0, 0, 0.2, 1));
+
+      & > .course-list {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    > .switch-btn {
+      position: absolute;
+      left: -22px;
+      top: 43%;
+      width: 22px; 
+      height: 60px;
+      cursor: pointer;
+      line-height: 60px;
+      text-align: center;
+      border-top-left-radius: 3px;
+      background-color: rgba(41,41,41,.8);
+      border-bottom-left-radius: $radius;
+
+      &:hover {
+        background-color: rgba(51,51,51,.9);
+      }
+
+      .icon {
+        color: $gray-light;
+      }
+    }
+
+    .nav-tabs {
+      background-color: $gray-dark;
+
+      .directory-tab,
+      .chatroom-tab,
+      .classmate-tab {
+
+        > a {
+          color: $gray-lighter;
+        }
+
+        &.active {
+
+          > a {
+            color: $brand-primary;
+            background-color: $gray-dark;
+          }
+        }
+      }
+    }
+    
+    .chatroom-box {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      height: 458px;
+      width: 100%;
+
+      .chat-box {
+        display: block;
+        height: 100%;
+        width: 100%;
+
+        .chat-history {
+          height: 338px;
+          overflow: hidden;
+
+          .chat-lists {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+
+            .item {
+              padding: 10px;
+
+              .media {
+
+                .media-body {
+
+                  .name {
+                    color: $gray-lighter;
+                  }
+
+                  .content {
+                    padding: 5px 8px;
+                    background-color: $gray-lighter;
+                    display: inline-block;
+                    border-radius: 5px;
+                    max-width: 70%;
+                    text-align: left;
+                  }
+                }
+              }
+
+              .status {
+                position: relative;
+                text-align: center;
+
+                &:before {
+                  content: '';
+                  display: block;
+                  background-color: #3c3c3c;
+                  height: 1px;
+                  position: absolute;
+                  top: 11px;
+                  width: 80%;
+                  margin-left: 10%;
+                  opacity: .5;
+                }
+
+                .status-content {
+                  display: inline-block;
+                  margin: 0 auto;
+                  width: auto;
+                  background-color: #3c3c3c;
+                  padding: 3px 5px;
+                  border-radius: 3px;
+                  position: relative;
+                  width: 120px;
+                }
+              }
+
+              &.come {
+              }
+
+              &.go {
+                text-align: right;
+              }
+            }
+          }
+        }
+
+        .chat-inputs {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 120px;
+
+          &.disabled {
+
+            &:before {
+              content: '';
+              display: block;
+              width: 100%;
+              height: 100%;
+              line-height: 120px;
+              position: absolute;
+              top: 0;
+              background-color: #4a4a4a;
+              z-index: 1;
+              text-align: center;
+              color: #fff;
+              opacity: .7;
+              cursor: no-drop;
+            }
+          }
+
+          .chat-input-tool {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: $gray-darker;
+
+            .chat-tool-btn {
+              display: block;
+              float: left;
+              height: 30px;
+              line-height: 30px;
+              text-align: center;
+              width: 30px;
+              position: relative;
+              cursor: pointer;
+              overflow: hidden;
+
+              &:hover {
+
+                .icon {
+                  color: $brand-primary;
+                }
+              }
+
+              #J_emotion_pic {
+                cursor: pointer!important;
+                position: absolute;
+                width: 100%!important;
+                height: 100%!important;
+                top: 0!important;
+                left: 0!important;
+                opacity: 0;
+              }
+            }
+
+            .emotion-box {
+              position: absolute;
+              bottom: 30px;
+              left: 0px;
+              width: 100%;
+              height: 90px;
+              overflow-x: auto;
+              background-color: #ccc;
+              padding: 5px;
+
+              .emotion-lists {
+
+                .item {
+                  float: left;
+
+                  .item-content {
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    margin: 5px;
+
+                    &:hover {
+                      border-radius: 3px;
+                      background-color: rgba(238,238,238,0.5);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .chat-input-text {
+            height: 90px;
+            background-color: $gray-dark;
+
+            textarea {
+              width: 100%;
+              height: 100%;
+              padding: 10px;
+              background-color: $gray-dark;
+              border: 0;
+              color: $gray-light;
+            }
+
+            .btn {
+              position: absolute;
+              bottom: 15px;
+              right: 15px;
+            }
+          }
+        }
+
+        .chat-errs {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(51,51,51,0.8);
+
+          .error-content {
+            margin-top: 180px;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    .classmate-box {
+      height: 460px;
+      overflow-y: auto;
+
+      .classmate-lists {
+        overflow: hidden;
+        
+        > .item {
+          padding: 10px;
+          border-bottom: 1px solid #444;
+
+          > a {
+            display: block;
+            color: $gray-light;
+            line-height: 28px;
+
+            > img {
+              margin-right: 10px;
+            }
+
+            > .name {
+              // min-width: 30%;
+              margin-right: 10px;
+              display: inline-block;
+            }
+
+            > .medal {
+              color: $brand-warning;
+
+              .icon {
+                color: $brand-warning;
+              }
+            }
+
+            > .enter {
+              float: right;
+              font-size: $font-size-small;
+
+            }
+
+            &:hover {
+              color: $brand-primary;
+            }
+          }
+        }
+      }
+    }
+
+    // 章节列表
+    .directory-box {
+
+      > .directory-lists {
+        width: 100%;
+
+        > h4 {
+          display: block;
+          border-bottom: 1px solid #444;
+          padding: 0 $line-height-computed;
+          margin: 0;
+          height: $line-height-computed * 2;
+          line-height: $line-height-computed * 2;
+          color: $brand-primary;
+          background-color: transparent;
+        }
+
+        // （折叠）列表内容部分
+        > .directory-list-container {
+          position: relative;
+          z-index: 9;
+          width: 100%;
+          height: 416px;
+          margin: 0;
+          overflow-x: hidden;
+          overflow-y: auto;
+
+          // 所有队列元素
+          > .list-group-item {
+            border: none;
+            padding: 0;
+            counter-increment: chapter;
+            counter-reset: section;
+            background-color: transparent;
+
+            &:first-child {
+
+              > .chapter {
+                border: 0;
+              }
+            }
+
+            // 章标题
+            > .chapter {
+              display: block;
+              padding: 0 $line-height-computed;
+              height: $line-height-computed * 2;
+              line-height: $line-height-computed * 2;
+              border-top: 1px solid $gray-dark;
+              background-color: transparent;
+              color: $gray-lighter;
+              &:hover {
+                background-color: $gray-dark;
+              }
+              // 章计数器
+              &:before {
+                content: "第" counter(chapter) "章  ";
+              }
+              // 章收缩图标
+              &:after {
+                float: right;
+                @extend .icon;
+                content: "\e604";
+                color: $gray-light;
+              }
+              // 章展开图标
+              &.open {
+                &:after {
+                  float: right;
+                  @extend .icon;
+                  content: "\e605";
+                  color: $gray-light;
+                }
+              }
+            }
+
+            // 节元素
+            > .section {
+
+              > a {
+                counter-increment: section;
+                position: relative;
+                display: block;
+                width: 100%;
+                height: $gauge * 2;
+                line-height: $gauge * 2;
+                padding: 0 $gauge;
+                border: 0;
+                overflow: hidden;
+                background-color: transparent;
+                font-size: 95%;
+                color: $gray-lighter;
+                
+                &:hover {
+                  color: $brand-primary;
+
+                  .icon {
+                    color: $brand-primary;
+                  }
+
+                  &:after {
+                    color: $brand-primary;
+                  }
+                }
+                // 节计数器
+                &:before {
+                  content: " "counter(chapter) "." counter(section) " ";
+                  display: inline-block;
+                  width: 35px;
+                }
+                // 图标
+                > i {
+                  float: left;
+                  margin-right: 10px;
+                  font-size: 15px;
+                }
+              }
+              // 当前正在播放页面，加class名称[active]使用
+              > .active {
+
+                color: $brand-primary;
+
+                .icon {
+                  color: $brand-primary;
+                }
+                /*
+                &:after{
+                  float: right;
+                  @extend .icon;
+                  content: '正在学习 \e617'!important;
+                  color: $brand-primary;
+                }
+                */
+              }
+              // 已播放页面，加class名称[played]使用
+              > .played {
+                &:after{
+                  float: right;
+                  @extend .icon;
+                  content: '已学习 \e61a';
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// course-learn
+.course-learn {
+  overflow: hidden;
+  margin: $line-height-computed 0;
+  
+  // 问答、笔记、评价
+  .main {
+    padding-right: $grid-gutter-width;
+    background-color: #fff;
+
+    // Tab选项卡
+    .nav-tabs {
+      overflow: hidden;
+      background-color: $gray-lightest;
+
+      > li {
+
+        > a {
+          padding: 13px 0;
+        }
+      }
+    }
+
+    // 每个Sidebar/Tab内容区公用属性
+    .box {
+      position: relative;
+
+      // 每个Sidebar/Tab内容区的按钮公用属性
+      button,
+      .switch-btn {
+        @include size($grid-gutter-width * 6,auto);
+        padding: $gauge * 0.4 $gauge / 2;
+        margin-left: $gauge / 2;
+      }
+
+      .switch-btn {
+        width: $gauge * 5;
+        cursor: pointer;
+
+        > .switch {
+          font-size: $font-size-h4;
+        }
+
+        > .explain {
+
+        }
+      }
+
+      // Tab公共的内容样式
+      > .content-box {
+        margin-top: $line-height-computed;
+
+        > ul {
+
+          > li {
+            position: relative;
+            height:auto;
+            margin-bottom: $line-height-computed;
+
+            // 三角符效果
+            > i {
+                @include position(absolute, top 15px left 65px);
+                @include size(15px, 15px);
+                @include rotate(45deg);
+                background-color: $gray-lightsuper;
+                color: $brand-color-light;
+              }
+
+            // 用户头像以及用户名  
+            > .media-left {
+
+              // 用户信息元素
+              > a {
+                display: block;
+                width: 60px;
+
+                // 头像图片
+                > img {
+                  @include center-block;
+                }
+              }
+            }
+          }
+        }
+
+        // 问答区内容的样式
+        .question-list {
+
+          > .media {
+
+            // 内容区模块
+            >.media-body {
+              @include radius($radius);
+
+              > .content {
+                padding: $grid-gutter-width - 5;
+                background-color: $gray-lightsuper;
+
+                // 留言内容
+                > .comment-content {
+                  line-height: $line-height-computed + 4;
+                  color: $gray-dark;
+                }
+
+                // 嵌套回复模块
+                > .comment-reply {
+                  // padding: $grid-gutter-width / 2 0;
+                  line-height: $line-height-computed + 7;
+                  overflow: hidden;
+                }
+              }
+            }
+          }
+        }
+
+
+        // 评论和笔记内容区的样式
+        .comment-list,
+        .note-list {
+
+          > .media {
+            border-bottom: 1px solid $gray-xlightest;
+            padding-bottom: $line-height-computed / 2;
+            margin-bottom: $line-height-computed / 2;
+
+            // 优化最后一个单元
+            &:last-child {
+              border: 0;
+            }
+
+            // 定义其内容区样式
+            > .media-body {
+
+              > .content {
+
+                > .capture {
+                  overflow: hidden;
+                  margin-bottom: $gauge / 2;
+
+                  > a {
+                    display: block;
+                    position: relative;
+                    overflow: hidden;
+                    width: $gauge * 11;
+                    height: $gauge * 6;
+                    min-height: $gauge * 5;
+                    // border: 1px solid $gray-xlightest;
+                    background-color: $gray-lightsuper;
+
+                    &:hover {
+
+                      > .capture-title {
+                        @include opacity(1);
+                      }
+                    }
+
+                    > .capture-img {
+                      max-width: 100%;
+                      height: auto;
+                    }
+
+                    > .capture-time {
+                      z-index: 8;
+                      @include position(absolute, left 0 bottom 0);
+                      padding: 3px 5px;
+                      text-align: center;
+                      background-color: $brand-primary;
+                      color: white;
+                    }
+
+                    > .capture-title {
+                      z-index: 9;
+                      display: block;
+                      @include position(absolute, left 0 top 0);
+                      @include square(100%);
+                      @include opacity(0);
+                      @include transition(0.25s linear);
+                      line-height: $gauge * 6;
+                      background: rgba(0, 0, 0, 0.6) none repeat scroll;
+                      text-align: center;
+                      color: white;
+                    }
+                  }
+                }
+
+                > .comment-score {
+                  overflow: hidden;
+
+                  > .score-content {
+                    display: block;
+                    width: 28%;
+                    float: left;
+
+                    > .score-title {
+                      width: auto;
+                      float: left;
+                      text-align: left;
+                    }
+
+                    > .score-star {
+                      width: auto;
+                      float: left;
+                      text-align: left;
+                    }
+                  }
+                }
+
+                // 评论内容自适应
+                @media screen and (min-width: 1024px) and (max-width: 1380px) {
+
+                  > .comment-score {
+
+                    > .scope-content {
+                      padding-right: 0;
+
+                      .score-title {
+                        padding-right: 0;
+                        width: auto;
+                      }
+
+                      .score-star {
+                        padding-right: 0;
+                        width: auto;
+                      }
+                    }
+                  }
+                }
+
+                // 嵌套回复模块
+                > .comment-reply {
+                  padding: $grid-gutter-width / 2 0;
+                  line-height: $line-height-computed + 4;
+                  overflow: hidden;
+
+                  > .media {
+                    @include radius($radius);
+                    background-color: $gray-lightsuper;
+
+                    > .media-left {
+                      padding-left: $gauge / 2;
+                      vertical-align: middle;
+                    }
+
+                    > .media-body {
+                      padding-top: $gauge / 2;
+
+                      > .content {
+
+                        > .title {
+                          margin: 0;
+                        }
+                      }
+                    }
+
+                    // 头像
+                    // img {
+                    //   width: 24px;
+                    //   height: 24px;
+                    // }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // 内容区的表单部分
+      > .post-box {
+        overflow: hidden;
+        padding: 0;
+        padding-top: $line-height-computed;
+        width: 100%;
+        border-bottom: 1px solid $gray-xlightest;
+
+        > h5 {
+          padding: 10px 0;
+        }
+
+        > .post-desable {
+          line-height: $gauge * 2.5;
+          height: $gauge * 2;
+        }
+
+        > form {
+
+          > .comment-form {
+            // padding: $gauge / 2;
+            background-color: $gray-lightsuper;
+
+            > .comment-score {
+              border-right: 1px solid $gray-xlightest;
+            }
+
+            @media screen and (min-width: 1561px) and (max-width: 1690px) {
+
+              > .comment-score {
+                width: 18%;
+              }
+
+              > .comment-content {
+                width: 82%;
+              }
+            }
+
+            @media screen and (min-width: 1481px) and (max-width: 1560px) {
+
+              > .comment-score {
+                width: 15%;
+              }
+
+              > .comment-content {
+                width: 85%;
+              }
+
+              .score-title {
+                width: 20%;
+                margin-left: -10px;
+                margin-right: -10px;
+              }
+
+              .score-star {
+                width: 20%;
+              }
+
+              .score-slogan {
+                width: 62%;
+              }
+              
+            }
+
+            @media screen and (min-width: 1024px) and (max-width: 1480px) {
+
+              > .comment-score {
+                display: none;
+              }
+
+              > .comment-content {
+                width: 100%!important;
+                margin-left: -10px;
+                margin-right: -10px;
+              }
+
+              .score-title {
+                width: 20%;
+                margin-left: -10px;
+                margin-right: -10px;
+              }
+
+              .score-star {
+                width: 20%;
+              }
+
+              .score-slogan {
+                width: 62%;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 播放页我的同学
+  .classmates {
+    overflow: hidden;
+    
+
+    > .head-title {
+      margin: 0;
+      margin-bottom: $gauge;
+      height: 48px;
+      line-height: 48px;
+      background-color: $gray-lightest;
+      padding: 0 $gauge * 0.75;
+
+      > .title {
+        color: $gray;
+        border-left: 3px solid $brand-warning;
+        padding-left: $gauge / 2;
+      }
+
+      > .refresh {
+        float: right;
+
+        > .icon {
+          font-size: $font-size-large;
+        }
+      }
+    }
+
+    > .classmate-lists {
+
+      > .item {
+        float: left;
+        margin-bottom: $gauge * 0.75;
+        text-align: center;
+
+        > a {
+
+          > img {
+            max-width: 100%;
+
+          }
+
+          > p {
+            line-height: 180%;
+
+          }
+        }
+      }
+    }
+  }
+}
+
+// container-learn 播放器页面样式特殊定义
+.container-learn {
+
+  .header {
+    
+    > .topbar {
+      background-color: $gray-darker !important;
+
+      .topbar-nav {
+
+        > ul {
+
+          > li {
+
+            a, span {
+              color: darken($gray-light, 10%) !important;
+
+              > .arrow {
+                border-color: darken($gray-light, 10%) transparent transparent !important;
+              }
+            }
+
+            a {
+
+              &:hover {
+                color: $brand-primary !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

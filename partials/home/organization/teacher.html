@@ -1,0 +1,92 @@
+<div class="teacher-index" ng-init="getTeacherIndex()">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="teacher-info" ng-if="!!teacher.info">
+          <div class="media col-xs-10">
+            <div class="media-left">
+              <img width="110" 
+                   class="media-object img-circle" 
+                   ng-src="{{ getThumbnail(teacher.info.user.gravatar, 'course', { width: 110, height: 110 }) }}">
+            </div>
+            <div class="media-body">
+              <h3 class="clearfix title">
+                <strong>{{ teacher.info.user.profile.rel_name }}</strong>
+                <a ng-href="/organization/{{ organization_id }}" class="btn btn-xs btn-default" target="_blank">{{ teacher.info.organization.name }}</a>
+              </h3>
+              <p>{{ teacher.info.title }}</p>
+              <p class="intro">{{ teacher.info.introduction }}</p>
+            </div>
+          </div>
+          <div class="col-xs-2 pull-right text-center">
+            <h1 class="text-primary">{{ teacher.info.course_count || 0 }}</h1>
+            <span>已发布课程</span>
+          </div>
+        </div>
+
+        <!-- 课程列表 -->
+        <div class="teacher-course" ng-init="getTeacherCourse({})">
+
+          <!-- 课程排序 -->
+          <div class="course-order">
+            <ul class="sort">
+              <li ng-class="{ active: teacher.sort_id == '0' }" ng-click="teacher.sort_id = 0;getTeacherCourse()">
+                <a href="">综合排序<i class="icon icon-sort-down-height"></i></a>
+              </li>
+              <li ng-class="{ active: teacher.sort_id == 1 }" ng-click="teacher.sort_id = 1;getTeacherCourse()">
+                <a href="">最新发布<i class="icon icon-sort-down-height"></i></a>
+              </li>
+              <li ng-class="{ active: teacher.sort_id == 2 }" ng-click="teacher.sort_id = 2;getTeacherCourse()">
+                <a href="">价格由低到高</a>
+              </li>
+              <li ng-class="{ active: teacher.sort_id == 3 }" ng-click="teacher.sort_id = 3;getTeacherCourse()">
+                <a href="">价格由高到低</a>
+              </li>
+            </ul>
+            <div pager 
+                 total-items="teacher.courses.pagination.total" 
+                 items-per-page="teacher.courses.pagination.per_page" 
+                 ng-model="teacher.courses.pagination.current_page" 
+                 ng-change="getTeacherCourse({ page: teacher.courses.pagination.current_page })" 
+                 template-url="partials/template/pagination/pager_course.html">
+            </div>
+            <ul class="filter">
+              <li ng-class="{ active: teacher.is_live == 1 }" 
+                  ng-click="teacher.is_live = teacher.is_live ? 0 : 1;getTeacherCourse()">
+                <a href="" class="btn btn-xs btn-danger">
+                  <span>
+                    <i class="icon" 
+                       ng-class="{ 0: 'icon-check', 1: 'icon-check-fill' }[teacher.is_live]"></i>
+                  </span>
+                  <span>直播</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <h5 class="text-center text-info no-animation" ng-if="!teacher.info == undefined">该教师貌似不存在</h5>
+          <h5 class="text-center text-info no-animation" ng-if="teacher.courses.pagination.total == 0">暂无相关课程</h5>
+          <h5 class="text-center text-info no-animation" ng-if="teacher.courses.pagination.total == undefined">信息加载中</h5>
+
+          <div class="course-lists clearfix no-animation" ng-if="!!teacher.courses.pagination.total">
+            <div class="col-xs-3 slide-top" course-list="teacher.courses.result"></div>
+          </div>
+        </div>
+
+        <!-- 翻页模块 -->
+        <div class="page-wrap no-animation" ng-if="!!teacher.courses.pagination.total">
+          <div pagination 
+               class="pagination-sm" 
+               total-items="teacher.courses.pagination.total" 
+               items-per-page="teacher.courses.pagination.per_page" 
+               ng-model="teacher.courses.pagination.current_page" 
+               ng-change="getTeacherCourse({ page: teacher.courses.pagination.current_page })" 
+               sortCourseLists="pagination" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

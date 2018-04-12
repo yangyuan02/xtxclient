@@ -1,0 +1,49 @@
+<div class="box msg" ng-init="msgInit()">
+  <div tabset justified="false" largesize="false" >
+    <div tab heading="{{ item.name }}({{ item.messages.pagination.total || 0 }})" 
+         ng-repeat="item in all_msgs" 
+         ng-init="getMsgs({ type: item.type })"
+         select="all_msgs.setAttr('active', false);item.active = true">
+      <p ng-if="!item.messages.pagination.total" class="text-center text-info no-animation"><br>暂无通知</p>
+      <ul class="msg-list no-animation" ng-show="!!item.messages.pagination.total">
+        <li class="item col-xs-12 slide-top" 
+            ng-repeat="msg in item.messages.result"  
+            ng-class="{ 'readed': msg.x_status == 0, 'open': is_open }" 
+            ng-click="is_open = !is_open;msg.x_status == 1 ? postMsgRead({ all: false, msg: this }) : false;"
+            ng-mouseover="set_read = '标为已读';set_btn = true" 
+            ng-mouseleave="set_read = '未读消息';set_btn = false;is_open = false">
+          <span class="content col-xs-7 no-animation" 
+                ng-class="{ 'content-close': !is_open, 'content-open': is_open }" 
+                ng-bind-html="msg.content | toHtml" 
+                title="{{ msg.content }}">
+          </span>
+          <span class="col-xs-3 text-center pull-right small">{{ msg.created_at }}</span>
+          <span class="col-xs-1 text-center pull-right no-animation" ng-show="msg.x_status == 0">
+            <span class="btn btn-xs btn-default">已读信息</span>
+          </span>
+          <span class="col-xs-1 text-center pull-right no-animation" 
+                ng-show="msg.x_status == 1" 
+                ng-init="set_read = '未读消息'">
+            <span class="btn btn-xs" 
+                ng-class="{ 'btn-primary': set_btn, 'btn-warning': !set_btn }">{{ set_read }}</span>
+          </span>
+        </li>
+      </ul>
+      <p class="clearfix"></p>
+      <div class="page-wrap" ng-if="!!item.messages.pagination.total">
+        <div pagination 
+             total-items="item.messages.pagination.total" 
+             items-per-page="item.messages.pagination.per_page" 
+             ng-model="item.messages.pagination.current_page" 
+             ng-change="getMsgs({ type: item.type, page: item.messages.pagination.current_page })" 
+             class="pagination-sm" 
+             boundary-links="true" 
+             rotate="false">
+        </div>
+      </div>
+    </div>
+    <div class="action-btn">
+      <a class="btn btn-sm btn-primary" ng-click="postMsgRead({ all: true })">本页标为已读</a>
+    </div>
+  </div>
+</div>

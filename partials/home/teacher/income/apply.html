@@ -1,0 +1,109 @@
+<div class="income-apply" ng-init="getBankAccount()">
+  <div class="col-xs-12 apply-out">
+
+    <div class="row account-info">
+      <div class="col-xs-3 text-center">
+        <h4>提取余额到个人账户</h4>
+      </div>
+      <div class="col-xs-offset-2 col-xs-7 text-right">
+        <a href="/teacher/income/account-list" class="btn btn-primary">管理提现账户</a>
+        <a href="/teacher/income/account-add" class="btn btn-primary">+添加提现账户</a>
+        <a href="/teacher/income/record" class="btn btn-default">提现记录</a>
+      </div>
+    </div>
+
+    <!-- 申请成功 -->
+    <div ng-show="!!withdraw.status" class="toggle">
+      <br><br>
+      <p class="text-center text-primary">
+        <i class="icon icon-success"></i>
+        <span>申请成功，请等待处理</span>
+      </p>
+      <hr>
+      <p class="text-center">
+        <a class="btn btn-primary" href="/teacher/income/index">返回</a>
+      </p>
+      <br>
+    </div>
+
+    <!-- 表单 -->
+    <form name="withdrawForm" 
+          class="form-horizontal apply-form toggle" 
+          role="form" 
+          method="POST" 
+          ng-hide="!!withdraw.status">
+      <div class="form-group">
+        <label class="col-xs-3 control-label">可提现余额</label>
+        <div class="col-xs-6">
+           <h3 class="sum text-danger">￥{{ user.profile.income_remain }}</h3>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label">选择账户</label>
+        <div class="col-xs-9">
+          <p class="form-control-static text-danger no-animation" 
+             ng-if="!withdraw.banks.pagination.total">
+             <span>暂无有效提现账户，您可以先 </span>
+             <a href="/teacher/income/account-add" class="btn btn-sm btn-danger">添加</a>
+             <span> 提现账户</span>
+          </p>
+          <ul class="account-list no-animation" ng-if="!!withdraw.banks.pagination.total">
+            <li class="col-xs-8" 
+              ng-repeat="bank in withdraw.banks.result" 
+              ng-class="{'active': $parent.$parent.withdraw.apply.bank_account_id == bank.id }"
+              ng-style="{
+                'background': 'url({{ bank.account_type == 1 ? '/images/alipay.png' : 
+                'https://apimg.alipay.com/combo.png?d=cashier&t=' + bank.account_code  }}) 
+                no-repeat right center #fff'
+              }">
+              <input  type="radio" 
+                      name="account_id" 
+                      id="account_id_{{ $index }}" 
+                      value="{{ bank.id }}" 
+                      ng-model="$parent.$parent.withdraw.apply.bank_account_id" 
+                      ng-checked="$first" 
+                      ng-init="$first ? $parent.$parent.withdraw.apply.bank_account_id = bank.id : ''" 
+                      class="hide">
+              <i class="icon icon-success checked" 
+                 ng-class="{ 'text-primary': $parent.$parent.withdraw.apply.bank_account_id == bank.id }"></i>
+              <label for="account_id_{{ $index }}">
+                <span class="bank-name col-xs-4">{{ (bank.account_type == 1) ? '支付宝' : bank.account_name }}</span>
+                <span class="bank-num">{{ bank.account_type == 1 ? '账户：' : '尾号：' }}{{ bank.account_num }}</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="apply_amount" class="col-xs-3 control-label">提现金额</label>
+        <div class="col-xs-3">
+          <input 
+            type="number" 
+            class="form-control input" 
+            name="apply_amount" 
+            ng-model="withdraw.apply.amount" 
+            id="apply_amount" 
+            min="10" 
+            placeholder="{{ user.profile.income_remain == 0 ? '暂无可提现余额' : '请输入金额（最大' + user.profile.income_remain + '）'}}" validator="required, min=10" 
+            required-error-message="请输入提现金额" 
+            min-error-message="提现金额不得小于10元" 
+            ng-disabled="user.profile.income_remain == 0"/>
+            <!-- , max={{ Number(user.profile.income_remain) }} -->
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-9">
+          <span class="small text-danger">提醒：工作日内24小时内到账</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-9">
+          <button validation-submit="withdrawForm" 
+                  class="btn btn-primary" 
+                  ng-click="postWithDraw(withdraw.apply)" 
+                  ng-disabled="user.profile.income_remain == 0">提交申请</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

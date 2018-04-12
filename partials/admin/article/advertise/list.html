@@ -1,0 +1,108 @@
+<div class="page-list" ng-init="advertiseAction.getIndex()">
+  <div class="page-title">
+    <h3>广告列表({{ advertise_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <a href="/article/advertise/list/add"
+         class="btn btn-sm btn-success" 
+         ng-if="page_permission['article.advertise.list.add']">新增</a>
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="advertiseAction.del({ batch: true })"
+        ng-if="page_permission['article.advertise.list.del']"
+        ng-disabled="!advertise_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="advertiseAction.getIndex(advertise_list.pagination.current_page)">刷新</button>
+    </div>
+  </div>
+  <div class="page-content" ng-init="advertiseAction.getAdConfig()">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="advertise_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>广告标题</th>
+          <th>广告位置</th>
+          <th>广告图片</th>
+          <th>链接地址</th>
+          <th>状态</th>
+          <th>添加时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!advertise_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="advertise_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="advertise_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="advertise in advertise_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !advertise.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="advertise.checked">
+          </td>
+          <td>{{ advertise.id }}</td>
+          <td>{{ advertise.title }}</td>
+          <td>{{ ad_config.value[advertise.type] }}</td>
+          <td>
+            <a href="#" 
+              ng-click="modal.imagePreview(getThumbnail(advertise.image, 'advertise_image', { width: 400, height: 400 }))">
+                <img ng-src="{{ getThumbnail(advertise.image, 'advertise_image', { width: 40, height: 20 }) }}">
+            </a>
+          </td>
+          <td>
+            <a ng-href="{{ advertise.link }}" target="_blank">{{ advertise.link }}</a>
+          </td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="advertise.x_status">
+              <em class="text-danger"
+                  ng-switch-when="0">禁用</em>
+              <em class="text-success"
+                  ng-switch-when="1">正常</em>
+            </span>
+          </td>
+          <td>{{ advertise.created_at }}</td>
+          <td>
+            <a href="/article/advertise/list/{{ advertise.id }}" 
+               class="text-info" 
+               ng-if="page_permission['article.advertise.list.edit']">[ 编辑 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['article.advertise.list.del']"
+               ng-click="advertiseAction.del({ advertise: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="advertise_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="advertise_list.pagination.total" 
+         items-per-page="advertise_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="advertiseAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

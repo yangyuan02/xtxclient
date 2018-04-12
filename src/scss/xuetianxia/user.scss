@@ -1,0 +1,2771 @@
+// 用户个人中心模块
+.main-wrap {
+
+  > .user {
+    margin-bottom: $gauge;
+  }
+}
+
+// 提问/回答/笔记/问答详情/列表页面公用样式
+.question-lists,
+.answer-lists,
+.note-lists,
+.question-answer{
+  display: block;
+  overflow: hidden;
+
+  // 提问子队列公共样式
+  > .item {
+    padding-bottom: $line-height-computed;
+    margin-bottom: $line-height-computed;
+    border-bottom: 1px solid $gray-xlightest;
+
+    // 嵌套回复
+    .answers-list {
+      float: left;
+      margin-top: $gauge;
+      padding-top: $gauge;
+      border-top: 1px solid $gray-xlightest;
+
+      > .item {
+
+        &:last-child {
+          padding: 0;
+          border: 0;
+          margin: 0;
+        }
+      }
+    }
+
+    > .media-left {
+      min-width: $gauge * 4;
+
+      img {
+        @include center-block;
+      }
+    }
+
+    > .media-body {
+      padding-left: $gauge;
+
+      &:hover > .content > .created > .edit,
+      &:hover > .content > .created > .del {
+        display: inline-block;
+      }
+
+      > .content {
+
+        // 问题标题公用
+        > .title {
+          margin-top: 0;
+          margin-bottom: $gauge * 0.7;
+          line-height: 2;
+          color: $gray-dark;
+        }
+
+        // 笔记截图
+        > .capture {
+          overflow: hidden;
+          margin-bottom: $gauge * 0.7;
+
+          > .content {
+            display: block;
+            width: $gauge * 8;
+            height: $gauge * 5;
+            position: relative;
+            overflow: hidden;
+            background-color: $gray-lightest;
+
+            &:hover {
+              > .capture-pic,
+              > .capture-video {
+                @include opacity(1);
+              }
+              > .capture-time {
+                display: none;
+              }
+            }
+
+            > .capture-img {
+              max-width: 100%;
+              height: auto;
+            }
+
+            > .capture-time {
+              z-index: 8;
+              @include position(absolute, left 0 bottom 0);
+              padding: 0 5px;
+              height: $gauge;
+              line-height: $gauge + 1;
+              text-align: center;
+              font-size: 13px;
+              background-color: $brand-primary;
+              color: white;
+            }
+
+            > .capture-pic {
+              left: 0;
+            }
+
+            > .capture-video {
+              right: 0;
+            }
+
+            > .capture-pic,
+            > .capture-video {
+              z-index: 9;
+              display: block;
+              @include position(absolute,top 0);
+              @include size(50%, 100%);
+              @include opacity(0);
+              @include transition(0.25s linear);
+              line-height: $gauge * 5;
+              background: rgba(0, 0, 0, 0.4) none repeat scroll;
+              text-align: center;
+              color: white;
+
+              &:hover {
+                background: rgba(0, 0, 0, 0.7) none repeat scroll;
+              }
+            }
+          }
+        }
+
+        // 问题编辑状态
+        > .can-edit {
+          background-color: $gray-lightest;
+          padding: $gauge / 2;
+        }
+
+        // 副信息[创建]公用
+        > .created {
+
+          .created-in {
+            width: 50%;
+            // @include text-overflow;
+          }
+
+          > span {
+            display: inline-block;
+            margin-right: 5%;
+
+            &:last-child {
+              margin: 0;
+            }
+          }
+
+          > .edit,
+          > .del {
+            height: 17px;
+            display: none;
+          }
+
+          > .caeated-all {
+            margin: 0;
+
+            > a {
+              color: $brand-primary;
+            }
+          }
+        }
+
+        // 回答队列中回复内容区
+        > .answer {
+          padding: $gauge * 0.8;
+          line-height: $line-height-base * 1.3;
+          color: $gray-dark;
+          background-color: $gray-lightsuper;
+        }
+      }
+
+      // 提问队列专用
+      > .answer {
+        display: block;
+        float: right;
+        width: 10%;
+        text-align: center;
+      }
+
+      // 问答列表编辑/删除按钮
+      // 笔记模块编辑按钮
+      &:hover .active{
+        display: block;
+      }
+
+      > .active {
+        display: none;
+        @include position(absolute,bottom 0 right 0);
+        width: 15%;
+
+        > .note-edit {
+          float: left;
+        }
+
+        > .note-del {
+          float: right;
+        }
+
+        > a {
+          display: inline-block;
+          width: 50%;
+          text-align: center;
+
+          > i {
+            @include square(20px);
+          }
+        }
+      }
+    }
+  }
+}
+// user
+.user {
+  //margin-top: $grid-gutter-width;
+
+  // 侧边导航
+  .sidebar {
+
+    > .box {
+      border: 1px solid $gray-xlightest;
+
+      > h4 {
+        margin: 0;
+        padding: $padding-base-horizontal ($padding-base-horizontal * 2);
+        border-bottom: 1px solid $gray-xlightest;
+        background-color: lighten($gray-lightest, 2%);
+      }
+
+      > ul {
+
+        > li {
+          text-align: center;
+
+          > a {
+            padding: $padding-base-horizontal;
+            display: block;
+
+            &:hover,
+            &:focus {
+              color: $gray-dark;
+              background-color: lighten($gray-lightest, 6%);
+            }
+          }
+
+          &.active {
+            margin-left: -1px;
+            background-color: lighten($gray-lightest, 4%);
+
+            > a {
+              // color: $brand-primary;
+              border-left: 2px solid $brand-warning;
+            }
+          }
+        }
+      }
+
+      &.organization {
+        border-top: none;
+      }
+
+      &.setting {
+        margin-top: $grid-gutter-width;
+      }
+    }
+  }
+
+  // 用户中心内容区域
+  .content {
+
+    // 作用于所有用户中心页面的总盒子容器
+    > .box {
+      overflow: hidden;
+      margin-bottom: $gauge;
+
+      // 所有的标题
+      > h3 {
+        margin-top: $line-height-computed / 2;
+        color: $gray-dark;
+      }
+
+      // 所有的TAB选项卡的切换按钮部分
+      .nav-tabs {
+        height: $gauge * 2 + 5;
+        overflow: hidden;
+        margin-bottom: $line-height-computed;
+        background-color: $gray-lightsuper;
+        position: relative;
+
+        // 按钮
+        .action-btn {
+          @include position(absolute, right $gauge / 2 top $gauge * 0.4);
+        }
+
+        > li {
+
+          > a {
+
+            padding: $nav-tab-padding;
+          }
+        }
+      }
+
+      // 头像编辑器模块
+      .avatar-edit {
+        background: $body-bg;
+        border: 1px solid $gray-xlightest;
+      }
+
+
+      // 首页模块
+
+      // 首页的基本信息模块
+      > .basic-info {
+        border: 1px solid $gray-xlightest;
+        padding: $gauge;
+        overflow: hidden;
+        margin-bottom: $gauge / 2;
+
+        // 公用定位
+        > div {
+          display: block;
+          float: left;
+        }
+
+        .user-basic-info {
+          width: 70%;
+
+          > .title {
+            font-size: $font-size-h4;
+            border-bottom: 1px solid $gray-xlightest;
+            padding-bottom: $gauge * 0.8;
+            margin-bottom: $gauge * 0.8;
+
+            > .icon {
+              margin-right: $gauge / 4;
+              color: $brand-warning;
+            }
+          }
+
+          > .user-gravatar,
+          > .user-info {
+            float: left;
+          }
+
+
+          > .user-gravatar {
+            position: relative;
+            margin-right: $gauge;
+
+            > .upload-file {
+              width: $line-height-computed * 6 + 10;
+              height: $line-height-computed * 6 + 10;
+              @include radius(100%);
+              cursor: pointer;
+              border: 5px solid $gray-lightest;
+
+              > .thumb,
+              > input[type='file'] {
+                width: 100%;
+                height: 100%;
+              }
+
+              > .edit {
+                @include radius(50%);
+                line-height: $line-height-computed * 6 + 10;
+              }
+            }
+
+            > .icon {
+              @include position(absolute, bottom 0 right 0);
+              margin: 0;
+              padding: $gauge / 8;
+              border-radius: 50%;
+              background-color: $body-bg;
+            }
+          }
+
+          // 用户基本信息
+          > .user-info {
+
+            a {
+                margin:0 $grid-gutter-width/2;
+                color: $brand-primary;
+              }
+
+            > p,
+            > div {
+              margin: 0 0 $line-height-computed * 0.7;
+              width: 100%;
+              min-width: $gauge * 20;
+            }
+
+            // 用户名称
+            > .username {
+              font-size: $font-size-h3;
+              color: $gray-dark;
+
+              a {
+                color: $text-color;
+                font-size: $font-size-small;
+              }
+            }
+
+            // 用户资产
+            > .user-assets {
+
+              // 余额
+              .balance {
+                color: $brand-danger;
+              }
+            }
+
+            // 用户等级
+            > .user-level {
+
+              // 进度条
+              > .progress{
+                @include radius(4px);
+                @include size(30%, 8px);
+                margin: 0;
+                margin-right: $grid-gutter-width;
+                display: inline-block;
+                box-shadow: none;
+                background-color: $gray-lightest;
+
+                > .progress-bar {
+                  box-shadow: none;
+                  background-color: $brand-primary;
+                }
+              }
+            }
+
+            // 用户勋章
+            > .user-medals {
+
+              // 勋章组
+              > .medals {
+                display: inline-block;
+
+                // 子勋章
+                > li {
+                  float: left;
+                  line-height: $line-height-computed / 2;
+                  margin-right: $line-height-computed / 5;
+
+                  // 优化最后一个勋章
+                  &:last-child{
+                    margin-right: 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+
+        // 学习时长
+        > .learn-time {
+          float: right;
+          width: 30%;
+          margin: 0;
+          padding-left: $line-height-computed;
+          // border-left: 1px solid $gray-xlightest;
+
+          > .title {
+            font-size: $font-size-h4;
+            border-bottom: 1px solid $gray-xlightest;
+            padding-bottom: $gauge * 0.8;
+            margin-bottom: $gauge * 0.8;
+
+            > .icon {
+              margin-right: $gauge / 4;
+              color: $brand-warning;
+            }
+          }
+
+          > .count {
+            color: $gray-dark;
+          }
+
+          > .course-btn {
+            margin-top: $gauge * 0.75;
+
+           > a {
+            border-radius: $gauge * 3;
+            padding: $gauge / 4 $gauge * 0.8;
+           }
+          }
+        }
+      }
+
+      // 操作按钮
+      > .index-action {
+        overflow: hidden;
+        margin-bottom: $gauge / 2;
+        border: 1px solid $gray-xlightest;
+        padding: $gauge 0;
+
+        .item {
+          border-right: 1px solid $gray-xlightest;
+          width: 33%;
+          float: left;
+          padding: 0 $gauge;
+
+          .title {
+            border-bottom: 1px solid $gray-xlightest;
+            padding-bottom: $gauge * 0.75;
+
+            .icon {
+              margin-right: $gauge / 4;
+              color: $brand-warning;
+            }
+          }
+
+          .btn {
+            border-radius: $gauge * 2;
+            padding: $gauge / 3 $gauge;
+          }
+
+          &:last-child {
+            border: none;
+          }
+        }
+      }
+
+      // 学习记录模块（个人中心首页和历史页公用）
+      > .learn-history {
+        border: 1px solid $gray-xlightest;
+        padding: $line-height-computed;
+
+        > .title {
+          font-size: $font-size-h4;
+          border-bottom: 1px solid $gray-xlightest;
+          padding-bottom: $gauge * 0.8;
+          margin-bottom: $gauge;
+
+          > .icon {
+            margin-right: $gauge / 4;
+            color: $brand-warning;
+          }
+        }
+
+        > .item-list {
+          overflow: hidden;
+          // padding: $gauge;
+
+          > .item {
+            padding-bottom: $gauge;
+            margin-bottom: $gauge;
+            border-bottom: 1px solid $gray-xlightest;
+
+            > .media-left {
+              width: 30%;
+
+              > a {
+                width: 100%;
+                max-height: $gauge * 7 + 10;
+                display: block;
+                position: relative;
+                overflow: hidden;
+
+                > img {
+                  @include size(100%,auto);
+                  margin-bottom: 0;
+                }
+
+                > .continue-icon {
+                  @include transition(opacity .5s);
+                  @include position(absolute,top 0 left 0);
+                  @include square(100%);
+                  display: block;
+                  background: rgba(0, 0, 0, 0.7) none repeat scroll 0% 0%;
+                  text-align: center;
+                  color: $gray-lightest;
+                  opacity: 0;
+                  line-height: 152px;
+                  z-index: 1;
+
+                  &:before {
+                    content: "继续学习";
+                  }
+
+                  &:hover {
+                    @include transition(opacity .5s);
+                    opacity: .8;
+                  }
+                }
+
+                // 课程观看进度条
+                > .progress {
+                  @include position(absolute,bottom 0 left 0);
+                  @include size(100%,20%);
+                  @include radius(0);
+                  margin: 0;
+                  box-shadow: none;
+                  opacity: .7;
+                  background-color: $gray-dark;
+
+                  > .progress-bar {
+                    -webkit-box-shadow: none;
+                    box-shadow: none;
+                    background-color: $brand-primary;
+                  }
+
+                  > .value {
+                    @include position(absolute,right 0px top 18%);
+                    display: block;
+                    line-height: $line-height-computed;
+                    color: $body-bg;
+                    font-size: $font-size-small;
+                    padding: 0 $grid-gutter-width/2;
+                  }
+                }
+              }
+            }
+
+            > .media-body {
+              padding: 4px;
+
+              > .describe {
+                color: $gray-light;
+              }
+
+              > h4 {
+                color: $gray-dark;
+              }
+
+              > a {
+                @include position(absolute,bottom 0);
+                width: 18%;
+                border-radius: $gauge * 2;
+              }
+            }
+          }
+        }
+      }
+
+      // 通知中心
+      > .message {
+
+        .message-box {
+          border: 1px solid $gray-xlightest;
+          padding: 0 $gauge;
+
+          > .title {
+            padding: $gauge / 2 0;
+            border-bottom: 1px solid $gray-xlightest;
+            margin: $gauge / 2 0;
+            font-size: $font-size-h4;
+
+            // background-color: $gray-lightest;
+            // text-align: center;
+
+            .icon {
+              margin-right: $gauge / 4;
+              color: $brand-warning;
+            }
+          }
+
+          > .item-list {
+
+            > .item {
+              height: $gauge * 2;
+              margin: 0;
+              line-height: $gauge * 2;
+              border-bottom: 1px solid $gray-xlightest;
+
+              &:last-child {
+                border-bottom: none;
+              }
+
+              > a {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 单独的学习记录模块,用于备用
+    > .history {
+
+      > .learn-history {
+
+      }
+    }
+
+    // 我的课程/订单管理模块
+    > .course,
+    > .trade {
+
+      // 订单列表的内容部分
+      .tab-content {
+
+        // 表格标题部分
+        .table-title {
+          width: 100%;
+          border: 1px solid $gray-xlightest;
+          border-bottom: none;
+          padding: $grid-gutter-width/4;
+
+          > span {
+            display: inline-block;
+            width: 12%;
+            padding: 5px;
+            text-align: center;
+          }
+
+          > .name {
+            width: 33%;
+          }
+
+          > .batch {
+            width: 15%;
+            padding-left: $gauge * 0.75;
+            text-align: left;
+
+            label {
+              margin-right: $gauge / 4;
+              margin-bottom: 0;
+
+              input {
+                margin-top: 0;
+                margin-right: 3px;
+              }
+            }
+          }
+        }
+
+        // 列表部分
+        .item-list {
+
+          // 单个课程体
+          > .item {
+            margin-bottom: $gauge;
+            border: 1px solid $gray-xlightest;
+            overflow: hidden;
+
+            // 课程订单基本信息
+             .course-info {
+              width: 100%;
+              padding: $gauge/3;
+              border-bottom: 1px solid $gray-xlightest;
+              background-color: $gray-lightsuper;
+
+              > span {
+                display: inline-block;
+                width: auto;
+                font-size: $font-size-small;
+              }
+
+              // 日期及控件
+              > .date {
+                margin-right: 5%;
+                padding-left: $gauge/2;
+
+                > label {
+                  width: $gauge * 8.2;
+                  margin: 0;
+                  text-align: right;
+
+                  > input {
+                    margin-right: $gauge/4;
+                  }
+                }
+              }
+
+              // 订单编号
+              > .order {
+                margin-right: 10%;
+              }
+
+              > .organization {
+
+              }
+
+             }
+
+            // 课程订单主体信息
+            .course-content {
+              margin: 0;
+              padding: $gauge;
+              overflow: hidden;
+
+              // 子元素排列
+              > div {
+                display: block;
+                float: left;
+                max-height: $gauge * 5;
+                margin-right: 2%;
+
+                &:last-child {
+                  margin-right: 0;
+                  float: right;
+                }
+              }
+
+              // 缩略图部分
+              > .course-thumb {
+                padding: 0;
+                max-width: 20%;
+                overflow: hidden;
+                // @include radius($radius);
+
+                > a {
+                  display: block;
+                  height: 100%;
+
+                  > img {
+                    margin: 0;
+                    width: 100%;
+                    height: auto;
+
+                  }
+                }
+              }
+
+              // 描述信息部分
+              > .course-title {
+                width: 25%;
+
+                // 标题
+                > .title {
+                  @include text-overflow;
+                  color: $gray-dark;
+                }
+
+                > .describe {
+                  @include text-overflow;
+                  margin-bottom: $gauge;
+                  color: $gray-light;
+                }
+
+                > .period {
+                  @include text-overflow;
+                  margin: 0;
+                }
+
+              }
+
+              // 订单价格
+              > .order-price,
+              > .real-payment {
+                width: 10%;
+                text-align: center;
+
+                > p {
+                  margin-top: 40%;
+                  margin-bottom: 0;
+                  color: $gray-light;
+                }
+
+              }
+
+              // 实付款
+              > .real-payment {
+                width: 11%;
+
+                > p {
+                  margin-top: 37%;
+                  color: $brand-danger;
+                  font-weight: bold;
+                }
+
+                > span {
+                  font-size: $font-size-small;
+                }
+              }
+
+              // 订单状态
+              > .order-state {
+                width: 10%;
+                margin-right: 0;
+                margin-left: 2%;
+
+                > span {
+                  display: block;
+                  margin-top: 40%;
+                  text-align: center;
+                }
+
+                // 成功订单
+                > .success {
+                  color: $brand-primary;
+                }
+
+              }
+
+              // 操作按钮
+              > .active-btn {
+                width: 11%;
+                text-align: center;
+
+                > a {
+                  display: block;
+                  margin-top: 30%;
+                }
+
+                > span {
+                  display: block;
+                  margin-top: 10%;
+
+                  > a {
+                    color: $gray-light;
+
+                    &:hover {
+                      color: $brand-primary;
+                    }
+                  }
+                }
+              }
+            }
+
+            // 次按钮交互效果
+            &:hover {
+              border-color: $brand-primary;
+            }
+          }
+        }
+      }
+    }
+
+    // 我的收藏模块
+    > .favorite {
+      border: 1px solid #eee;
+
+      // 列表
+      > .item-list {
+        width: 100%;
+        overflow: hidden;
+        padding: $gauge / 2;
+        zoom: 1;
+        padding-bottom: $gauge * 2.5;
+
+        // 每个单独的模块
+        > .item {
+          display: inline-block;
+          float: left;
+          margin-bottom: $grid-gutter-width;
+          width: 25%;
+          height: $gauge * 12;
+
+          > .inner {
+            // 缩略图
+            .thumbnail {
+              max-height: $line-height-computed * 6.5;
+              min-height: $line-height-computed * 6;
+              padding: $gauge / 2;
+              overflow: hidden;
+              margin-bottom: $gauge;
+              background: none;
+
+              > a {
+                display: block;
+                @include square(100%);
+
+                > img {
+                  display: block;
+                  width: 100%;
+                  height: auto;
+                }
+              }
+            }
+
+            // 其他信息
+            .info {
+              position: relative;
+              padding: 0 $gauge / 2;
+              z-index: 100;
+
+              // 标题
+              > .title {
+                @include text-overflow;
+                color: $gray-dark;
+              }
+
+              // 机构
+              > .organization {
+                color: $gray-light;
+
+              }
+
+              // 其他信息
+              > .other {
+                overflow: hidden;
+
+                > .price {
+                  float: left;
+                  font-weight: bold;
+                  color: $brand-danger;
+                }
+
+                > .free {
+                  float: left;
+                  color: $brand-primary;
+
+                  &:before {
+
+                    content: "免费";
+                  }
+                }
+
+                > .attention {
+                  float: right;
+
+                  // 预留字体图标
+                  > .icon {
+
+                  }
+
+                  > .num {
+                    color: $brand-primary;
+                  }
+                }
+              }
+
+              // 删除按钮模块
+              > .delete {
+                padding: $gauge * 0.7;
+                background-color: $gray-lightsuper;
+                display: none;
+
+                > .del-btn {
+                  width: 60%;
+                  @include center-block;
+                }
+              }
+            }
+          }
+
+          &:hover {
+
+            > .inner {
+              @include box-shadow(0 0 10px lighten($gray, 50%));
+
+              > .info {
+                height: 150px;
+
+                > .delete {
+                  position: absolute;
+                  left: 0;
+                  bottom: 0;
+                  width: 100%;
+                  display: block;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 我的问答/笔记模块公用
+    > .question,
+    > .note {
+
+      // 内容区容器
+      > div {
+        border: 1px solid $gray-xlightest;
+
+        // 内容区
+        > .tab-content {
+          padding: $gauge;
+        }
+      }
+
+      // 问答详情页模块优化
+      > .qa-detail {
+        padding: $gauge;
+
+        // 问题模块
+        > .question-answer {
+
+          > .item {
+            border: none;
+            padding: 0;
+
+            > .media-body {
+
+              > .content {
+
+                > .title {
+                  font-size: $font-size-h4;
+                }
+              }
+            }
+          }
+        }
+
+        // 回复列表模块
+        > .answer-lists {
+
+          > .item {
+
+            > .media-body {
+
+              > .content {
+                margin-bottom: $gauge * 1.5;
+              }
+            }
+          }
+
+          .item {
+
+            .content {
+              width: 100%;
+            }
+
+            &:last-child {
+              border: none;
+              margin: 0;
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+
+    // 个人资料模块
+    > .profile {
+
+      .user-information {
+        border: 1px solid $gray-xlightest;
+        padding: $gauge * 2;
+
+        // 用户头像
+        .user-avatar {
+          border-radius: 50%;
+        }
+
+        // 用户身份证
+        .user-id-card {
+          margin-bottom: 10px;
+
+          > .upload-file{
+
+            > .thumb {
+              @include square(100%);
+            }
+
+            > input[type='file'] {
+              @include square(100%);
+            }
+          }
+        }
+      }
+    }
+
+    // 密码管理模块
+    > .password {
+
+       .user-password {
+        border: 1px solid $gray-xlightest;
+        padding: $gauge * 2;
+      }
+    }
+
+    // 社交绑定模块
+    > .account {
+
+      > .user-account {
+
+        > thead,
+        > tbody {
+          > tr {
+            > th,
+            > td {
+              font-size: $font-size-base;
+              text-align: center;
+            }
+            > .type {
+              text-align: left;
+              text-indent: 2em;
+            }
+          }
+        }
+      }
+    }
+
+    // 账单明细
+    > .bill {
+      overflow: visible;
+
+      > .bill-filter {
+        border: 1px solid $gray-xlightest;
+        border-bottom: 0;
+        padding: $gauge*0.7 $gauge/2;
+
+        // 日期选择器
+        > .date-scope {
+
+          > form {
+
+            .date-picker {
+              position: relative;
+              display: inline-block;
+            }
+
+            .search-btn {
+              margin-left: $gauge / 2;
+              padding: $gauge / 4 $gauge / 2;
+            }
+          }
+        }
+
+        // 时间区间按钮
+        > .date-check {
+          > input {
+            display: none;
+
+            &:checked + label {
+              @extend .btn-sm;
+              @extend .btn-primary;
+            }
+          }
+          > label {
+            @extend .btn-sm;
+            cursor: pointer;
+            margin: 0 $gauge/4;
+          }
+        }
+      }
+    }
+
+    // 通知中心
+    > .msg {
+
+      .tab-content {
+
+        .msg-list {
+          border: 1px solid $gray-xlightest;
+          overflow: hidden;
+
+          > .item {
+            // height: $gauge * 2;
+            line-height: $gauge * 2;
+            border-bottom: 1px solid $gray-xlightest;
+
+            > span {
+              color: $gray-dark;
+            }
+
+            > .important,
+            > .content {
+              cursor: pointer;
+            }
+
+            > .content {
+
+              &.content-close {
+                height: $gauge * 2;
+                @include text-overflow;
+
+                > p {
+                  display: inline-block;
+                  @include text-overflow;
+                }
+              }
+
+              > p {
+                margin: 0;
+              }
+
+              a {
+                color: $brand-primary;
+                @include text-overflow;
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+            }
+
+            > .isread {
+              &:before {
+                content: "未读";
+              }
+            }
+
+            &:hover {
+              > .content {
+                > a {
+                  color: $brand-primary;
+                }
+              }
+              &:before {
+                color: $brand-primary;
+              }
+            }
+
+            &:last-child {
+              border-bottom: 0;
+            }
+
+            // 队列标示
+            &:before {
+              content: "•";
+              float: left;
+            }
+
+            &:hover {
+              background-color: $gray-lightsuper;
+            }
+          }
+
+          // 展开状态
+          > .item.open {
+            height: auto;
+          }
+
+          // 重要通知
+          > .important {
+
+            &:before {
+              content: "•【重要通知】";
+              color: $brand-primary;
+            }
+          }
+
+          // 已读信息
+          > .readed {
+
+            > span ,
+            > .content a {
+              color: $gray-lighter;
+            }
+
+            > .isread {
+              &:before {
+                content: "已读";
+              }
+            }
+
+            &:before {
+              color: $gray-lighter;
+            }
+          }
+
+        }
+      }
+    }
+
+    // 勋章部分
+    > .medal {
+      border: 1px solid $gray-xlightest;
+
+      .tab-content {
+
+        .medal-list {
+          overflow: hidden;
+          padding: $gauge;
+
+          > .item {
+            display: block;
+            float: left;
+            @include size($gauge * 3,$gauge * 5);
+            margin: 0 $gauge $gauge;
+
+            > a {
+              display: block;
+              @include square(100%);
+
+              // 勋章图片
+              > img {
+                @include square($gauge * 3);
+                @include radius(50%);
+                border: 0;
+                background-color: $gray-lightest;
+              }
+
+              // 勋章名称
+              > p {
+                margin: 0;
+                text-align: center;
+                height: $gauge * 2;
+                line-height: $gauge * 2;
+                font-size: $font-size-small;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 收入首页
+    > .income {
+
+      > .income-index {
+
+        > .income-info {
+          border: 1px solid $gray-xlightest;
+
+          > .title {
+            background-color: $gray-lightsuper;
+            border-bottom: 1px solid $gray-xlightest;
+
+            > span {
+              height: $gauge * 2;
+              line-height: $gauge * 2;
+            }
+          }
+
+          .content {
+
+            > div {
+              padding: $gauge * 3 0;
+              border-right: 1px solid $gray-xlightest;
+
+              &:last-child {
+                border-right: 0;
+              }
+
+              > .sum {
+                margin-bottom: $gauge;
+                font-size: $font-size-base * 2.5;
+                font-weight: bold;
+                color: $brand-danger;
+
+                > .sign {
+                  font-size: $font-size-base;
+                }
+              }
+
+              > a {
+                margin: 0 $gauge/5;
+                width: 35%;
+              }
+            }
+          }
+        }
+      }
+
+      // 收入明细/首页/提现记录/提现账户管理/公用表格样式
+      > .income-index,
+      > .income-details,
+      > .income-record,
+      > .income-account-list{
+
+        // 图表
+        .details-charts {
+          margin-bottom: $gauge;
+
+          .detail-chart {
+
+            min-height: $gauge * 15.5;
+            overflow: hidden;
+            padding: $gauge / 2;
+            border: 1px solid $gray-xlightest;
+          }
+        }
+
+        // 明细表格
+        .details-table {
+          border-collapse: initial;
+        }
+
+        // 公用表格
+        .table {
+
+          > thead,
+          > tbody {
+            > tr,
+            > th {
+              text-indent: 2em;
+
+              > a {
+                text-indent: 0;
+              }
+            }
+          }
+        }
+      }
+
+      // 申请提现模块
+      > .income-apply {
+
+        // 总容器
+        .apply-out {
+          border: 1px solid $gray-xlightest;
+
+          // 顶部账户信息
+          .account-info {
+            height: $gauge * 2.5;
+            line-height: $gauge * 2.5;
+            border-bottom: 1px solid $gray-xlightest;
+
+            h4 {
+              margin: 0;
+              line-height: $gauge * 2.5;
+            }
+
+            a {
+              margin: 0 $gauge/4;
+              margin-bottom: $gauge/5;
+            }
+          }
+
+          // 申请信息表单
+          .apply-form {
+            padding: $gauge * 2 0;
+
+            .sum {
+              margin-top: 0;
+              padding-top: $gauge/4;
+            }
+
+            // 选择账户
+            .account-list {
+
+              > li {
+                cursor: pointer;
+                display: block;
+                float: none;
+                margin-bottom: $gauge / 2;
+                padding: 0 $gauge / 2;
+                height: $gauge * 2;
+                line-height: $gauge * 2;
+                border: 1px solid $gray-xlightest;
+                overflow: hidden;
+                
+                &:hover {
+                  background-color: $gray-lightest;
+
+                }
+
+                > .checked {
+                  display: block;
+                  float: left;
+                  width: 10%;
+                }
+
+                > label {
+                  cursor: pointer;
+                  display: block;
+                  float: left;
+                  width: 90%;
+                }
+
+                &.active {
+                  border: 1px solid $brand-primary;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // 添加提现账户表单
+      .income-account-add {
+
+        .account-add {
+          overflow: hidden;
+          border: 1px solid $gray-xlightest;
+          padding: $gauge * 2;
+        }
+      }
+    }
+
+    // 教师中心/我要开课模块
+    > .lesson {
+
+      // 已开课程列表
+      > .list {
+
+        .lesson-list {
+
+          // 已开课程标题
+          > .list-title {
+            border: 1px solid $gray-xlightest;
+            border-bottom: 0;
+            padding: $gauge/2 $gauge;
+            background-color: $gray-lightsuper;
+
+            // 公用
+            > span {
+              display: inline-block;
+              text-align: center;
+            }
+
+            > .checkall {
+              text-align: left;
+
+              a {
+                margin-left: $gauge / 4;
+              }
+
+              label {
+                margin-bottom: 0;
+
+                > input {
+                  margin-right: $gauge / 2;
+                }
+              }
+            }
+
+            > .course {
+              width: 40%;
+            }
+
+            > .statistics,
+            > .action {
+              width: 18%;
+            }
+          }
+
+          // 已开课程列表内容
+          > .item-list {
+            padding: $gauge;
+            border: 1px solid $gray-xlightest;
+
+            > .item {
+              padding-bottom: $gauge;
+              margin-bottom: $gauge;
+              border-bottom: 1px solid $gray-xlightest;
+              overflow: hidden;
+
+              // 公用
+              > div {
+                display: inline-block;
+                float: left;
+                margin-right: $gauge;
+              }
+
+              > .checkbox {
+                width: $gauge / 4;
+                margin-top: 6%;
+
+                > input {
+                  margin: 0;
+                }
+              }
+
+              > .thumb {
+                min-width: 24%;
+                height: $gauge * 6;
+                overflow: hidden;
+
+                > a {
+                  max-width: $gauge * 11;
+                  display: block;
+
+                  > img {
+                    width: 100%;
+                    height: auto;
+                  }
+                }
+              }
+
+              > .info {
+                width: 30%;
+
+                > .title {
+                  margin-top: 0;
+                  @include text-overflow;
+                }
+
+                > .describe {
+                  @include text-overflow;
+                  color: $gray-light;
+                }
+
+                > .lesson {
+
+                  > .show-lesson {
+                    margin-left: $gauge;
+                    color: $brand-primary;
+                  }
+                }
+
+                > .price {
+                  margin-bottom: 0;
+                  color: $brand-danger;
+                  font-weight: bold;
+                }
+              }
+
+              > .statistics {
+                padding-top: $gauge;
+                width: 12%;
+              }
+
+              > .action {
+                margin-right: 0;
+                padding-top: $gauge * 2;
+              }
+            }
+          }
+        }
+      }
+
+      // 课程信息编辑
+      > .edit {
+        padding: $gauge * 2  0;
+        border: 1px solid $gray-xlightest;
+
+        > .form-horizontal {
+
+          > .form-group {
+
+            select {
+              margin-right: $gauge / 2;
+            }
+
+            &.group-price {
+
+              .form-control {
+                width: 120px;
+              }
+            }
+
+            // 图片上传
+            > .upload-thumb {
+
+              > .upload-file {
+                width: 162px;
+                height: 82px;
+
+                > .thumb {
+                  width: 160px;
+                  height: 80px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // 课程章节编辑模块
+      > .section {
+        padding: $gauge;
+        border: 1px solid $gray-xlightest;
+
+        .chapters {
+          margin-bottom: $grid-gutter-width / 2;
+          counter-increment: chapter;
+          counter-reset: section;
+          overflow: hidden;
+
+          &.sv-helper {
+            transform: translateY(0px);
+            -webkit-transform: translateY(0px);
+            animation: none;
+            cursor: all-scroll;
+            transition: 0s;
+            background-color: $body-bg;
+            border: 1px dashed $gray-lighter;
+            width: auto;
+          }
+
+          // section公共样式
+          .section-add,
+          .section-del,
+          .section-free {
+            display: inline-block;
+          }
+
+          // 添加节按钮
+          .section-add {
+            margin-right: 104px;
+            width: 100px;
+            color: $brand-primary;
+          }
+
+          // 删除按钮
+          .section-del {
+            // margin-left: 0;
+            display: none;
+            color: $brand-danger;
+          }
+
+          .section-open {
+            float: right;
+
+            .icon {
+              display: block;
+              padding: $gauge / 2;
+              width: $gauge * 2;
+              text-align: center;
+              background-color: darken($gray-lightest, 1%);
+              border-radius: $radius;
+
+
+              &:hover {
+                color: $brand-primary;
+              }
+            }
+          }
+
+          // 免费按钮
+          .section-free {
+            cursor: pointer;
+
+            &[disabled] {
+              cursor: not-allowed;
+            }
+
+            > .free-checkbox {
+              display: none;
+            }
+          }
+
+          // 章内容区域
+          > .chapter-title {
+            cursor: all-scroll;
+            padding: $gauge /3  $grid-gutter-width;
+            background-color: $gray-lightsuper;
+            border-radius: $radius;
+
+            // 章计数器
+            &:before {
+              content: "第" counter(chapter) "章";
+              display: inline-block;
+              width: 50px;
+            }
+
+            // 章标题输入
+            .input-title {
+              width: 400px;
+              margin: 0 $gauge/4;
+              @include transition(all .5s);
+              border-radius: $radius;
+            }
+
+            // 节删除按钮触发
+            &:hover {
+
+              > .section-del {
+                display: inline-block;
+              }
+            }
+          }
+
+          // 节内容区域
+          > .section-list {
+
+            > .section {
+              cursor: all-scroll;
+              position: relative;
+              padding: $gauge * 0.75 $gauge / 2;
+              padding-left: $gauge * 2;
+              border-bottom: 1px dashed $gray-lightest;
+              counter-increment: section;
+
+              &.sv-helper {
+                transform: translateY(0px);
+                -webkit-transform: translateY(0px);
+                animation: none;
+                cursor: all-scroll;
+                transition: 0s;
+                background-color: lighten($gray-lightest, 5%);
+                border: 1px dashed $gray-lighter;
+                width: auto;
+              }
+
+              // 节计数器
+              &:before {
+                content: "第"counter(chapter) "." counter(section) "节";
+                display: inline-block;
+                width: 60px;
+              }
+
+              &:last-child {
+                border: 0;
+              }
+
+              // 节删除按钮触发
+              &:hover {
+                background-color: lighten($gray-lightest, 5%);
+
+                > .section-del {
+                  display: inline-block;
+                }
+              }
+
+              // 节标题输入表单
+              > .form-control {
+                width: 300px;
+                margin-left: $gauge/4;
+              }
+
+              > .btn {
+                margin-left: 5px;
+
+                .icon {
+                  // color: $body-bg;
+                }
+              }
+
+              > .section-live {
+                opacity: .7;
+
+                &.active {
+                  opacity: 1;
+                }
+
+                >.icon {
+                  color: $body-bg;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 我的学校
+    > .organization {
+
+      // 队列
+      .organization-list {
+
+        > .list-title {
+          border: 1px solid $gray-xlightest;
+          border-bottom: 0;
+          padding: $gauge / 2 $gauge;
+          background-color: $gray-lightsuper;
+        }
+
+        > .item-list {
+          padding: $gauge;
+          border: 1px solid $gray-xlightest;
+
+          > .item {
+            height: $gauge * 5.5;
+            line-height: $gauge * 4.5;
+            padding-bottom: $gauge;
+            margin-bottom: $gauge;
+            border-bottom: 1px solid $gray-xlightest;
+            overflow: hidden;
+
+            &:hover {
+
+              .media-object {
+                transform: rotate(360deg);
+                transition: 1s;
+              }
+            }
+
+            .logo {
+              position: relative;
+
+              .media-object {
+                width: $gauge * 4.5;
+                border: 5px solid rgba(224, 224, 224, 0.3);
+                background-color: $body-bg;
+                max-width: 100%;
+                transition: 1s;
+              }
+
+              .audit {
+                position: absolute;
+                display: block;
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                background-color: $brand-warning;
+                left: 67px;
+                bottom: 3px;
+                border-radius: 50%;
+                opacity: .9;
+
+                .icon {
+                  display: block;
+                  color: #fff;
+                  font-size: $font-size-h3;
+                }
+              }
+            }
+
+            .refuse-msg {
+              position: relative;
+
+              > .msg {
+                display: block;
+                height: $gauge * 2.5;
+              }
+
+              > .cause {
+                display: block;
+                height: $gauge * 1.5;
+                line-height: $gauge * 1.5;
+              }
+            }
+
+            &:last-child {
+              // border: none;
+              margin-bottom: 0;
+            }
+
+          }
+        }
+      }
+
+      // 加入学校
+      > .join {
+
+        > .prompt {
+          padding: $gauge / 2;
+          border: 1px solid $gray-xlightest;
+          background-color: $gray-lightsuper;
+        }
+
+        > .content {
+          overflow: hidden;
+          padding: $gauge * 2 0;
+          border: 1px solid $gray-xlightest;
+
+          > .join-form {
+            overflow: hidden;
+
+            .user_id_card {
+
+              > .upload-file{
+
+                > .thumb,
+                > input[type='file'] {
+                  @include square(100%);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // 搜索学校
+      > .search {
+
+        > .prompt {
+          padding: $gauge / 2;
+          border: 1px solid $gray-xlightest;
+          background-color: $gray-lightsuper;
+        }
+
+        > .content {
+          overflow: hidden;
+          padding: $gauge * 1.5 27%;
+          border: 1px solid $gray-xlightest;
+
+          > .search-box {
+            position: relative;
+            margin-bottom: $gauge;
+
+            > .input-search {
+              height: $gauge * 1.8;
+              @include radius(0);
+              display: inline-block;
+              width: 80%;
+            }
+
+            > .btn-search {
+              width: 20%;
+              margin-left: -($gauge / 4);
+              display: inline-block;
+              height: $gauge * 1.8;
+              @include radius(0);
+              vertical-align: top;
+            }
+
+            // 联想模块
+            > .suggest-box {
+              width: 80%;
+              box-shadow: none;
+              border-color: #eee;
+              padding: 0;
+
+              > .item {
+
+                > a {
+                  padding: 0 10px;
+                  height: $gauge * 1.5;
+                  line-height: $gauge * 1.5;
+                }
+              }
+            }
+          }
+
+          > .organization-list {
+            min-height: $gauge * 10;
+
+            > .item {
+              padding: 0 $gauge / 2;
+              height: $gauge * 2;
+              margin-bottom: $gauge / 4;
+              list-style: square;
+              line-height: $gauge * 2;
+
+              > a {
+                margin-top: $gauge / 4;
+              }
+            }
+
+            > .page-wrap {
+
+              hr {
+                margin: $gauge / 2 0;
+              }
+            }
+          }
+        }
+      }
+
+      // 添加学校
+      > .add {
+
+        // 进度
+        > .step {
+          overflow: hidden;
+          margin-bottom: $gauge;
+          background-color: $gray-lightsuper;
+
+          > span {
+            float: left;
+            width: 33.3333%;
+            padding: $gauge / 2 0;
+            text-align: center;
+            position: relative;
+
+            &.active {
+              background-color: $brand-primary;
+              color: $body-bg;
+
+              &:after {
+                position: absolute;
+                top: 0px;
+                right: -25px;
+                width: 10px;
+                height: 10px;
+                border: 20px solid #F2F2F2;
+                border-left: 20px solid #1DBA9C;
+                content: "";
+                -webkit-transition: all 0.25s;
+                -moz-transition: all 0.25s;
+                -o-transition: all 0.25s;
+                transition: all 0.25s;
+                z-index: 99;
+              }
+            }
+
+            &:last-child {
+
+              &:after {
+                display: none!important;
+              }
+            }
+          }
+        }
+
+        // 操作区
+        > .content {
+          overflow: hidden;
+
+          // 协议
+          > .agreement {
+            margin-bottom: $gauge;
+            border: 1px solid $gray-xlightest;
+
+            > .inner {
+              max-height: $gauge * 20;
+              overflow-y: scroll;
+              padding: $gauge * 1.5;
+              line-height: 2;
+            }
+
+            > .agree {
+              padding: $gauge / 2 $gauge * 1.5;
+              border-top: 1px solid $gray-xlightest;
+              background-color: $gray-lightsuper;
+
+              > label {
+                margin-bottom: 0;
+                margin-right: $gauge / 2;
+
+                > input {
+                  margin-right: $gauge / 4;
+                }
+              }
+            }
+          }
+
+          // 提交资料表单
+          > .form-school-submit {
+            overflow: hidden;
+            padding: $gauge;
+            border: 1px solid $gray-xlightest;
+
+            h3 {
+              margin-top: $gauge / 2;
+            }
+
+            .checkbox {
+              margin-right: $gauge / 4;
+            }
+
+            .organization_logo,
+            .organization_business_license,
+            .organization_education_qualification,
+            .organization_id_card {
+
+              > .upload-file{
+
+                > .thumb,
+                > input[type='file'] {
+                  @include square(100%);
+                }
+              }
+            }
+          }
+
+          // 成功
+          > .success {
+            overflow: hidden;
+            margin-bottom: $gauge;
+            padding: $gauge;
+            border: 1px solid $gray-xlightest;
+            text-align: center;
+          }
+        }
+      }
+
+      // 管理学校
+      > .manage {
+
+        .tab-content {
+
+          > .tab-pane {
+
+            // 内容区
+            > .content {
+
+              // 修改表单
+              > form {
+                overflow: hidden;
+                padding: $gauge;
+                border: 1px solid $gray-xlightest;
+
+                h3 {
+                  margin-top: $gauge / 2;
+                }
+
+                button {
+                  margin-right: $gauge / 2;
+                }
+
+                .checkbox {
+                  margin-right: $gauge / 4;
+                }
+
+                .alert {
+                  margin-bottom: 0;
+                  border-radius: 0;
+                }
+
+                .alert-danger {
+                  padding: $gauge / 2;
+                  color: $body-bg;
+                }
+
+                .has-success .form-control {
+                  border-color: $gray-lightsuper;
+
+                  &:focus {
+                    border-color: $state-success-border;
+                  }
+                }
+
+                .has-error .form-control {
+                  border-color: $state-danger-border;
+
+                  &:focus {
+                    border-color: $state-danger-border;
+                  }
+                }
+
+                .organization_logo,
+                .organization_business_license,
+                .organization_education_qualification,
+                .organization_id_card {
+
+                  > .upload-file {
+
+                    > .thumb,
+                    > input[type='file'] {
+                      @include square(100%);
+                    }
+                  }
+                }
+              }
+
+              // 邀请老师
+              > .search-box {
+                overflow: hidden;
+                position: relative;
+                border: 1px solid $gray-xlightest;
+                padding: $gauge / 2;
+
+                .teacher-order {
+                  position: relative;
+                  margin-bottom: 0;
+                  background-color: $gray-lightsuper;
+
+                  > ul {
+
+                    &.sort {
+
+                      > li {
+                        float: left;
+
+                        > a {
+                          display: block;
+                          padding: 6px $gauge*0.75;
+                          font-size: $font-size-small + 1;
+
+                          .icon {
+                            margin-left: $gauge / 4;
+                            color: $gray-lighter;
+                          }
+                        }
+
+                        &.active {
+                          background-color: $brand-primary;
+
+                          > a {
+
+                            color: #fff;
+
+                            .icon {
+                              color: #fff;
+                            }
+                          }
+                        }
+                      }
+                    }
+
+                    &.pager {
+                      position: absolute;
+                      top: 0;
+                      right: 0;
+                      margin: 0;
+
+                      > li {
+
+                        a {
+                          padding: 0 $gauge / 2;
+                          margin-right: 4px;
+                          margin-top: 4px;
+                        }
+
+                        > .current {
+                          float: left;
+                          padding: 5px 14px;
+                          border: none;
+                          background: none;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              // 老师列表
+              > .teacher-list {
+                overflow: hidden;
+
+                > .item {
+                  // overflow: hidden;
+                  width: 49%;
+                  height: $gauge * 9;
+                  padding: $gauge;
+                  margin-bottom: $gauge;
+                  border: 1px solid $gray-xlightest;
+
+                  &:hover {
+
+                    .content {
+
+                      .gravatar {
+
+                        .media-object {
+                          transform: rotate(360deg);
+                          transition: 1s;
+                        }
+                      }
+                    }
+                  }
+
+                  > .content {
+                    height: $gauge * 7;
+
+                    > .gravatar {
+                      float: left;
+                      width: $gauge * 4;
+                      height: $gauge * 7.5;
+                      margin-right: $gauge;
+
+                      .media-object {
+                        border: 5px solid rgba(224,224,224,0.6);
+                        transition: 1s;
+                      }
+
+                      > span {
+                        display: block;
+                        text-align: center;
+                      }
+
+                      > .position {
+                        height: $gauge * 1.2;
+                        line-height: $gauge * 1.2;
+                        margin-top: $gauge * 1.4;
+                        color: $body-bg;
+
+                        > a {
+                          color: $body-bg;
+                        }
+                      }
+                    }
+
+                    > .info {
+
+                      > .teacher-name {
+                        position: relative;
+                        margin-bottom: $gauge / 2;
+                        font-size: $font-size-h4;
+
+                        > .action {
+                          @include position(absolute, top 0 right 0);
+                          text-align: right;
+
+                          &:hover {
+
+                            .menu-list {
+                              visibility: visible;
+                              opacity: 1;
+                            }
+                          }
+
+                          .action-btn {
+                            display: block;
+                            padding-right: 5px;
+                            height: $gauge * 1.5;
+                            line-height: $gauge * 1.5;
+                            background-color: $gray-lightsuper;
+
+                            &:hover {
+                              color: $gray-dark;
+                            }
+                          }
+
+                          > .menu-list {
+                            visibility: hidden;
+                            opacity: 0;
+                            width: $gauge * 4;
+                            // text-align: left;
+
+                            > .item {
+
+                              > a {
+                                display: block;
+                                @include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+                                @include button-size($padding-small-vertical, $padding-small-horizontal, $font-size-small, $line-height-small, 0);
+                              }
+
+                              > .delete {
+                                @include button-variant($btn-warning-color, $btn-warning-bg, $btn-warning-border);
+                                @include button-size($padding-small-vertical, $padding-small-horizontal, $font-size-small, $line-height-small, 0);
+                              }
+                            }
+                          }
+                        }
+                      }
+
+                      > .teacher-introduction {
+                          overflow: hidden;
+                          min-height: $gauge * 2;
+                          text-overflow: ellipsis;
+                          display: -webkit-box;
+                          -webkit-line-clamp: 2;
+                          -webkit-box-orient: vertical;
+                      }
+                    }
+                  }
+
+                  &:hover {
+
+                  }
+                }
+              }
+
+              // 公告标题
+              > .announcement-title {
+                padding: $gauge / 2;
+                border: 1px solid $gray-xlightest;
+                border-bottom: none;
+                background-color: $gray-lightsuper;
+              }
+
+              // 公告列表
+              > .announcement-list {
+                margin-bottom: $gauge;
+                border: 1px solid $gray-xlightest;
+
+                > .item {
+                  padding: $gauge / 2;
+                  border-bottom: 1px solid $gray-xlightest;
+
+                  &:last-child{
+                    border: none;
+                  }
+
+                  &.active {
+                    background-color: $gray-lightsuper;
+                  }
+
+                  > .title {
+
+                    > .title-main {
+
+                      > a {
+                        display: block;
+                      }
+                    }
+                  }
+
+                  > .content {
+                    margin-top: $gauge / 2;
+                    padding-top: $gauge / 2;
+                    padding-left: $gauge / 2;
+                    border-top: 1px solid $gray-xlightest;
+                  }
+                }
+              }
+
+              // 模板页
+              > .organization-theme {
+
+                // 模板列表
+                > .theme-list {
+                  overflow: hidden;
+
+                  > .item {
+                    float: left;
+                    margin: $gauge / 2 0;
+
+                    // 春之蓬勃
+                    &.pink {
+                      > .radio-box {
+                        background-color: #159988;
+                        background-image: url($static-file-api + "organization-top-thumb-1.jpg");
+                      }
+                    }
+
+                    // 夏之激昂
+                    &.blue {
+                      > .radio-box {
+                        background-color: #159988;
+                        background-image: url($static-file-api + "organization-top-thumb-3.jpg");
+                      }
+                    }
+
+                    // 秋之萧瑟
+                    &.yellow {
+                      > .radio-box {
+                        background-color: #159988;
+                        background-image: url($static-file-api + "organization-top-thumb-6.jpg");
+                      }
+                    }
+
+                    // 冬之空灵
+                    &.gray {
+                      > .radio-box {
+                        background-color: $gray-lightest;
+                        background-image: url($static-file-api + "organization-top-thumb-8.jpg");
+                      }
+                    }
+
+                    // 生之喜悦
+                    &.green {
+                      > .radio-box {
+                        background-color: $brand-primary;
+                        background-image: url($static-file-api + "organization-top-thumb-2.jpg");
+                      }
+                    }
+
+                    // 爱之漩涡
+                    &.love {
+                      > .radio-box {
+                        background-color: $brand-primary;
+                        background-image: url($static-file-api + "organization-top-thumb-12.jpg");
+                      }
+                    }
+
+                    > .radio-box {
+                      cursor: pointer;
+                      position: relative;
+                      height: $gauge * 9;
+                      width: 100%;
+                      background-repeat: no-repeat;
+                      background-position:center;
+
+                      > img {
+                        z-index: 1;
+                        @include position(absolute, top 0 left 0);
+                      }
+
+                      > .name {
+                        z-index: 2;
+                        @include position(absolute, bottom 0 left 0);
+                        width: 100%;
+                        height: $gauge * 1.5;
+                        line-height: $gauge * 1.5;
+                        background-color: rgba(255,255,255,.8);
+                        text-align: center;
+                      }
+
+                      > .status {
+                        z-index: 9;
+                        display: block;
+                        @include position(absolute, bottom 0 left 0);
+                        @include square(100%);
+
+                        > .success {
+                          display: block;
+                          @include position(absolute, top 0 left 0);
+                          @include square(100%);
+
+                          > .msg {
+                            width: 60%;
+                            height: $gauge * 2.5;
+                            @include radius(3px);
+                            margin-top: 10%;
+                            margin-bottom: $gauge * 0.8;
+                            line-height: $gauge * 2.5;
+                            @include center-block;
+                            background-color: rgba(255,255,255,.8);
+                            text-align: center;
+                            font-size: $font-size-h3;
+                          }
+
+                          > .btn {
+                            position: relative;
+                            @include center-block;
+                            opacity: .8;
+
+                            > .upload-file {
+                              opacity: 0;
+                              @include position(absolute, top 0 left 0);
+                              display: block;
+                              @include square(100%);
+
+                              > .thumb {
+                                @include square(100%);
+                              }
+
+                              > input[type='file'] {
+                                display: block;
+                                @include square(100%);
+                                border: none;
+                              }
+                            }
+                          }
+
+                          > .del-banner {
+                            @include center-block;
+                            text-align: center;
+                            color: $body-bg;
+                          }
+                        }
+
+                        > .hover {
+                          width: 60%;
+                          height: $gauge * 2.5;
+                          @include radius(3px);
+                          margin-top: 20%;
+                          line-height: $gauge * 2.5;
+                          @include center-block;
+                          background-color: rgba(255,255,255,.8);
+                          text-align: center;
+                          font-size: $font-size-h3;
+                        }
+                      }
+
+                      &:hover {
+                        opacity: .9;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 积分
+    > .score {
+
+      .level-icon {
+        position: relative;
+        line-height: 1;
+
+        > .level-id {
+          margin-left: - $gauge / 2;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+
+.section-live-info {
+
+  .form-group {
+    overflow: visible;
+
+    .validation-msg {
+      margin-left: 20px;
+    }
+  }
+
+  .live-at-time {
+
+    .date-picker {
+      position: relative;
+
+      [date-picker-wrapper] {
+        margin: 0 auto;
+        top: 0;
+        left: -30px;
+        background-color: $body-bg;
+        overflow: hidden;
+        border-radius: $radius;
+      }
+
+      input {
+        cursor: pointer;
+        border-radius: $radius;
+        background-color: $gray-xlightsuper;
+      }
+    }
+  }
+
+  .live-duration {
+
+    .time-picker {
+
+      .input-group {
+
+        .hours {
+          border-top-left-radius: $radius;
+          border-bottom-left-radius: $radius;
+        }
+
+        .moments {
+          border-top-right-radius: $radius;
+          border-bottom-right-radius: $radius;
+        }
+      }
+    }
+  }
+}

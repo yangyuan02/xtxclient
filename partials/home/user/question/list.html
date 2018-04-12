@@ -1,0 +1,111 @@
+<div class="box question">
+  <!-- <h3>我的问答</h3> -->
+  <div tabset justified="false" largesize="false">
+    <!-- 我的提问 -->
+    <div tab heading="我的提问（{{ questions.pagination.total || 0 }}）" ng-init="getQuestion()">
+      <p class="text-center text-info no-animation" ng-if="!questions.pagination.total">
+        暂无提出的问题哦，快去<a href="/course" class="text-primary">选课</a>并提问吧
+      </p>
+      <!-- 提问列表 -->
+      <ul class="question-lists no-animation" ng-show="!!questions.pagination.total">
+        <li class="media item slide-top" ng-repeat="question in questions.result">
+          <div class="media-left">
+            <a class="avatar" ng-href="/space/student/{{ $root.user.id }}" target="blank">
+              <img class="img-circle media-object" width="48" 
+                   ng-src="{{ getThumbnail($root.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}" >
+              <h5 class="text-center">{{ $root.user.name | limitTo: 3 }}</h5>
+            </a>
+          </div>
+          <div class="media-body">
+            <div class="content col-xs-10">
+              <!-- 问题内容编辑区域 -->
+              <h5 class="title">{{ question.content }}</h5>
+              <p  class="created">
+                <span class="small created-in">课程：
+                  <a ng-href="/course/{{ question.section.course_id }}/learn/{{ question.section.id }}" 
+                     title="{{ question.section.course.name }}{{ question.section.name }}" 
+                     class="text-primary" 
+                     target="_blank">《{{ question.section.course.name | textOverflow: 20 }}》</a>
+                </span>
+                <span class="small created-at">提问时间：{{ question.created_at | relativeTime }}</span>
+                <span class="small edit">
+                  <a href="" ng-click="editQuestion(this)" >
+                    <i class="icon icon-edit"></i>
+                    <span>编辑</span>
+                  </a>
+                </span>
+                <span class="small del">
+                  <a href="" ng-click="delQuestion(question)" >
+                    <i class="icon icon-remove"></i>
+                    <span>删除</span>
+                  </a>
+                </span>
+              </p>
+            </div>
+            <div class="answer">
+              <h3><a href="/user/question/{{ question.id }}" class="text-primary">{{ question.answer_count }}</a></h3>
+              <p>回答</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <p class="text-center" ng-if="!!questions.pagination.total">
+        <button class="btn btn-default btn-more" 
+                ng-click="getQuestion({ page: questions.pagination.current_page + 1 })" 
+                ng-disabled="questions.pagination.current_page >= questions.pagination.total_page">
+                {{ questions.pagination.current_page >= questions.pagination.total_page ? '没有更多' : '加载更多' }}
+        </button>
+      </p>
+    </div>
+
+    <!-- 我的回答 -->
+    <div tab heading="我的回答（{{ answers.pagination.total || 0 }}）" ng-init="getAnswer()">
+      <p class="text-center no-animation" ng-if="!answers.pagination.total" >
+        暂无给出的答案哦，快去<a href="/course" class="text-primary">选课</a>并回答吧
+      </p>
+
+      <!-- 回答列表 -->
+      <ul class="answer-lists">
+        <li class="media item slide-top" ng-repeat="answer in answers.result">
+          <div class="media-left">
+            <a ng-href="/space/student/{{ answer.question.user.id }}" target="blank">
+              <img class="img-circle media-object" width="48" 
+                   ng-src="{{ getThumbnail(answer.question.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+              <h5 class="text-center">{{ answer.question.user.name | limitTo: 3 }}</h5>
+            </a>
+          </div>
+          <div class="media-body">
+            <div class="content">
+              <p class="title">{{ answer.question.content }}</p>
+              <p class="answer">我的回答：{{ answer.content }}</p>
+              <p class="created">
+                <span class="small created-in">
+                  <span>课程：</span>
+                  <a target="_blank" class="text-primary" 
+                     href="/course/{{ answer.section.course.id }}/learn/{{ answer.section.id }}" >《{{ answer.section.course.name }}》</a>
+                </span>
+                <span class="small created-at">提问时间：{{ answer.question.created_at | relativeTime }}</span>
+                <span class="small caeated-all">
+                  <a ng-href="/user/question/{{ answer.pid }}">其他回答（ {{ answer.question.answer_count }} ）</a>
+                </span>
+                <span class="small del pull-right">
+                  <a href="" ng-click="delAnswer(answer)" >
+                    <i class="icon icon-remove"></i>
+                    <span>删除</span>
+                  </a>
+                </span>
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <p class="text-center" ng-if="!!answers.pagination.total">
+        <button class="btn btn-default btn-more" 
+                ng-click="getAnswer({ page: answers.pagination.current_page + 1 })" 
+                ng-disabled="answers.pagination.current_page >= answers.pagination.total_page">
+                {{ answers.pagination.current_page >= answers.pagination.total_page ? '没有更多' : '加载更多' }}
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

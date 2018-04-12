@@ -1,0 +1,368 @@
+<div class="tree-list">
+  <ul class="title">
+    <li class="checkbox">
+      <label>
+        <input class="check-all" 
+               type="checkbox"
+               ng-model="check_all"
+               ng-change="permission_list.result.setCheck(check_all, 'children')">
+      </label>
+    </li>
+    <li class="switch">展开</li>
+    <li class="type">类型</li>
+    <li class="slug" ng-if="false">权限标识</li>
+    <li class="name">权限名称</li>
+    <li class="description">权限描述</li>
+    <li class="menu">对应菜单</li>
+    <li class="api">对应API</li>
+    <li class="route">前端路径</li>
+    <li class="status">状态</li>
+    <li class="action">操作</li>
+  </ul>
+  <ul class="item-list" 
+      sv-root 
+      sv-on-sort="permissionAction.sort($item, $partFrom, $partTo, $indexFrom, $indexTo)"
+      sv-part="permission_list.result">
+    <li class="text-center no-animation" ng-if="!permission_list.result.length">
+      <div class="list-loader" 
+        ng-if="permission_list.pagination.total == undefined"
+        ng-include="'partials/admin/layout/loading.html'">
+      </div>
+      <div class="list-empty" 
+        ng-if="permission_list.pagination.total == 0" 
+        ng-include="'partials/admin/layout/empty.html'">
+      </div>
+    </li>
+    
+    <li class="item slide-down" ng-repeat="permission in permission_list.result | orderBy: sort" sv-element>
+      <ul class="item-content" sv-handle ng-class="{ 'disabled': !permission.x_status }">
+        <li class="checkbox">
+          <label>
+            <input type="checkbox" 
+                   name="permission[{{ $index }}]" 
+                   ng-model="permission.checked"
+                   ng-change="permission.children.setCheck(permission.checked, 'children')">
+          </label>
+        </li>
+        <li class="switch">
+          <a href="" 
+             ng-init="menu_open = false"
+             ng-click="menu_open = !menu_open" 
+             ng-show="permission.children.length">
+            <i class="icon" ng-class="{false: 'icon-foldplus', true: 'icon-foldminus'}[menu_open]"></i>
+          </a>
+        </li>
+        <li class="type">
+          <span ng-if="permission.type == 1" class="text-info">
+            <i class="icon icon-menu"></i>&nbsp;&nbsp;菜单</span>
+          <span ng-if="permission.type == 2" class="text-success">
+            <i class="icon icon-folder"></i>&nbsp;&nbsp;分组</span>
+          <span ng-if="permission.type == 3" class="text-warning">
+            <i class="icon icon-page"></i>&nbsp;&nbsp;页面</span>
+          <span ng-if="permission.type == 4" class="text-danger">
+            <i class="icon icon-group"></i>&nbsp;&nbsp;功能</span>
+        </li>
+        <li class="slug" ng-if="false">{{ permission.slug }}</li>
+        <li class="name">{{ permission.name }}</li>
+        <li class="description">{{ permission.description || '暂无描述' }}</li>
+        <li class="menu">
+          <span ng-if="!permission.display_name">无</span>
+          <a ng-href="{{ permission.url }}" 
+             ng-if="!!permission.display_name"
+             target="_blank">{{ permission.display_name }}</a>
+        </li>
+        <li class="api">
+          <span ng-show="permission.grant_apis.length">
+            <a href=""
+               ng-click="permissionAction.api(permission.grant_apis)"
+               class="text-info">[ 查看 ]</a>
+            <a class="text-primary"
+               ng-href="/user/manage/permission/{{ permission.id }}"
+               ng-if="page_permission['user.manage.permission.api']">[ 编辑 ]</a>
+          </span>
+          <span ng-show="!permission.grant_apis.length" class="text-muted">[ 暂无 ]
+            <a ng-href="/user/manage/permission/{{ permission.id }}"
+               ng-if="page_permission['user.manage.permission.api']">[ 添加 ]</a>
+          </span>
+        </li>
+        <li class="route">{{ permission.url || '无' }}</li>
+        <li class="status">
+          <span class="text-success no-animation" ng-if="permission.x_status">正常</span>
+          <span class="text-danger no-animation" ng-if="!permission.x_status">已禁用</span>
+        </li>
+        <li class="action">
+          <a href=""
+             class="text-info" 
+             ng-show="page_permission['user.manage.permission.edit']"
+             ng-click="permissionAction.edit({ modal: true, permission: this })" >[ 编辑 ]</a>
+          <a href=""
+             class="text-warning no-animation" 
+             ng-show="!!permission.x_status" 
+             ng-if="page_permission['user.manage.permission.batch']"
+             ng-click="permissionAction.disable({ batch: false, permission: this })" >[ 禁用 ]</a>
+          <a href=""
+             class="text-success no-animation" 
+             ng-show="!permission.x_status" 
+             ng-if="page_permission['user.manage.permission.batch']"
+             ng-click="permissionAction.enable({ batch: false, permission: this })" >[ 启用 ]</a>
+          <a href="" class="text-danger" 
+             ng-if="page_permission['user.manage.permission.del']"
+             ng-click="permissionAction.del({ batch: false, permission: this })" >[ 删除 ]</a>
+        </li>
+      </ul>
+
+      <div class="item-children slide-down" ng-show="menu_open">
+        <ul class="item-list" 
+            sv-part="permission.children"
+            sv-root 
+            sv-on-sort="permissionAction.sort($item, $partFrom, $partTo, $indexFrom, $indexTo)">
+          <li class="item" ng-repeat="permission in permission.children | orderBy: sort" sv-element>
+            <ul class="item-content" sv-handle ng-class="{ 'disabled': !permission.x_status }">
+              <li class="checkbox">
+                <label>
+                  <input type="checkbox" 
+                         name="permission[{{ $index }}]" 
+                         ng-model="permission.checked"
+                         ng-change="permission.children.setCheck(permission.checked, 'children')">
+                </label>
+              </li>
+              <li class="switch">
+                <a href="" 
+                   ng-init="menu_open = false"
+                   ng-click="menu_open = !menu_open" 
+                   ng-show="permission.children.length">
+                  <i class="icon" ng-class="{false: 'icon-foldplus', true: 'icon-foldminus'}[menu_open]"></i>
+                </a>
+              </li>
+              <li class="type">
+                <span ng-if="permission.type == 1" class="text-info">
+                  <i class="icon icon-menu"></i>&nbsp;&nbsp;菜单
+                </span>
+                <span ng-if="permission.type == 2" class="text-success">
+                  <i class="icon icon-folder"></i>&nbsp;&nbsp;分组
+                </span>
+                <span ng-if="permission.type == 3" class="text-warning">
+                  <i class="icon icon-page"></i>&nbsp;&nbsp;页面
+                </span>
+                <span ng-if="permission.type == 4" class="text-danger">
+                  <i class="icon icon-group"></i>&nbsp;&nbsp;功能
+                </span>
+              </li>
+              <li class="slug" ng-if="false">{{ permission.slug }}</li>
+              <li class="name">{{ permission.name }}</li>
+              <li class="description">{{ permission.description }}</li>
+              <li class="menu">{{ permission.display_name }}</li>
+              <li class="api">
+                <span ng-show="permission.grant_apis.length">
+                  <a href=""
+                     ng-click="permissionAction.api(permission.grant_apis)"
+                     class="text-info">[ 查看 ]</a>
+                  <a class="text-primary"
+                     ng-href="/user/manage/permission/{{ permission.id }}"
+                     ng-if="page_permission['user.manage.permission.api']">[ 编辑 ]</a>
+                </span>
+                <span ng-show="!permission.grant_apis.length" class="text-muted">[ 暂无 ]
+                  <a ng-href="/user/manage/permission/{{ permission.id }}"
+                     ng-if="page_permission['user.manage.permission.api']">[ 添加 ]</a>
+                </span>
+              </li>
+              <li class="route">{{ permission.url }}</li>
+              <li class="status">
+                <span class="text-success no-animation" ng-if="permission.x_status">正常</span>
+                <span class="text-danger no-animation" ng-if="!permission.x_status">已禁用</span>
+              </li>
+              <li class="action">
+                <a href=""
+                   class="text-info" 
+                   ng-show="page_permission['user.manage.permission.edit']"
+                   ng-click="permissionAction.edit({ modal: true, permission: this })" >[ 编辑 ]</a>
+                <a href=""
+                   class="text-warning no-animation" 
+                   ng-show="!!permission.x_status" 
+                   ng-if="page_permission['user.manage.permission.batch']"
+                   ng-click="permissionAction.disable({ batch: false, permission: this })" >[ 禁用 ]</a>
+                <a href=""
+                   class="text-success no-animation" 
+                   ng-show="!permission.x_status" 
+                   ng-if="page_permission['user.manage.permission.batch']"
+                   ng-click="permissionAction.enable({ batch: false, permission: this })" >[ 启用 ]</a>
+                <a href="" class="text-danger" 
+                   ng-if="page_permission['user.manage.permission.del']"
+                   ng-click="permissionAction.del({ batch: false, permission: this })" >[ 删除 ]</a>
+              </li>
+            </ul>
+
+            <!-- 三级项页面 -->
+            <div class="item-children slide-down" ng-show="menu_open">
+              <ul class="item-list" 
+                  sv-part="permission.children"
+                  sv-root 
+                  sv-on-sort="permissionAction.sort($item, $partFrom, $partTo, $indexFrom, $indexTo)">
+                <li class="item" ng-repeat="permission in permission.children | orderBy: sort" sv-element>
+                  <ul class="item-content" sv-handle ng-class="{ 'disabled': !permission.x_status }">
+                    <li class="checkbox">
+                      <label>
+                        <input type="checkbox" 
+                               name="permission[{{ $index }}]" 
+                               ng-model="permission.checked"
+                               ng-change="permission.children.setCheck(permission.checked, 'children')">
+                      </label>
+                    </li>
+                    <li class="switch">
+                      <a href="" 
+                         ng-init="menu_open = false"
+                         ng-click="menu_open = !menu_open" 
+                         ng-show="permission.children.length">
+                        <i class="icon" ng-class="{false: 'icon-foldplus', true: 'icon-foldminus'}[menu_open]"></i>
+                      </a>
+                    </li>
+                    <li class="type">
+                      <span ng-if="permission.type == 1" 
+                            class="text-info">
+                        <i class="icon icon-menu"></i>&nbsp;&nbsp;菜单
+                      </span>
+                      <span ng-if="permission.type == 2" 
+                            class="text-success">
+                        <i class="icon icon-folder"></i>&nbsp;&nbsp;分组
+                      </span>
+                      <span ng-if="permission.type == 3" 
+                            class="text-warning">
+                        <i class="icon icon-page"></i>&nbsp;&nbsp;页面
+                      </span>
+                      <span ng-if="permission.type == 4" 
+                            class="text-danger">
+                        <i class="icon icon-group"></i>&nbsp;&nbsp;功能
+                      </span>
+                    </li>
+                    <li class="slug" ng-if="false">{{ permission.slug }}</li>
+                    <li class="name">{{ permission.name }}</li>
+                    <li class="description">{{ permission.description }}</li>
+                    <li class="menu">
+                      <a ng-href="{{ permission.url }}" target="_blank">{{ permission.display_name }}</a>
+                    </li>
+                    <li class="api">
+                      <span ng-show="permission.grant_apis.length">
+                        <a href=""
+                           ng-click="permissionAction.api(permission.grant_apis)"
+                           class="text-info">[ 查看 ]</a>
+                        <a class="text-primary"
+                           ng-href="/user/manage/permission/{{ permission.id }}"
+                           ng-if="page_permission['user.manage.permission.api']">[ 编辑 ]</a>
+                      </span>
+                      <span ng-show="!permission.grant_apis.length" class="text-muted">[ 暂无 ]
+                        <a ng-href="/user/manage/permission/{{ permission.id }}"
+                           ng-if="page_permission['user.manage.permission.api']">[ 添加 ]</a>
+                      </span>
+                    </li>
+                    <li class="route">{{ permission.url }}</li>
+                    <li class="status">
+                      <span class="text-success no-animation" ng-if="permission.x_status">正常</span>
+                      <span class="text-danger no-animation" ng-if="!permission.x_status">已禁用</span>
+                    </li>
+                    <li class="action">
+                      <a href=""
+                         class="text-info" 
+                         ng-show="page_permission['user.manage.permission.edit']"
+                         ng-click="permissionAction.edit({ modal: true, permission: this })" >[ 编辑 ]</a>
+                      <a href=""
+                         class="text-warning no-animation" 
+                         ng-show="!!permission.x_status" 
+                         ng-if="page_permission['user.manage.permission.batch']"
+                         ng-click="permissionAction.disable({ batch: false, permission: this })" >[ 禁用 ]</a>
+                      <a href=""
+                         class="text-success no-animation" 
+                         ng-show="!permission.x_status" 
+                         ng-if="page_permission['user.manage.permission.batch']"
+                         ng-click="permissionAction.enable({ batch: false, permission: this })" >[ 启用 ]</a>
+                      <a href="" class="text-danger" 
+                         ng-if="page_permission['user.manage.permission.del']"
+                         ng-click="permissionAction.del({ batch: false, permission: this })" >[ 删除 ]</a>
+                    </li>
+                  </ul>
+
+                  <div class="item-children slide-down" ng-show="menu_open">
+                    <ul class="item-list" 
+                        sv-part="permission.children"
+                        sv-root 
+                        sv-on-sort="permissionAction.sort($item, $partFrom, $partTo, $indexFrom, $indexTo)">
+                      <li class="item" 
+                          ng-repeat="permission in permission.children | orderBy: sort" sv-element>
+                        <ul class="item-content" sv-handle ng-class="{ 'disabled': !permission.x_status }">
+                          <li class="checkbox">
+                            <label>
+                              <input type="checkbox" 
+                                     name="permission[{{ $index }}]" 
+                                     ng-model="permission.checked"
+                                     ng-change="permission.setCheck(permission.checked)">
+                            </label>
+                          </li>
+                          <li class="switch"></li>
+                          <li class="type">
+                            <span ng-if="permission.type == 1" class="text-info">
+                              <i class="icon icon-menu"></i>&nbsp;&nbsp;菜单
+                            </span>
+                            <span ng-if="permission.type == 2" class="text-success">
+                              <i class="icon icon-folder"></i>&nbsp;&nbsp;分组
+                            </span>
+                            <span ng-if="permission.type == 3" class="text-warning">
+                              <i class="icon icon-page"></i>&nbsp;&nbsp;页面
+                            </span>
+                            <span ng-if="permission.type == 4" class="text-danger">
+                              <i class="icon icon-group"></i>&nbsp;&nbsp;功能
+                            </span>
+                          </li>
+                          <li class="slug" ng-if="false">{{ permission.slug }}</li>
+                          <li class="name">{{ permission.name }}</li>
+                          <li class="description">{{ permission.description }}</li>
+                          <li class="menu">{{ permission.display_name || '无' }}</li>
+                          <li class="api">
+                            <span ng-show="permission.grant_apis.length">
+                              <a href=""
+                                 ng-click="permissionAction.api(permission.grant_apis)"
+                                 class="text-info">[ 查看 ]</a>
+                              <a class="text-primary"
+                                 ng-href="/user/manage/permission/{{ permission.id }}"
+                                 ng-if="page_permission['user.manage.permission.api']">[ 编辑 ]</a>
+                            </span>
+                            <span ng-show="!permission.grant_apis.length" class="text-muted">[ 暂无 ]
+                              <a ng-href="/user/manage/permission/{{ permission.id }}"
+                                 ng-if="page_permission['user.manage.permission.api']">[ 添加 ]</a>
+                            </span>
+                          </li>
+                          <li class="route">{{ permission.url || '无' }}</li>
+                          <li class="status">
+                            <span class="text-success no-animation" ng-if="permission.x_status">正常</span>
+                            <span class="text-danger no-animation" ng-if="!permission.x_status">已禁用</span>
+                          </li>
+                          <li class="action">
+                            <a href=""
+                               class="text-info" 
+                               ng-show="page_permission['user.manage.permission.edit']"
+                               ng-click="permissionAction.edit({ modal: true, permission: this })" >[ 编辑 ]</a>
+                            <a href=""
+                               class="text-warning no-animation" 
+                               ng-show="!!permission.x_status" 
+                               ng-if="page_permission['user.manage.permission.batch']"
+                               ng-click="permissionAction.disable({ batch: false, permission: this })" >[ 禁用 ]</a>
+                            <a href=""
+                               class="text-success no-animation" 
+                               ng-show="!permission.x_status" 
+                               ng-if="page_permission['user.manage.permission.batch']"
+                               ng-click="permissionAction.enable({ batch: false, permission: this })" >[ 启用 ]</a>
+                            <a href="" class="text-danger" 
+                               ng-if="page_permission['user.manage.permission.del']"
+                               ng-click="permissionAction.del({ batch: false, permission: this })" >[ 删除 ]</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>

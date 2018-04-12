@@ -1,0 +1,34 @@
+<div class="page-list" ng-init="categoryAction.getLists()">
+  <div class="page-title">
+    <h3>{{ category_info.title }}({{ category_list.result.children.length || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+        <button 
+          class="btn btn-sm btn-success"
+          ng-click="categoryAction.add({ modal: true, category: this, pid: category_list.result.id })"
+          ng-if="page_permission['course.manage.category.add'] || page_permission['organization.manage.category.add'] || page_permission['article.manage.category.add']">新增</button>
+        <button 
+          class="btn btn-sm btn-warning"
+          ng-click="categoryAction.disable({ batch: true })"
+          ng-disabled="!category_list.result.children.checked().length"
+          ng-if="page_permission['course.manage.category.batch'] || page_permission['organization.manage.category.batch'] || page_permission['article.manage.category.batch']">禁用</button>
+        <button 
+          class="btn btn-sm btn-success"
+          ng-click="categoryAction.enable({ batch: true })"
+          ng-disabled="!category_list.result.children.checked().length"
+          ng-if="page_permission['course.manage.category.batch'] || page_permission['organization.manage.category.batch'] || page_permission['article.manage.category.batch']">启用</button>
+        <button 
+          class="btn btn-sm btn-danger" 
+          ng-click="categoryAction.del({ batch: true })"
+          ng-if="page_permission['course.manage.category.del'] || page_permission['organization.manage.category.del'] || page_permission['course.manage.category.del']"
+          ng-disabled="!category_list.result.children.checked().length">删除</button>
+        <!-- <a ng-href="course/manage/category/list/{{ category_list.result.pid }}"
+           ng-disabled="category_list.result.id == 0" 
+           class="btn btn-sm btn-default">返回上级</a> -->
+    </div>
+  </div>
+  <div class="page-content">
+    <div ng-include="'partials/admin/category/manage/category-list.html'" include-replace></div>
+  </div>
+</div>

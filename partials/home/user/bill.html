@@ -1,0 +1,78 @@
+<div class="box bill" ng-init="billInit()">
+  <div class="bill-filter col-xs-12">
+    <div class="date-scope col-xs-7">
+    <form name="bill_date" ng-submit="getBill({ start: billDates.start._d, end: billDates.end._d })">
+      <span>选择日期：</span>
+      <div class="date-picker">
+        <input date-time 
+               ng-model="billDates.start" 
+               min-date="billDates.min" 
+               max-date="billDates.max" 
+               view="date" 
+               min-view="date" 
+               format="YYYY年MM月DD日" 
+               class="form-control input-sm inline" 
+               required ng-required="true">
+      </div>
+      <span>- </span>
+      <div class="date-picker">
+        <input date-time 
+               ng-model="billDates.end" 
+               min-date="billDates.min" 
+               max-date="billDates.max" 
+               view="date" 
+               min-view="date" 
+               format="YYYY年MM月DD日" 
+               class="form-control input-sm inline" 
+               required ng-required="true">
+      </div>
+      <button class="btn btn-primary search-btn">搜索</button>
+    </form>
+    </div>
+    <div class="date-check col-xs-5 text-right">
+      <input type="radio" id="J_date_today" name="dateScope" ng-click="getScopeBill('d')">
+      <label for="J_date_today" >今天</label>
+      <input type="radio" id="J_date_week" name="dateScope" ng-click="getScopeBill('w')" checked>
+      <label for="J_date_week">最近七天</label>
+      <input type="radio" id="J_date_month" name="dateScope" ng-click="getScopeBill('M')">
+      <label for="J_date_month" >一个月</label>
+      <input type="radio" id="J_date_trimester" name="dateScope" ng-click="getScopeBill('Q')">
+      <label for="J_date_trimester" >三个月</label>
+      <input type="radio" id="J_date_year" name="dateScope" ng-click="getScopeBill('y')">
+      <label for="J_date_year" >一年</label>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th width="30%">交易时间</th>
+        <th width="40%">消费详情</th>
+        <th width="30%">交易金额（元）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="bill in bills.result | limitTo: 13" class="slide-top">
+        <td>{{ bill.created_at }}</td>
+        <td>{{ bill.detail }}</td> 
+        <td>
+          <span class="danger">{{ bill.amount }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="text-center text-info no-animation" ng-if="!bills.pagination.total">此时段无账单数据</p>
+  <div class="pagenavi" ng-if="!!bills.pagination.total">
+    <div class="page-wrap">
+      <div pagination 
+           total-items="bills.pagination.total" 
+           items-per-page="bills.pagination.per_page" 
+           ng-model="bills.pagination.current_page" 
+           max-size="maxSize" 
+           class="pagination-sm" 
+           boundary-links="true" 
+           rotate="false" 
+           ng-change="getBill({ page: bills.pagination.current_page })">
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,122 @@
+<div class="config-manage" ng-controller="ConfigController">
+  <div class="col-xs-12">
+    <form class="form-field" 
+          role="form" 
+          method="POST" 
+          ng-init="config = $root.config_edit.data.config">
+      <div class="form-group"
+           ng-switch="$root.config_edit.option">
+
+        <!-- 推荐学校 -->
+        <div ng-switch-when="organization">
+          <label class="control-label">已推荐学校</label>
+          <div class="control-group">
+            <ul class="item-list clearfix"
+                sv-root 
+                sv-on-sort="categoryAction.sort({ item: $item, partFrom: $partFrom, partTo: $partTo, indexFrom: $indexFrom, indexTo: $indexTo })"
+                sv-part="category_list.result.children">
+              <li class="item"
+                  ng-repeat="config in config.organization">
+                <a href="" 
+                   ng-click="indexAction.remove({ option: 'organization', config: this })">{{ config.name }}<span class="cover"><i class="icon icon-remove"></i></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- 学校筛选 -->
+          <div class="form-search clearfix">
+            <label class="pull-left control-label">推荐学校</label>
+            <input type="text" 
+                   id="organization" 
+                   class="pull-left form-control input-sm input-40" 
+                   name="organization" 
+                   placeholder="请输入学校搜索关键词" 
+                   autocomplete="off" 
+                   ng-model="search.keyword" 
+                   typeahead="keyword.id as keyword.name for keyword in indexAction.search({ type: 'organization', keyword: $viewValue })"
+                   typeahead-on-select="indexAction.searchSelect({ type: 'organization', item: $item, model: $model, label: $label, event: $event })"
+                   typeahead-template-url="customTemplate.html">
+          </div>
+        </div>
+
+        <!-- 推荐分类 -->
+        <div ng-switch-when="category">
+          <label class="control-label">已推荐分类</label>
+          <div class="control-group">
+            <ul class="item-list clearfix">
+              <li class="item"
+                  ng-repeat="config in config.sub_category">
+                <a href="" 
+                   ng-click="indexAction.remove({ option: 'category', config: this })">{{ config.name }}<span class="cover"><i class="icon icon-remove"></i></span></a>
+              </li>
+            </ul>
+          </div>
+          <!-- 分类筛选 -->
+          <div class="form-search" ng-init="indexAction.getCategories()">
+            <div class="control-group selects">
+              <div related-select 
+                   selects="$root.categories" 
+                   is-edit="false" 
+                   select-change="indexAction.selectChange">
+              </div>
+              <ul class="category-selects">
+                <li ng-repeat="(key, value) in $root.select_categories">
+                  <label for="category_item_{{ value.id }}">
+                    <input type="checkbox" 
+                           id="category_item_{{ value.id }}" 
+                           ng-model="is_selected"
+                           ng-click="indexAction.categorySelect({ category: this })"> {{ value.name }}
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 推荐课程 -->
+        <div ng-switch-when="course">
+          <label class="control-label">已推荐课程</label>
+          <div class="control-group">
+            <ul class="item-list clearfix">
+              <li class="item"
+                  ng-repeat="config in config.course">
+                <a href="" 
+                   ng-click="indexAction.remove({ option: 'course', config: this })">{{ config.name }}<span class="cover"><i class="icon icon-remove"></i></span></a>
+              </li>
+            </ul>
+          </div>
+          <div class="form-search clearfix">
+            <label class="pull-left control-label">推荐课程</label>
+            <input type="text" 
+                   id="course" 
+                   class="pull-left form-control input-sm input-40" 
+                   name="course" 
+                   placeholder="请输入课程搜索关键词" 
+                   autocomplete="off" 
+                   ng-model="search.keyword" 
+                   typeahead="keyword.id as keyword.name for keyword in indexAction.search({ type: 'course', keyword: $viewValue })"
+                   typeahead-on-select="indexAction.searchSelect({ type: 'course', item: $item, model: $model, label: $label, event: $event })"
+                   typeahead-template-url="customTemplate.html">
+          </div>
+        </div>
+
+        <script type="text/ng-template" id="customTemplate.html">
+          <a>
+            <span ng-bind-html="match.label | typeaheadHighlight:query"></span>
+            {{ match.name }}
+            <span class="pull-right"><i class="icon icon-add"></i>加入推荐</span>
+          </a>
+        </script>
+
+        <input type="text"
+               class="hidden"
+               name="config"
+               ng-model="config">
+        <div class="control-action text-center">
+          <button class="btn btn-primary" 
+                  ng-click="indexAction.manage({ option: $root.config_edit.option, modal: false })">保存设置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="box question" ng-init="getQAdetail()">
+  <div class="qa-detail">
+    <!-- 问题模块 -->
+    <div class="media question-answer">
+      <div class="item">
+      <div class="media-left">
+        <a ng-href="/space/student/{{ questionAnswer.question[0].user.id }}">
+          <img class="img-circle media-object" width="48" 
+               ng-src="{{ getThumbnail(questionAnswer.question[0].user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+          <h5 class="text-center">{{ questionAnswer.question[0].user.name }}</h5>
+        </a>
+      </div>
+      <div class="media-body">
+        <div class="content col-xs-10">
+          <h4 class="title">{{ questionAnswer.question[0].content || '......' }}</h4>
+          <p class="created small clearfix">
+            <span class="created-at pull-left">提问时间：{{ questionAnswer.question[0].created_at | relativeTime }}</span>
+            <span class="created-in pull-left">
+              <span>课程：</span>
+              <a href="/course/{{ questionAnswer.question[0].section.course.id }}/learn/{{ questionAnswer.question[0].section.id }}" 
+                 class="text-primary" target="_blank">《{{ questionAnswer.question[0].section.course.name || '...' }}》</a>
+            </span>
+            <span class="pull-left">浏览：{{ questionAnswer.question[0].browse_count || 0 }}</span>
+          </p>
+        </div>
+        <div class="answer">
+          <h3 class="text-primary">{{ questionAnswer.total }}</h3>
+          <p>回答</p>
+        </div>
+      </div>
+      </div>
+    </div>
+    <h4 class="text-dark">{{ questionAnswer.answers.length ? '共有' + questionAnswer.answers.length + '条回答' : '暂无回答' }}</h4>
+    <hr>
+    <!-- 回答模块队列 -->
+    <ul class="answer-lists">
+      <!-- 子队列 -->
+      <li class="media item slide-top" ng-repeat="answer in questionAnswer.answers">
+        <div class="media-left">
+          <a ng-href="/space/student/{{ answer.user.id }}">
+            <img class="img-circle media-object" width="48" 
+                 ng-src="{{ getThumbnail(answer.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+            <h5 class="text-center">{{ answer.user.name | textOverflow: 4 }}</h5>
+          </a>
+        </div>
+        <div class="media-body">
+          <div class="content">
+            <p class="answer">{{ answer.content }}</p>
+            <div class="created">
+              <span class="small created-at">回复时间：{{ answer.created_at | relativeTime }}</span>
+              <span class="small col-xs-offset-1" ng-if="answer.user.id != $root.user.id">
+                <a href="" ng-click="replyAnswer(answer)">
+                  <i class="icon icon-edit"></i>
+                  <span>回复答案</span>
+                </a>
+              </span>
+            </div>
+          </div>
+          <!-- 二级嵌套 -->
+          <ul class="answer-lists">
+            <li class="media item" ng-repeat="answers in answer.children">
+              <div class="media-left">
+                <a ng-href="/space/student/{{ answers.user.id }}">
+                  <img class="img-circle media-object" width="48"
+                       ng-src="{{ getThumbnail(answers.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                  <h5 class="text-center small">{{ answers.user.name | textOverflow: 4 }}</h5>
+                </a>
+              </div>
+              <div class="media-body">
+                <div class="content">
+                  <p class="answer">{{ answers.content }}</p>
+                  <p class="created">
+                    <span class="small created-at">回复时间：{{ answers.created_at | relativeTime }}</span>
+                  </p>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+    <hr ng-if="answers.length">
+    <div class="text-center">
+      <hr ng-if="questionAnswer.answers.length">
+      <button ng-click="getQuestionAnswer()" 
+              class="btn btn-default btn-more" 
+              ng-disabled="questionAnswer.next_page >= questionAnswer.last_page">{{ questionAnswer.next_page >= questionAnswer.last_page ? '没有更多' : '加载更多' }}</button>
+    </div>
+  </div>
+</div>

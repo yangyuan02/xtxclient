@@ -1,0 +1,353 @@
+<div class="student-index" ng-init="getStudentInfo()">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+
+        <!-- 个人信息 -->
+        <div class="student-info" ng-if="!!student.info">
+          <div class="media col-xs-9">
+            <div class="media-left">
+              <img class="media-object img-circle" 
+                   ng-src="{{ getThumbnail(student.info.gravatar, 'course', { width: 115, height: 115 }) }}" width="115">
+            </div>
+            <div class="media-body">
+              <h3 class="clearfix title"><strong>{{ student.info.name }}</strong></h3>
+              <p>{{ student.info.profile.slogan }}</p>
+              <div class="level">等级：
+                <div class="progress">
+                  <div class="progress-bar" 
+                       role="progressbar" 
+                       aria-valuenow="0" 
+                       aria-valuemin="0" 
+                       aria-valuemax="100" 
+                       ng-style="{ 'width': student.info.profile.level_id + '%'}">
+                  </div>
+                </div>{{ student.info.profile.level_id }}级
+              </div>
+              <div class="medals">勋章：
+                <span class="text-info" ng-if="!student.info.profile.medals">暂无勋章</span>
+                <ul class="medals">
+                  <li ng-repeat="medal in student.info.profile.medals">勋章</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-3 pull-right text-center">
+            <h3 class="clearfix"></h3>
+            <h2 class="text-primary">{{ student.info.profile.study_duration | toHHMMSS : 'HHMM' : '小时' : '分钟' }}</h2>
+            <span>累计学习时长</span>
+          </div>
+        </div>
+
+        <!-- TAB区域 -->
+        <div tabset justified="true" largesize="true" class="student-tab">
+          <div tab heading="TA的课程（{{ student.courses.pagination.total || 0 }}）" ng-init="getStudentCourses({})">
+            <!-- 课程列表 -->
+            <div class="student-course">
+              <!-- 加载中 & 为空 -->
+              <div class="err-msg no-animation" ng-if="!student.courses.pagination.total">
+                <div class="text-info no-animation" ng-if="student.courses.pagination.total == undefined">
+                  <div class="loader">
+                    <p><img src="images/loader.svg" width="48" height="48"></p>
+                     课程正在努力加载中...
+                  </div>
+                </div>
+                <div class="text-info no-animation" ng-if="student.courses.pagination.total == 0">
+                  <div class="empty">
+                    <p><i class="icon icon-warning"></i></p>
+                    暂无相关学习记录
+                  </div>
+                </div>
+              </div>
+              <!-- 学生课程列表 -->
+              <div class="course-lists clearfix no-animation" ng-if="!!student.courses.pagination.total">
+                <div class="col-xs-3 slide-top" ng-repeat="course in student.courses.result | limitTo : 12">
+                  <div class="item">
+                    <a ng-href="/course/{{ course.course_id }}" class="pic" target="_blank">
+                      <img ng-src="{{ getThumbnail(course.thumb, 'course', { width: 500, height: 300 }) }}">
+                      <div class="mask">
+                        <span class="play"><i class="icon icon-play"></i></span>
+                      </div>
+                    </a>
+                    <div class="organization">
+                      <a ng-href="/organization/{{ course.organization_id }}" target="_blank" class="logo">
+                        <img ng-src="{{ getThumbnail(course.organization_logo, 'logo', { width: 45, height: 45 }) }}" width="45">
+                      </a>
+                    </div>
+                    <div class="info">
+                      <h4 class="name">
+                        <a ng-href="/course/{{ course.course_id }}" target="_blank">
+                          <span class="text-danger" ng-if="!!course.course.is_live">
+                            <span ng-if="course.course.live_info && course.course.live_info.course_live_status == 0">( 已结束 )</span>
+                            <span ng-if="course.course.live_info && course.course.live_info.course_live_status == 1">( 未开始 )</span>
+                            <span ng-if="course.course.live_info && course.course.live_info.course_live_status == 2">( 直播中 )</span>
+                          </span>
+                          <span>{{ course.course_name }}</span>
+                        </a>
+                      </h4>
+                      <p class="line">
+                        <span class="ornament"></span>
+                      </p>
+                      <p class="price">
+                        <span class="text-info study-count">
+                          <i class="icon icon-study-user"></i>{{ course.study_count }}人在学习</span>
+                        <a ng-href="/course/{{ course.course_id }}" 
+                           target="_blank" 
+                           class="pull-right text-price"
+                           ng-class="{true: 'free'}[course.rel_price <= 0]">
+                          <i class="yen" ng-if="course.rel_price">&yen;</i> {{ course.rel_price ? course.rel_price : '免费' | priceFormat }}
+                        </a>
+                      </p>
+                    </div>
+                    <span class="live" ng-if="!!course.course.is_live">直播</span>
+                    <span class="duration">
+                      <span ng-if="!course.course.is_live || !course.course.live_info">{{ course.duration | toHHMMSS : 'HHMM' : '小时' : '分钟' }}</span>
+                      <span ng-if="!!course.course.is_live && !!course.course.live_info">最近：{{ course.course.live_info.live_at }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 翻页模块 -->
+            <div class="page-wrap" ng-if="!!student.courses.pagination.total">
+              <div pagination 
+                   class="pagination-sm" 
+                   total-items="student.courses.pagination.total" 
+                   items-per-page="student.courses.pagination.per_page" 
+                   ng-model="student.courses.pagination.current_page" 
+                   ng-change="getStudentCourses({ page: student.courses.pagination.current_page })" 
+                   sortCourseLists="pagination" 
+                   boundary-links="true" 
+                   rotate="false">
+              </div>
+            </div>
+          </div>
+
+          <div tab heading="TA的笔记（{{ student.notes.pagination.total || 0 }}）" ng-init="getStudentNotes({})">
+            <div class="student-note">
+              <!-- 加载中 & 为空 -->
+              <div class="err-msg no-animation" ng-if="!student.notes.pagination.total">
+                <div class="text-info no-animation" ng-if="student.notes.pagination.total == undefined">
+                  <div class="loader">
+                    <p><img src="images/loader.svg" width="48" height="48"></p>
+                     笔记正在努力加载中...
+                  </div>
+                </div>
+                <div class="text-info no-animation" ng-if="student.notes.pagination.total == 0">
+                  <div class="empty">
+                    <p><i class="icon icon-warning"></i></p>
+                    暂无相关笔记
+                  </div>
+                </div>
+              </div>
+              <!-- 列表数据 -->
+              <div class="col-xs-10 col-xs-offset-1">
+                <ul class="note-lists no-animation" ng-if="!!student.notes.pagination.total">
+                  <!-- 子队列 -->
+                  <li class="media item slide-top" ng-repeat="note in student.notes.result">
+                    <div class="media-left">
+                      <img width="48" 
+                           class="img-circle media-object" 
+                           ng-src="{{ getThumbnail(note.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                      <h5 class="text-center text-dark">{{ note.user.name | textOverflow: 2 }}</h5>
+                    </div>
+                    <div class="media-body">
+                      <div class="content">
+                        <p class="title">{{ note.content }}</p>
+                        <div class="capture" ng-if="note.capture_url">
+                          <div class="content">
+                            <img class="capture-img" ng-src="{{ getThumbnail(note.capture_url, 'note', { width: 160, height: 100 }) }}">
+                            <span class="capture-time">{{ note.record_time | toHHMMSS : 'MMSS' }}</span>
+                            <a class="capture-pic"  href="" ng-click="modal.imagePreview(note.capture_url)">看截图</a>
+                            <a class="capture-video" 
+                               target="_blank"
+                               ng-href="/course/{{ note.section.course_id }}/learn/{{ note.section.id }}/{{ note.record_time }}">看视频</a>
+                          </div>
+                        </div>
+                        <div class="created small">
+                          <span class="created-in">
+                            课程：<a href="/course/{{ note.section.course_id }}/learn/{{ note.section.id }}" title="{{ note.section.name }}" class="text-primary" target="_blank">《{{ note.section.name}}》</a>
+                          </span>
+                          <span class="created-at">添加时间：{{ note.created_at | relativeTime }}</span>
+                          <span ng-if="student_id != user_info.id">
+                            <a href="" 
+                               ng-class="{'text-primary': !!note.is_followed }" 
+                               ng-click="addFavNote(note)" 
+                               class="note-edit">
+                              <i class="icon icon-like"></i>
+                              <span>{{ !!note.is_followed ? '已' : '' }}收藏</span>
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <!-- 翻页模块 -->
+                <div class="page-wrap" ng-if="!!student.notes.pagination.total">
+                  <div pagination 
+                       class="pagination-sm" 
+                       total-items="student.notes.pagination.total" 
+                       items-per-page="student.notes.pagination.per_page" 
+                       ng-model="student.notes.pagination.current_page" 
+                       ng-change="getStudentNotes({ page: student.notes.pagination.current_page })" 
+                       sortCourseLists="pagination" 
+                       boundary-links="true" 
+                       rotate="false">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div tab heading="TA的提问（{{ student.questions.pagination.total || 0 }}）" ng-init="getStudentQuestions({})">
+            <div class="student-question">
+              <!-- 加载中 & 为空 -->
+              <div class="err-msg no-animation" ng-if="!student.questions.pagination.total">
+                <div class="text-info no-animation" ng-if="student.questions.pagination.total == undefined">
+                  <div class="loader">
+                    <p><img src="images/loader.svg" width="48" height="48"></p>
+                    <span>提问正在努力加载中...</span>
+                  </div>
+                </div>
+                <div class="text-info no-animation" ng-if="student.questions.pagination.total == 0">
+                  <div class="empty">
+                    <p><i class="icon icon-warning"></i></p>
+                    <span>暂无相关提问</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 列表数据 -->
+              <div class="col-xs-10 col-xs-offset-1">
+                <ul class="question-lists no-animation" ng-if="!!student.questions.pagination.total">
+                  <!-- 子队列 -->
+                  <li class="media item slide-top" ng-repeat="question in student.questions.result" >
+                    <div class="media-left">
+                      <img width="48" 
+                           class="img-circle media-object" 
+                           ng-src="{{ getThumbnail(question.user.gravatar, 'gravatar', { width: 48, height: 48 }) }}">
+                      <h5 class="text-center text-dark">{{ question.user.name | textOverflow: 2 }}</h5>
+                    </div>
+                    <div class="media-body">
+                      <div class="content col-xs-10">
+                        <!-- 问题内容编辑区域 -->
+                        <h4 class="title">{{ question.content }}</h4>
+                        <div class="created small">
+                          <span class="created-in">
+                            <span>课程：</span>
+                            <a ng-href="/course/{{ question.section.course.id }}/learn/{{ question.section.id }}" 
+                               title="{{ question.section.course.name }}{{ question.section.name }}" 
+                               class="text-primary" 
+                               target="_blank">《{{ question.section.name }}》</a>
+                          </span>
+                          <span class="created-at">提问时间：{{ question.created_at | relativeTime }}</span>
+                          <span>
+                            <a ng-href="/user/question/{{ question.id }}" 
+                               target="_blank" 
+                               class="text-primary" 
+                               target="_blank">
+                              <i class="icon icon-feedback text-success"></i>
+                              <span>全部回答（{{ question.answer_count || 0 }}）</span>
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="answer">
+                        <h3>
+                          <a href="/user/question/{{ question.id }}" 
+                             class="text-primary" 
+                             target="_blank">{{ question.answer_count || 0 }}</a>
+                        </h3>
+                        <p>回答</p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <!-- 翻页模块 -->
+              <div class="page-wrap" ng-if="!!student.questions.pagination.total">
+                <div pagination 
+                     class="pagination-sm" 
+                     total-items="student.questions.pagination.total" 
+                     items-per-page="student.questions.pagination.per_page" 
+                     ng-model="student.questions.pagination.current_page" 
+                     ng-change="getStudentQuestions({ page: student.questions.pagination.current_page })" 
+                     sortCourseLists="pagination" 
+                     boundary-links="true" 
+                     rotate="false">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div tab heading="TA的回答（{{ student.answers.pagination.total || 0 }}）" ng-init="getStudentAnswers({})">
+            <div class="student-answer">
+              <!-- 加载中 & 为空 -->
+              <div class="err-msg no-animation" ng-if="!student.answers.pagination.total">
+                <div class="text-info no-animation" ng-if="student.answers.pagination.total == undefined">
+                  <div class="loader">
+                    <p><img src="images/loader.svg" width="48" height="48"></p>
+                     回答正在努力加载中...
+                  </div>
+                </div>
+                <div class="text-info no-animation" ng-if="student.answers.pagination.total == 0">
+                  <div class="empty">
+                    <p><i class="icon icon-warning"></i></p>
+                    暂无相关回答
+                  </div>
+                </div>
+              </div>
+              <!-- 列表数据 -->
+              <div class="col-xs-10 col-xs-offset-1">
+                <ul class="answer-lists no-animation" ng-if="!!student.answers.pagination.total">
+                  <!-- 子队列 -->
+                  <li class="media item slide-top" ng-repeat="answer in student.answers.result">
+                    <div class="media-left">
+                      <img width="48" 
+                           class="img-circle media-object" 
+                           ng-src="{{ getThumbnail(answer.user.gravatar, 'gravatar', { width: 48, height: 48 }) }}">
+                      <h5 class="text-center text-dark">{{ answer.user.name | textOverflow: 2 }}</h5>
+                    </div>
+                    <div class="media-body">
+                      <div class="content">
+                        <p class="title"><strong>问题：</strong>{{ answer.question.content }}</p>
+                        <p class="answer">{{ answer.content }}</p>
+                        <div class="created small">
+                          <span class="created-in">
+                            <span>课程：</span>
+                            <a href="/course/{{ answer.section.course.id }}/learn/{{ answer.section.id }}" 
+                               class="text-primary" 
+                               target="_blank">《{{ answer.section.name }}》</a>
+                          </span>
+                          <span class="created-at">提问时间：{{ answer.question.created_at | relativeTime }}</span>
+                          <span>
+                            <a ng-href="/user/question/{{ answer.pid }}" 
+                               class="text-primary" 
+                               target="_blank">全部回答（ {{ answer.question.answer_count || 0 }} ）</a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <!-- 翻页模块 -->
+              <div class="page-wrap" ng-if="!!student.answers.pagination.total">
+                <div pagination 
+                     class="pagination-sm" 
+                     total-items="student.answers.pagination.total" 
+                     items-per-page="student.answers.pagination.per_page" 
+                     ng-model="student.answers.pagination.current_page" 
+                     ng-change="getStudentAnswers({ page: student.answers.pagination.current_page })" 
+                     sortCourseLists="pagination" 
+                     boundary-links="true" 
+                     rotate="false">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

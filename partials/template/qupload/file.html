@@ -1,0 +1,16 @@
+<div class="upload-file">
+  <span class="edit" title="点击上传">
+    <i class="icon icon-image"></i>
+  </span>
+  <img src="images/thumbnail.png" class="thumb" ng-src="{{ file.path }}">
+  <div class="progress" ng-class="{hidden: (upload_precent == 100 || upload_precent == 0)}">
+    <div class="progress-bar progress-bar-striped active" 
+         role="progressbar" 
+         aria-valuenow="{{ upload_precent }}" 
+         aria-valuemin="0" 
+         aria-valuemax="100" 
+         ng-style="{ 'width': upload_precent + '%' }">
+    </div>
+    <span class="status">上传中...</span>
+  </div>
+</div>

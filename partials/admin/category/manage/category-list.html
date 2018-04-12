@@ -1,0 +1,89 @@
+<div class="tree-list">
+  <ul class="title">
+    <li class="checkbox">
+      <label>
+        <input class="check-all" 
+               type="checkbox"
+               ng-model="check_all"
+               ng-change="category_list.setCheck(check_all, 'children')">
+      </label>
+    </li>
+    <li class="name">ID</li>
+    <li class="slug">分类名称</li>
+    <li class="name">分类图标</li>
+    <li class="description">所属分类</li>
+    <li class="status">状态</li>
+    <li class="action">操作</li>
+  </ul>
+
+  <ul class="item-list"
+      sv-root 
+      sv-on-sort="categoryAction.sort({ item: $item, partFrom: $partFrom, partTo: $partTo, indexFrom: $indexFrom, indexTo: $indexTo })"
+      sv-part="category_list.result.children">
+    <li class="text-center no-animation" ng-if="!category_list.result.children.length">
+      <div class="list-loader" 
+        ng-if="category_list.result.children.length == undefined"
+        ng-include="'partials/admin/layout/loading.html'">
+      </div>
+      <div class="list-empty" 
+        ng-if="category_list.result.children.length == 0" 
+        ng-include="'partials/admin/layout/empty.html'">
+      </div>
+    </li>
+
+    <li class="item slide-down"
+        ng-repeat="category in category_list.result.children | orderBy: 'sort'"
+        sv-element>
+      <ul class="item-content"
+          ng-class="{ 'disabled': !category.x_status }"
+          sv-handle>
+        <li class="checkbox">
+          <label>
+            <input type="checkbox" 
+                   name="category[{{ $index }}]" 
+                   ng-model="category.checked"
+                   ng-change="category.setCheck(category.checked, 'children')">
+          </label>
+        </li>
+        <li class="name">{{ category.id }}</li>
+        <li class="slug">
+          <a ng-href="/{{ category_info.alais }}/manage/category/list/{{ category_type }}/{{ category.id }}">{{ category.name }}</a>
+          <a href=""
+             class="text-info" 
+             ng-if="page_permission['course.manage.category.add'] || page_permission['organization.manage.category.add'] || page_permission['article.manage.category.add']"
+             ng-click="categoryAction.add({ modal: true, category: this, pid: category.id, redirect: true })">[ 添加 ]</a>
+        </li>
+        <li class="name">
+          <img ng-src="{{ getThumbnail(category.icon, 'category_icon', { width: 40, height: 40 }) }}" width="20">
+        </li>
+        <li class="description">
+          {{ category_list.result.name }}
+        </li>
+        <li class="status">
+          <span class="text-success no-animation" ng-if="category.x_status">正常</span>
+          <span class="text-danger no-animation" ng-if="!category.x_status">已禁用</span>
+        </li>
+        <li class="action">
+          <a href="" 
+             class="text-info" 
+             ng-if="page_permission['course.manage.category.edit'] || page_permission['organization.manage.category.edit'] || page_permission['article.manage.category.edit']"
+             ng-click="categoryAction.edit({ modal: true, category: this })" >[ 编辑 ]</a>
+          <a href="" 
+             class="text-warning no-animation" 
+             ng-show="!!category.x_status" 
+             ng-if="page_permission['course.manage.category.batch'] || page_permission['organization.manage.category.batch'] || page_permission['article.manage.category.batch']"
+             ng-click="categoryAction.disable({ batch: false, category: this })" >[ 禁用 ]</a>
+          <a href="" 
+             class="text-success no-animation" 
+             ng-show="!category.x_status" 
+             ng-if="page_permission['course.manage.category.batch'] || page_permission['organization.manage.category.batch'] || page_permission['article.manage.category.batch']"
+             ng-click="categoryAction.enable({ batch: false, category: this })" >[ 启用 ]</a>
+          <a href="" 
+             class="text-danger" 
+             ng-if="page_permission['course.manage.category.del'] || page_permission['organization.manage.category.del'] || page_permission['article.manage.category.del']"
+             ng-click="categoryAction.del({ batch: false, category: this })" >[ 删除 ]</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

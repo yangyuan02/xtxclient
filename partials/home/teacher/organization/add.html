@@ -1,0 +1,320 @@
+<div class="add" ng-init="initCreateOrganization()">
+  <div class="step">
+    <span ng-class="{ 'active': createOrganization.step.current == 1 }">1.签订入驻协议</span>
+    <span ng-class="{ 'active': createOrganization.step.current == 2 }">2.提交资料</span>
+    <span ng-class="{ 'active': createOrganization.step.current == 3 }">3.入驻审核</span>
+  </div>
+
+  <!-- 第一步 -->
+  <div class="content no-animation" ng-show="createOrganization.step.current == 1">
+    <div class="agreement">
+      <div class="inner" 
+           ng-if="!!createOrganization.license"
+           when-scrolled="createOrganization.step.is_read = true" 
+           ng-bind-html="createOrganization.license || '' | toHtml"></div>
+      <div class="agree">
+        <label>
+          <input type="checkbox" 
+                 ng-model="createOrganization.step.is_agree" 
+                 ng-disabled="!createOrganization.step.is_read">
+          <span>我已阅读并同意此协议</span>
+        </label>
+        <span class="text-danger small">温馨提示：阅读并同意协议后，才能进行下一步。</span>
+      </div>
+    </div>
+    <p class="text-center">
+      <button class="btn btn-primary btn-lg" 
+              ng-click="createOrganizationNext()" 
+              ng-disabled="!createOrganization.step.is_agree">下一步</button>
+    </p>
+  </div>
+
+  <!-- 第二步 -->
+  <div class="content no-animation" ng-show="createOrganization.step.current == 2">
+    <form class="form-school-submit form-horizontal" name="add_organization" role="form" method="POST">
+      <h3>学校信息</h3><hr>
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">学校分类</label>
+        <div class="col-xs-6">
+          <select class="form-control inline" 
+                  name="organization_id" 
+                  ng-model="organization.category_id" 
+                  ng-options="cate.id as cate.name for cate in createOrganization.cates" 
+                  ng-change="changeOrganizationCate()" 
+                  validator="required" 
+                  required-error-message="请选择学校分类">
+            <option value="">- 选择学校分类 -</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error': organization.name_is_valid == false }">
+        <label for="organization_name" class="col-xs-3 control-label important">学校名称</label>
+        <div class="col-xs-6">
+           <input type="text" 
+                  id="organization_name" 
+                  name="organization_name" 
+                  ng-model="organization.name" 
+                  class="form-control" 
+                  placeholder="输入学校名称" 
+                  validator="required" 
+                  ng-model-options="{ 
+                    updateOn: 'submit default blur', 
+                    debounce: { default: 500, blur: 0, submit: 0 }, 
+                    getterSetter: true 
+                  }"
+                  ng-blur="checkNameValid(organization.name)"
+                  required-error-message="请输入学校名称">
+        </div>
+      </div>
+
+      <div class="form-group" ng-if="organization.name_is_valid != undefined">
+        <label class="col-xs-3 control-label"></label>
+        <div class="col-xs-6">
+          <p class="text-primary no-animation" ng-if="organization.name_is_valid">
+            <i class="icon icon-success text-primary"></i>
+            <span>学校名称可用</span>
+          </p>
+          <p class="text-danger no-animation" ng-if="!organization.name_is_valid">
+            <i class="icon icon-warning text-danger"></i>
+            <span>名称已被占用</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="organization_introduction" class="col-xs-3 control-label important">学校简介</label>
+        <div class="col-xs-6">
+         <textarea type="text" 
+                   rows="7" 
+                   class="form-control" 
+                   name="organization_introduction" 
+                   id="organization_introduction" 
+                   ng-model="organization.introduction" 
+                   placeholder="请输入学校简介（500字以内）" 
+                   validator="required, maxlength=500" 
+                   required-error-message="请输入学校简介" 
+                   maxlength-error-message="学校简介不可以超过500字">
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">学校LOGO</label>
+        <div class="col-xs-7">
+          <div class="organization_logo">
+            <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 180, min_height: 180 })" 
+                 default-file="getThumbnail(organization.logo, '', { width: 100, height: 100 })" 
+                 uploaded="addLogoUpload" 
+                 class="pull-left upload-xrectangle"></div>
+            <div class="pull-left text-info">
+              <p></p>
+              <p class="">纯白色背景学校LOGO</p>
+              <p class="">文件小于2M，比例1:1，最小尺寸：180 x 180px</p>
+              <p class="">支持JPG/PNG/BMP等格式图片</p>
+            </div>
+          </div>
+          <input type="text" 
+                 class="hidden pull-right form-control" 
+                 ng-model="organization.logo" 
+                 name="organization_logo" 
+                 validator="required" 
+                 required-error-message="请上传学校LOGO">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label">学校实景</label>
+        <div class="col-xs-6">
+          <div class="organization_logo">
+            <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 570, min_height: 500 })" 
+                 default-file="getThumbnail(organization.scenery, '', { width: 100, height: 100 })" 
+                 uploaded="addSceneryUpload" 
+                 class="pull-left"></div>
+            <div class="pull-left text-info">
+              <p></p>
+              <p class="">为学校实景照片</p>
+              <p class="">文件小于2M，尺寸大于570 x 500像素</p>
+              <p class="">支持JPG/PNG/BMP等格式图片</p>
+            </div>
+          </div>
+          <input type="text" 
+                 class="hidden pull-right form-control" 
+                 ng-model="organization.scenery" 
+                 name="organization_scenery">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="organization_url" class="col-xs-3 control-label">学校官网</label>
+        <div class="col-xs-6">
+         <input type="text" 
+                class="form-control" 
+                id="organization_url" 
+                name="organization_url" 
+                ng-model="organization.url" 
+                placeholder="输入学校网址">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label"></label>
+        <div class="col-xs-6"><br>
+          <label>
+            <input type="checkbox" 
+                   class="checkbox inline" 
+                   ng-model="createOrganization.step.is_audit" 
+                   ng-disabled="!createOrganization.step.can_audit">
+            <span ng-class="{ 'text-primary': createOrganization.step.is_audit, 'text-muted': !createOrganization.step.can_audit }">
+              <span>同时申请教育机构资质认证</span>
+              <i class="icon" ng-class="{ true: 'icon-sort-up', false: 'icon-sort-down' }[!!createOrganization.step.is_audit]"></i>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="audit-info slide-top" ng-if="createOrganization.step.is_audit">
+        <h3>资质认证</h3><hr>
+        <div class="form-group">
+          <label for="organization_license_name" class="col-xs-3 control-label important">机构名称</label>
+          <div class="col-xs-6">
+             <input type="text" 
+                    class="form-control" 
+                    id="organization_license_name" 
+                    name="organization_license_name" 
+                    placeholder="输入机构名称（与证件名称一致）" 
+                    ng-model="organization.license_name" 
+                    validator="required" 
+                    required-error-message="请输入机构简介">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-xs-3 control-label important">营业执照</label>
+          <div class="col-xs-6">
+            <div class="organization_business_license">
+              <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 5, min_width: 500, min_height: 500 })" 
+                   default-file="getThumbnail(organization.business_license, 'organization_license', { width: 100, height: 100 })" 
+                   uploaded="addLicenseUpload" class="pull-left"></div>
+              <div class="pull-left text-info">
+                <p></p>
+                <p class="">请上传有年检章的企业营业执照副本扫描件</p>
+                <p class="">文件小于5M，尺寸大于500 x 500像素</p>
+                <p class="">支持JPG/PNG/BMP等格式图片</p>
+              </div>
+            </div>
+            <input type="hidden" 
+                   class="form-control" 
+                   ng-model="organization.business_license" 
+                   name="organization_business_license" 
+                   validator="required" 
+                   required-error-message="请上传营业执照">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="organization_user_name" class="col-xs-3 control-label important">申请人</label>
+          <div class="col-xs-6">
+             <input type="text" 
+                    class="form-control" 
+                    id="organization_user_name" 
+                    placeholder="输入申请人名称（与证件相关负责人名称一致）" 
+                    ng-model="organization.user_name" 
+                    name="organization_user_name" 
+                    validator="required" 
+                    required-error-message="请输入申请人姓名">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-xs-3 control-label important">身份证</label>
+          <div class="col-xs-6">
+            <div class="organization_id_card">
+              <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 500, min_height: 500 })" 
+                   default-file="getThumbnail(organization.id_card, 'organization_card', { width: 100, height: 100 })" 
+                   uploaded="addIdCardUpload" class="pull-left"></div>
+              <div class="pull-left text-info">
+                <p></p>
+                <p class="">请上传手持身份证的半身照</p>
+                <p class="">文件小于2M，尺寸大于500 x 500像素</p>
+                <p class="">支持JPG/PNG/BMP等格式图片</p>
+              </div>
+            </div>
+            <input type="text" 
+                   class="form-control hidden" 
+                   ng-model="organization.id_card" 
+                   name="organization_id_card" 
+                   validator="required" 
+                   required-error-message="请上传手持身份证半身照">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="organization_phone" class="col-xs-3 control-label important">手机</label>
+          <div class="col-xs-6">
+             <input type="text" 
+                    class="form-control" 
+                    id="organization_phone" 
+                    name="organization_phone" 
+                    placeholder="输入手机号码（有效手机号码）" 
+                    ng-model="organization.phone" 
+                    validator="required, mobile" 
+                    required-error-message="请输入手机号码" 
+                    mobile-error-message="请输入有效的手机号码">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="organization_email" class="col-xs-3 control-label important">邮箱</label>
+          <div class="col-xs-6">
+             <input type="text" 
+                    class="form-control" 
+                    id="organization_email" 
+                    name="organization_email" 
+                    placeholder="输入有效邮箱地址" 
+                    ng-model="organization.email" 
+                    validator="required, email" 
+                    required-error-message="请输入邮箱地址" 
+                    email-error-message="请输入有效的邮箱地址">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-xs-3 control-label">教育资质</label>
+          <div class="col-xs-6">
+            <div class="organization_education_qualification">
+              <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 5, min_width: 500, min_height: 500 })" 
+                   default-file="getThumbnail(organization.education_qualification, 'organization_education_qualification', { width: 100, height: 100 })" 
+                   uploaded="addQualificationUpload" 
+                   class="pull-left"></div>
+              <div class="pull-left text-info">
+                <p></p>
+                <p class="">如果有教育局开具的办学证明文件,请提供</p>
+                <p class="">文件小于5M，尺寸大于500 x 500像素</p>
+                <p class="">支持JPG/PNG/BMP等格式图片</p>
+              </div>
+            </div>
+            <input type="hidden" 
+                   class="form-control" 
+                   ng-model="organization.education_qualification" 
+                   name="organization_education_qualification" >
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label for="user-name" class="col-xs-3 control-label"></label>
+        <div class="col-xs-6">
+            <button validation-submit="add_organization" 
+                    class="btn btn-primary btn-lg" 
+                    ng-click="createOrganizationNext()"
+                    ng-disabled="!organization.name_is_valid">提交保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- 第三步 -->
+  <div class="content no-animation" ng-show="createOrganization.step.current == 3">
+    <div class="success">
+      您的入驻资料已提交成功，我们将在1个工作日内为您审核，请您耐心等待。
+    </div>
+    <p class="text-center">
+      <a href="/teacher/organization/list" class="btn btn-primary btn-lg">完成</a>
+    </p>
+  </div>
+</div>  

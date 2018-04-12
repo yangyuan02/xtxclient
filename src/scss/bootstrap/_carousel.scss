@@ -1,0 +1,242 @@
+//
+// Carousel
+// --------------------------------------------------
+// Wrapper for the slide container and indicators
+.carousel {
+  position: relative;
+  @include transition(background-color .25s ease);
+
+  &:hover {
+
+    > .carousel-control {
+
+      > .container {
+
+        > a {
+          visibility: visible;
+          @include opacity(1);
+        }
+      }
+    }
+  }
+}
+
+.carousel-inner {
+  position: relative;
+  overflow: hidden;
+  height: 450px;
+  // width: 1140px;
+  @include center-block;
+  list-style: none;
+
+  > .item {
+    display: block;
+    visibility: hidden;
+    @include opacity(0);
+    position: absolute;
+    width: 100%;
+    @include transition(visibility .0s ease, opacity .0s ease);
+    // transition: all .2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    // transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    // Account for jankitude on images
+    > img,
+    > a > img {
+      @include img-responsive;
+      line-height: 1;
+    }
+
+
+    &.ng-enter {
+      transition-duration: 0ms;
+    }
+
+    &.ng-enter-active {
+      // opacity: 1;
+    }
+  }
+
+  
+  > .active,
+  > .next,
+  > .prev {
+    // display: block;
+    visibility: visible;
+    @include opacity(1);
+  }
+
+  > .active {
+    left: 0;
+  }
+
+  > .next,
+  > .prev {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  > .next {
+    left: 100%;
+
+    &.left {
+      left: 0;
+    }
+  }
+
+  > .prev {
+    left: -100%;
+
+    &.right {
+      left: 0;
+    }
+  }
+
+  > .active {
+
+    &.left {
+      left: -100%;
+    }
+
+    &.right {
+      left: 100%;
+    }
+  }
+}
+
+// Left/right controls for nav
+// ---------------------------
+
+// 左右控制按钮
+.carousel-control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: $carousel-control-font-size;
+  color: $carousel-control-color;
+  text-align: center;
+  cursor: pointer;
+  // @include transition(opacity .25s ease-in-out);
+  // We can't have this transition here because WebKit cancels the carousel
+  // animation if you trip this while in the middle of another animation.
+
+  > .container {
+    position: relative;
+    width: 100%;
+
+    > a {
+      // visibility: hidden;
+      @include opacity(.3);
+      position: absolute;
+      top: 189px;
+      width: 72px;
+      height: 72px;
+      background-color: rgba(0,0,0,.2);
+      border-radius: 100%;
+
+      &.left {
+        left: 10%;
+      }
+
+      &.right {
+        right: 10%;
+      }
+
+      // Hover/focus state
+      &:hover,
+      &:focus {
+        outline: 0;
+        color: $carousel-control-color;
+        text-decoration: none;
+        @include opacity(.9);
+        background-color: rgba(0,0,0,.3);
+      }
+
+      > .icon {
+        display: block;
+        height: 72px;
+        line-height: 72px;
+        color: #eee;
+        text-align: center;
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+// Optional indicator pips
+//
+// Add an unordered list with the following class and add a list item for each
+// slide your carousel holds.
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 40%;
+  z-index: 15;
+  width: 20%;
+  margin: 0 auto;
+  padding: 0 10px;
+  // background: rgba(0,0,0,.1);
+  // border-radius: 10px;
+  list-style: none;
+  text-align: center;
+
+  li {
+    display: inline-block;
+    padding: 10px 0;
+    width: 30px;
+    margin: 0 3px;
+    text-indent: -999px;
+    // border: 1px solid $carousel-indicator-border-color;
+    cursor: pointer;
+
+    // IE8-9 hack for event handling
+    //
+    // Internet Explorer 8-9 does not support clicks on elements without a set
+    // `background-color`. We cannot use `filter` since that's not viewed as a
+    // background color by the browser. Thus, a hack is needed.
+    // See https://developer.mozilla.org/en-US/docs/Web/Events/click#Internet_Explorer
+    //
+    // For IE8, we set solid black as it doesn't support `rgba()`. For IE9, we
+    // set alpha transparency for the best results possible.
+    // background-color: #000 \9; // IE8
+    // background-color: rgba(0,0,0,0); // IE9
+
+    > span {
+      display: block;
+      width: 30px;
+      height: 3px;
+      background-color: rgba(255, 255, 255, .5);
+    }
+  }
+  .active {
+    // width: 10px;
+    // height: 10px;
+    // background-color: $carousel-indicator-active-bg;
+
+    > span {
+      background-color: $brand-warning;
+    }
+  }
+}
+
+// Optional captions
+// -----------------------------
+// Hidden by default for smaller viewports
+.carousel-caption {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  bottom: 20px;
+  z-index: 10;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: $carousel-caption-color;
+  text-align: center;
+  text-shadow: $carousel-text-shadow;
+  & .btn {
+    text-shadow: none; // No shadow for button elements in carousel-caption
+  }
+}

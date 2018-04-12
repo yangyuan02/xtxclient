@@ -1,0 +1,122 @@
+<div class="page-list" ng-init="questionAction.getIndex()">
+  <div class="page-title">
+    <h3>问答列表({{ question_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="questionAction.del({ batch: true })"
+        ng-if="page_permission['article.question.list.del']"
+        ng-disabled="!question_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="questionAction.getIndex(question_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search" ng-if="true">
+        <div class="form-group">
+          <input type="text" 
+            class="form-control input-sm" 
+            placeholder="请输入搜索关键词"
+            ng-model="search.keyword">
+        </div>
+        <button type="submit" 
+          class="btn btn-sm btn-default" 
+          ng-click="questionAction.getSearch()">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="question_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>提问用户</th>
+          <th>所属章节</th>
+          <th>问题</th>
+          <th>回复数</th>
+          <th>状态</th>
+          <th>提问时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!question_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="question_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="question_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="question in question_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !question.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="question.checked">
+          </td>
+          <td>{{ question.id }}</td>
+          <td>
+            <a ng-href="/user/manage/list/{{ question.user.id }}" target="_blank">
+              {{ question.user.name }}
+            </a>
+          </td>
+          <td>{{ question.section.name }}</td>
+          <td>
+            <a href=""
+               ng-click="questionAction.item({ modal: true, question: this })">{{ question.content | textOverflow: 16 }}</a>
+          </td>
+          <td>{{ question.answer_count }}</td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="question.x_status">
+              <em class="text-danger"
+                  ng-switch-when="0">已禁用</em>
+              <em class="text-success"
+                  ng-switch-when="1">正常</em>
+            </span>
+          </td>
+          <td>{{ question.created_at }}</td>
+          <td>
+            <a href="" 
+               class="text-info" 
+               ng-if="page_permission['article.question.list.edit']"
+               ng-click="questionAction.edit({ modal: true, question: this })">[ 编辑 ]</a>
+            <a ng-href="/question/manage/question/{{ question.id }}" 
+               class="text-info" 
+               ng-if="page_permission['question.question.list.item']">[ 查看 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['article.question.list.del']"
+               ng-click="questionAction.del({ question: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="question_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="question_list.pagination.total" 
+         items-per-page="question_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="questionAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

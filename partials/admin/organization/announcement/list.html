@@ -1,0 +1,121 @@
+<div class="page-list" ng-init="announcementAction.getIndex()">
+  <div class="page-title">
+    <h3>公告列表({{ announcement_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-success"
+              ng-click="announcementAction.add({ modal: true})"
+              ng-if="page_permission['organization.manage.announcement.add']">新增</button>
+      <button class="btn btn-sm btn-danger" 
+              ng-click="announcementAction.del({ batch: true })"
+              ng-if="page_permission['organization.manage.announcement.del']"
+              ng-disabled="!announcement_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-default" 
+              ng-click="announcementAction.getIndex(announcement_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form clearfix">
+        <div class="form-group">
+          <select class="form-control input-sm" 
+                  ng-model="filter.type" 
+                  ng-change="announcementAction.filterChanged()">
+            <option value="all">所有类型</option>
+            <option value="1">面向机构</option>
+            <option value="2">面向教师</option>
+          </select>
+        </div>
+        <div class="form-group no-animation" ng-if="filter.type == '1'">
+          <select class="form-control input-sm" 
+                  ng-model="$parent.filter.organization_id" 
+                  ng-change="announcementAction.filterChanged()"
+                  ng-options="organization.id as organization.name for organization in organizations">
+            <option value="">所有机构</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="announcement_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>公告类型</th>
+          <th>机构</th>
+          <th>标题</th>
+          <th>内容</th>
+          <th>发布人</th>
+          <th>状态</th>
+          <th>创建时间</th>
+          <th class="text-center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!announcement_list.pagination.total" class="no-animation">
+          <td colspan="9"><h5 class="text-center">暂无公告信息</h5></td>
+        </tr>
+        <tr ng-repeat="announcement in announcement_list.result track by $index" 
+            ng-class="{ 'disabled': !announcement.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="announcement.checked">
+          </td>
+          <td>{{ announcement.id }}</td>
+          <td ng-switch="announcement.type">
+            <span ng-switch-when="1">面向机构</span>
+            <span ng-switch-when="2">面向教师</span>
+          </td>
+          <td ng-switch="announcement.type">
+            <span ng-switch-when="1">
+              <a ng-href="/organization/manage/list/{{ announcement.organization.id }}">{{ announcement.organization.name }}</a>
+            </span>
+            <span ng-switch-when="2">后台发布</span>
+          </td>
+          <td>{{ announcement.title | textOverflow: 16 }}</td>
+          <td>{{ announcement.content | textOverflow: 16 }}</td>
+          <td>{{ announcement.user_id }}</td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="announcement.x_status">
+              <em class="text-warning"
+                  ng-switch-when="0">禁用</em>
+              <em class="text-success"
+                  ng-switch-when="1">正常</em>
+            </span>
+          </td>
+          <td>{{ announcement.created_at }}</td>
+          <td class="text-right">
+            <a href="" 
+             class="text-info" 
+             ng-if="page_permission['organization.manage.announcement.edit']"
+             ng-click="announcementAction.edit({ modal: true, announcement: this })" >[ 编辑 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['organization.manage.announcement.del']" 
+               ng-click="announcementAction.del({ announcement: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap no-animation" ng-show="announcement_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="announcement_list.pagination.total" 
+         items-per-page="announcement_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="announcementAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

@@ -1,0 +1,167 @@
+// loading动画
+@-webkit-keyframes ball-beat {
+  50% {
+    opacity: 0.2;
+    @include transform(scale(0.75)); }
+
+  100% {
+    opacity: 1;
+    @include transform(scale(1)); } }
+@keyframes ball-beat {
+  50% {
+    opacity: 0.2;
+    @include transform(scale(0.75)); }
+
+  100% {
+    opacity: 1;
+    @include transform(scale(1)); } }
+
+@-webkit-keyframes line-spin-fade {
+  50% {
+    opacity: 0.3; }
+
+  100% {
+    opacity: 1; } }
+@keyframes line-spin-fade {
+  50% {
+    opacity: 0.3; }
+
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes line-scale {
+  0% {
+    @include transform(scale(1)); }
+
+  50% {
+    @include transform(scale(0.4)); }
+
+  100% {
+    @include transform(scale(1)); } }
+@keyframes line-scale {
+  0% {
+    @include transform(scale(1)); }
+
+  50% {
+    @include transform(scale(0.4)); }
+
+  100% {
+    @include transform(scale(1)); } }
+
+.loading {
+  display: block;
+  width: $gauge * 4;
+  height: $gauge * 4;
+  border-radius: 5px;
+
+  // A/3圆点
+  &.ball-beat {
+    padding: 30px 0;
+
+    > div {
+      background-color: $brand-primary;
+      @include square(15px);
+      border-radius: 100%;
+      margin: 2px;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      display: inline-block;
+      @include animation(ball-beat 0.7s 0s infinite linear);
+
+      &:nth-child(2n-1) {
+        -webkit-animation-delay: 0.35s !important;
+        animation-delay: 0.35s !important;
+      }
+    }
+  }
+
+  // B/圆形loading
+  &.line-spin-fade {
+    position: relative;
+
+    > div {
+      background-color: $brand-primary;
+      @include size(4px, 35px);
+      border-radius: 2px;
+      margin: 2px;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      position: absolute;
+      width: 5px;
+      height: 15px;
+
+      &:nth-child(1) {
+        top: 50px;
+        left: 35px;
+        @include animation(line-spin-fade 1.2s 0.12s infinite ease-in-out); }
+
+      &:nth-child(2) {
+        top: 43.63636px;
+        left: 18.63636px;
+        @include animation(line-spin-fade 1.2s 0.24s infinite ease-in-out);
+        @include transform(rotate(45deg)); }
+
+      &:nth-child(3) {
+        top: 30px;
+        left: 15px;
+        @include animation(line-spin-fade 1.2s 0.36s infinite ease-in-out);
+        @include transform(rotate(90deg)); }
+
+      &:nth-child(4) {
+        top: 13.63636px;
+        left: 18.63636px;
+        @include animation(line-spin-fade 1.2s 0.48s infinite ease-in-out);
+        @include transform(rotate(-45deg)); }
+
+      &:nth-child(5) {
+        top: 10px;
+        left: 35px;
+        @include animation(line-spin-fade 1.2s 0.6s infinite ease-in-out); }
+
+      &:nth-child(6) {
+        top: 13.63636px;
+        left: 48.63636px;
+        @include animation(line-spin-fade 1.2s 0.72s infinite ease-in-out);
+        @include transform(rotate(45deg)); }
+
+      &:nth-child(7) {
+        top: 30px;
+        left: 55px;
+        @include animation(line-spin-fade 1.2s 0.84s infinite ease-in-out);
+        @include transform(rotate(90deg)); }
+
+      &:nth-child(8) {
+        top: 43.63636px;
+        left: 48.63636px;
+        @include animation(line-spin-fade 1.2s 0.96s infinite ease-in-out);
+        @include transform(rotate(-45deg)); }
+    }
+  }
+
+  // C/8竖条
+  &.line-scale {
+    padding: 20px 0;
+
+    > div {
+      background-color: $brand-primary;
+      width: 5px;
+      height: 30px;
+      border-radius: 2px;
+      margin: 3px;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      display: inline-block;
+
+      &:nth-child(1) {
+        @include animation(line-scale 1s 0.1s infinite cubic-bezier(.2, .68, .18, 1.08)); }
+      &:nth-child(2) {
+        @include animation(line-scale 1s 0.2s infinite cubic-bezier(.2, .68, .18, 1.08)); }
+      &:nth-child(3) {
+        @include animation(line-scale 1s 0.3s infinite cubic-bezier(.2, .68, .18, 1.08)); }
+      &:nth-child(4) {
+        @include animation(line-scale 1s 0.4s infinite cubic-bezier(.2, .68, .18, 1.08)); }
+      &:nth-child(5) {
+        @include animation(line-scale 1s 0.5s infinite cubic-bezier(.2, .68, .18, 1.08)); }
+    }
+  }
+}

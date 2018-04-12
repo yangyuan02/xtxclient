@@ -1,0 +1,14 @@
+<div>
+  <!-- {{ ckdSelects }} -->
+  <select 
+    name="selects"
+    class="form-control no-animation" 
+    ng-model="$parent.ckdSelects[$index]" 
+    ng-change="selectChange({ id: $parent.ckdSelects[$index], index: $index })" 
+    ng-repeat="select in disSelects track by $index" 
+    ng-options="sel.id as sel.name for sel in select"
+    validator="required" 
+    required-error-message="请选择课程分类">
+    <option disabled selected value>- 选择分类 -</option>
+  </select>
+</div>

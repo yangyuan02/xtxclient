@@ -1,0 +1,56 @@
+<div class="global-ratereply" 
+     ng-init="">
+  <div class="col-xs-12">
+    <div class="ratereply-form">
+      <form name="ratereplyFrom" class="form-horizontal" role="form" method="POST">
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">温馨提示</label>
+          <div class="col-xs-7 form-control-static text-danger">回复评论后无法修改及删除</div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">来自课程</label>
+          <div class="col-xs-7 form-control-static">
+            <a ng-href="/course/{{ $root.rate_edit.course.id }}" target="_blank">《{{ $root.rate_edit.course.name }}》</a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">来自用户</label>
+          <div class="col-xs-5 form-control-static">
+            <a ng-href="/space/student/{{ $root.rate_edit.user.id }}" target="_blank">{{ $root.rate_edit.user.name }}</a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">评价内容</label>
+          <div class="col-xs-5 text-dark text-height form-control-static">{{ $root.rate_edit.content }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="J_input_content" class="col-xs-3 control-label important">回复内容</label>
+          <div class="col-xs-6">
+            <textarea class="form-control" 
+                      name="ratereply_content" 
+                      id="J_input_content" 
+                      placeholder="请输入回复内容" 
+                      ng-model="$root.rate_edit.new_reply" 
+                      ng-change="$root.rate_edit.new_reply = $root.rate_edit.new_reply || undefined" 
+                      rows="6" 
+                      validator="required,minlength=0" 
+                      required-error-message="请输入回复内容"></textarea>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button class="btn btn-block btn-primary" 
+                    validation-submit="ratereplyFrom" 
+                    ng-click="replyRate({ modal: false })">提交回复</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

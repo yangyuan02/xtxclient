@@ -1,0 +1,132 @@
+<div class="join" ng-init="joinOrganizationInit()">
+  <p class="prompt">
+    <span>请您完善以下信息，等待“{{ organization.info.name }}”的管理员审核</span>
+    <span>申请成功</span>
+  </p>
+  <div class="content">
+    <form class="join-form form-horizontal" 
+          name="join_organization" 
+          role="form" 
+          method="POST">
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">申请机构</label>
+        <div class="col-xs-6">
+          <p></p>
+          <h4 class="text-primary">
+            <span>{{ organization.info.name }}</span>
+            <a ng-href="/organization/{{ organization.info.id }}" class="small" target="_blank">进入机构主页</a>
+          </h4>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">机构类型</label>
+        <div class="col-xs-6">
+          <p></p>
+          <p class="text-default no-animation" ng-if="!organization.info.type">未知机构</p>
+          <p class="text-primary no-animation" ng-if="organization.info.type == 1">学校机构</p>
+          <p class="text-primary no-animation" ng-if="organization.info.type == 2">
+            <span ng-if="!organization.info.audit_info">未认证机构</span>
+            <span ng-if="!!organization.info.audit_info">
+              <span ng-if="organization.info.audit_info.status == 1">已认证机构</span>
+              <span ng-if="organization.info.audit_info.status != 1">未认证机构</span>
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="teacher_real_name" class="col-xs-3 control-label important">真实姓名</label>
+        <div class="col-xs-6">
+           <input type="text" 
+                  id="teacher_rel_name" 
+                  name="teacher_rel_name" 
+                  ng-model="teacher.rel_name" 
+                  class="form-control" 
+                  placeholder="输入学校名称" 
+                  validator="required" 
+                  required-error-message="请输入真实姓名">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="teacher_title" class="col-xs-3 control-label important">教衔职称</label>
+        <div class="col-xs-6">
+           <input type="text" 
+                  id="teacher_title" 
+                  name="teacher_title" 
+                  ng-model="teacher.title" 
+                  class="form-control" 
+                  placeholder="输入教衔职称,如：前端工程师 10年教龄" 
+                  validator="required" 
+                  required-error-message="请输入教衔职称">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="user_phone" class="col-xs-3 control-label important">手机号码</label>
+        <div class="col-xs-6">
+           <input type="text" 
+                  class="form-control" 
+                  id="user_phone" 
+                  name="user_phone" 
+                  placeholder="输入手机号码（有效手机号码）" 
+                  ng-model="teacher.phone" 
+                  validator="required, mobile" 
+                  required-error-message="请输入手机号码" 
+                  mobile-error-message="请输入有效的手机号码" 
+                  disabled>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="teacher_introduction" class="col-xs-3 control-label important">个人简介</label>
+        <div class="col-xs-6">
+         <textarea rows="7" 
+                   class="form-control" 
+                   name="teacher_introduction" 
+                   id="teacher_introduction" 
+                   ng-model="teacher.introduction" 
+                   placeholder="请输入个人简介（500字以内）" 
+                   validator="required, maxlength=500" 
+                   required-error-message="请输入个人简介" 
+                   maxlength-error-message="个人简介不可以超过500字">
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">身份证</label>
+        <div class="col-xs-6">
+          <div class="user_id_card" ng-init="">
+            <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 500, min_height: 500 })" 
+                 default-file="getThumbnail(teacher.id_card_pic, 'user_id_card', { width: 100, height: 100 })" 
+                 uploaded="getIdentityUpload" 
+                 class="pull-left">
+            </div>
+            <div class="pull-left text-info">
+              <p></p>
+              <p class="">请上传手持身份证的半身照</p>
+              <p class="">文件小于2M，尺寸大于500 x 500像素</p>
+              <p class="">支持JPG/PNG/BMP等格式图片</p>
+            </div>
+          </div>
+          <input type="hidden" 
+                 class="form-control" 
+                 ng-model="teacher.id_card_pic" 
+                 name="user_id_card" 
+                 validator="required" 
+                 required-error-message="请上传手持身份证半身照">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="user-name" class="col-xs-3 control-label"></label>
+        <div class="col-xs-6">
+            <button validation-submit="join_organization" 
+                    class="btn btn-lg btn-primary" 
+                    ng-click="joinOrganization()">提交申请</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

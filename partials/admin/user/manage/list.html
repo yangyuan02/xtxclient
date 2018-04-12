@@ -1,0 +1,161 @@
+<div class="user-list" ng-init="userAction.getIndex()">
+  <div class="page-title">
+    <h3>用户列表({{ user_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-info" 
+        ng-click="userAction.add({ modal: true })"
+        ng-if="page_permission['user.manage.list.add']">新增用户</button>
+      <button 
+        class="btn btn-sm btn-success" 
+        ng-click="userAction.csv()"
+        ng-if="page_permission['user.manage.list.csv']">导入CSV</button>
+      <button 
+        class="btn btn-sm btn-warning"
+        ng-click="userAction.disable({ batch: true })"
+        ng-disabled="!user_list.result.checked().length"
+        ng-if="page_permission['user.manage.list.batch']">禁用</button>
+      <button 
+        class="btn btn-sm btn-success"
+        ng-click="userAction.enable({ batch: true })"
+        ng-disabled="!user_list.result.checked().length"
+        ng-if="page_permission['user.manage.list.batch']">启用</button>
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="userAction.del({ batch: true })"
+        ng-if="page_permission['user.manage.list.batch-del']"
+        ng-disabled="!user_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="userAction.getIndex(user_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search">
+        <div class="form-group" ng-init="roleAction.getIndex()">
+          <select class="form-control input-sm"
+            ng-model="filter.status" 
+            ng-change="userAction.filterChanged()">
+            <option value="">请选择用户角色</option>
+            <option value="{{ role.id }}" ng-repeat="role in role_list.result">{{ role.name }}</option>
+          </select>
+          <input type="text" 
+            class="form-control input-sm" 
+            placeholder="用户UID、昵称、姓名"
+            ng-model="search.keyword">
+        </div>
+        <button type="submit" 
+          class="btn btn-sm btn-default" 
+          ng-click="userAction.getSearch()">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="user_list.result.setCheck(check_all)">
+          </th>
+          <th>UID</th>
+          <th>头像</th>
+          <th>手机号码</th>
+          <th>昵称</th>
+          <th>真实姓名</th>
+          <th>身份角色</th>
+          <th>注册时间</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!user_list.pagination.total" class="no-animation">
+          <td colspan="10">
+            <div class="list-loader" 
+              ng-if="user_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="user_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="user in user_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !user.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="user.checked">
+          </td>
+          <td>{{ user.id }}</td>
+          <td><img src="./images/logo.png" width="20"></td>
+          <td>
+            <a ng-href="/user/manage/list/{{ user.id }}">
+              {{ user.phone }}
+            </a>
+          </td>
+          <td>
+            <a ng-href="/user/manage/list/{{ user.id }}">
+              {{ user.name }}
+            </a>
+          </td>
+          <td>{{ user.profile.rel_name }}</td>
+          <td>
+            <span ng-if="!user.roles.length" class="text-muted no-animation">暂无角色</span>
+            <span ng-if="user.roles.length" 
+                  ng-repeat="role in user.roles"
+                  class="no-animation">{{ role.name + ((!$last && !first) ? '、' : '') }}</span>
+          </td>
+          <td>
+            <span ng-if="user.profile.created_at" class="no-animation">{{ user.profile.created_at | toYMD }}</span>
+            <span ng-if="!user.profile.created_at" class="text-muted no-animation">时间不详</span>
+          </td>
+          <td>
+            <span class="text-success no-animation" 
+                  ng-if="user.x_status">正常</span>
+            <span class="text-danger no-animation" 
+                  ng-if="!user.x_status">已禁用</span>
+          </td>
+          <td>
+            <a href="" 
+               class="text-info" 
+               ng-if="page_permission['user.manage.list.put']"
+               ng-click="userAction.put({ modal: true, user: this })">[ 编辑 ]</a>
+            <a href="" 
+               class="text-warning no-animation" 
+               ng-show="user.x_status" 
+               ng-if="page_permission['user.manage.list.batch']"
+               ng-click="userAction.disable({ batch: false, user: this })">[ 禁用 ]</a>
+            <a href="" 
+               class="text-success no-animation" 
+               ng-show="!user.x_status"
+               ng-if="page_permission['user.manage.list.batch']"
+               ng-click="userAction.enable({ batch: false, user: this })">[ 启用 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['user.manage.list.del']"
+               ng-click="userAction.del({ batch: false, user: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="user_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="user_list.pagination.total" 
+         items-per-page="user_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="userAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

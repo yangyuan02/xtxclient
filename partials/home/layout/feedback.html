@@ -1,0 +1,63 @@
+<div class="global-feedback">
+  <div class="col-xs-12">
+    <!-- 反馈信息表单 -->
+    <div class="feedback-form">
+      <form name="feedbackFrom" class="form-horizontal" role="form" method="POST">
+        <div class="form-group">
+          <label for="J_input_name" class="col-xs-3 control-label">名字</label>
+          <div class="col-xs-5">
+             <input type="text" 
+                    name="feedback_name" 
+                    class="form-control" 
+                    id="J_input_name" 
+                    placeholder="请输入您的名字" 
+                    ng-model="feedback.name" >
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_email" class="col-xs-3 control-label">邮箱</label>
+          <div class="col-xs-5">
+             <input type="text" 
+                    name="feedback_email" 
+                    class="form-control" 
+                    id="J_input_email" 
+                    placeholder="请输入您的邮箱" 
+                    ng-model="feedback.email" >
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_phone" class="col-xs-3 control-label">邮箱</label>
+          <div class="col-xs-5">
+             <input type="text" 
+                    name="feedback_phone" 
+                    class="form-control" 
+                    id="J_input_phone" 
+                    placeholder="请输入您的邮箱" 
+                    ng-model="feedback.phone" >
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_content" class="col-xs-3 control-label important">反馈内容</label>
+          <div class="col-xs-6">
+            <textarea class="form-control" 
+                      name="feedback_content" 
+                      id="J_input_content" 
+                      placeholder="请输入您的反馈内容" 
+                      ng-model="feedback.content" 
+                      rows="6" 
+                      validator="required,minlength=0" 
+                      required-error-message="请输入反馈内容"></textarea>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button class="btn btn-block btn-primary" 
+                    validation-submit="feedbackFrom" 
+                    ng-click="postFeedback(feedback)">提交反馈</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

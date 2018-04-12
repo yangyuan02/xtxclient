@@ -1,0 +1,130 @@
+<div class="page-list" ng-init="articleAction.getIndex()">
+  <div class="page-title">
+    <h3>文章列表({{ article_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <a href="/article/manage/list/add"
+         class="btn btn-sm btn-success" 
+         ng-if="page_permission['article.manage.list.add']">新增</a>
+      <button 
+        class="btn btn-sm btn-success" 
+        ng-if="page_permission['article.manage.list.batch']"
+        ng-disabled="!article_list.result.checked().length"
+        ng-click="articleAction.enable({ batch: true, course: this })">启用</button>
+      <button 
+        class="btn btn-sm btn-warning" 
+        ng-if="page_permission['article.manage.list.batch']"
+        ng-disabled="!article_list.result.checked().length"
+        ng-click="articleAction.disable({ batch: true, course: this })">禁用</button>
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="articleAction.del({ batch: true })"
+        ng-if="page_permission['article.manage.list.del']"
+        ng-disabled="!article_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="articleAction.getIndex(article_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search" ng-if="true">
+        <div class="form-group">
+          <input type="text" 
+            class="form-control input-sm" 
+            placeholder="请输入文章关键词"
+            ng-model="search.keyword">
+        </div>
+        <button type="submit" 
+          class="btn btn-sm btn-default" 
+          ng-click="articleAction.getSearch()">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="article_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>文章标题</th>
+          <th>文章分类</th>
+          <th>状态</th>
+          <th>发布时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!article_list.pagination.total" class="no-animation">
+          <td colspan="7">
+            <div class="list-loader" 
+              ng-if="article_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="article_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="article in article_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !article.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="article.checked">
+          </td>
+          <td>{{ article.id }}</td>
+          <td>{{ article.title }}</td>
+          <td>{{ article.category.name }}</td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="article.x_status">
+              <em class="text-danger"
+                  ng-switch-when="0">已禁用</em>
+              <em class="text-warning"
+                  ng-switch-when="1">正常</em>
+            </span>
+          </td>
+          <td>{{ article.created_at }}</td>
+          <td>
+            <a href="/article/manage/list/{{ article.id }}" 
+               class="text-info" 
+               ng-if="page_permission['article.manage.list.edit']">[ 编辑 ]</a>
+            <a href="" 
+               class="text-warning" 
+               ng-show="article.x_status" 
+               ng-if="page_permission['article.manage.list.batch']"
+               ng-click="articleAction.disable({ batch: false, article: this })">[ 禁用 ]</a>
+            <a href="" 
+               class="text-success" 
+               ng-show="!article.x_status" 
+               ng-if="page_permission['article.manage.list.batch']"
+               ng-click="articleAction.enable({ batch: false, article: this })">[ 启用 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['article.manage.list.del']"
+               ng-click="articleAction.del({ article: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="article_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="article_list.pagination.total" 
+         items-per-page="article_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="articleAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

@@ -1,0 +1,271 @@
+<div class="config-system">
+  <div class="page-title">
+    <h3>系统配置</h3>
+  </div>
+  <div tabset justified="false">
+    <div tab heading="{{ tab }}" ng-repeat="(key, tab) in systemAction.all_tabs" select="systemAction.getGroup(key)">
+      <div class="row">
+        <div class="col-xs-6" ng-switch="key">
+          <!-- 配置部分必须要重构，根据配置类型自动输出 -->
+          <!-- 基本设置 -->
+          <form ng-switch-when="0" 
+                class="form-field" 
+                name="baseConfigForm" 
+                role="form" 
+                method="POST">
+            <!-- 网站标题 -->
+            <div class="form-group">
+              <label for="J_input_title" class="control-label">
+                {{ config_group[key].WEB_SITE_TITLE.title }}
+                <span class="text-muted">（{{ config_group[key].WEB_SITE_TITLE.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="J_input_title" 
+                     class="form-control input-40" 
+                     placeholder="{{ config_group[key].WEB_SITE_TITLE.title }}"
+                     ng-model="config_group[key].WEB_SITE_TITLE.value">
+            </div>
+            <!-- 网站描述 -->
+            <div class="form-group">
+              <label for="J_input_description" class="control-label">
+                {{ config_group[key].WEB_SITE_DICRIPTION.title }}
+                <span class="text-muted">（{{ config_group[key].WEB_SITE_DICRIPTION.remark }}）</span>
+              </label>
+              <textarea id="J_input_description" 
+                        class="form-control" 
+                        rows="3"
+                        ng-model="config_group[key].WEB_SITE_DICRIPTION.value">
+              </textarea>
+            </div>
+            <!-- 网站关键词 -->
+            <div class="form-group">
+              <label for="J_input_keywords" class="control-label">
+                {{ config_group[key].WEB_SITE_KEYWORDS.title }}
+                <span class="text-muted">（{{ config_group[key].WEB_SITE_KEYWORDS.remark }}）</span>
+              </label>
+              <textarea id="J_input_keywords" 
+                        class="form-control" 
+                        rows="3"
+                        ng-model="config_group[key].WEB_SITE_KEYWORDS.value"></textarea>
+            </div>
+            <!-- 公司名称 -->
+            <div class="form-group">
+              <label for="J_input_company" class="control-label">
+                {{ config_group[key].WEB_SITE_COMPANY.title }}
+                <span class="text-muted">（{{ config_group[key].WEB_SITE_COMPANY.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="J_input_company" 
+                     class="form-control input-40" 
+                     maxlength="40" 
+                     placeholder="{{ config_group[key].WEB_SITE_COMPANY.title }}"
+                     ng-model="config_group[key].WEB_SITE_COMPANY.value">
+            </div>
+            <!-- 客服电话 -->
+            <div class="form-group">
+              <label for="J_input_tel" class="control-label">
+                {{ config_group[key].SITE_PHONE.title }}
+                <span class="text-muted">（{{ config_group[key].SITE_PHONE.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="J_input_tel" 
+                     class="form-control input-30" 
+                     maxlength="18" 
+                     placeholder="{{ config_group[key].SITE_PHONE.title }}"
+                     ng-model="config_group[key].SITE_PHONE.value">
+            </div>
+            <!-- 备案号 -->
+            <div class="form-group">
+              <label for="J_input_icp" class="control-label">
+                {{ config_group[key].ICP_ID.title }}
+                <span class="text-muted">（{{ config_group[key].ICP_ID.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="J_input_icp" 
+                     class="form-control input-30" 
+                     placeholder="请输入网站备案号"
+                     ng-model="config_group[key].ICP_ID.value">
+            </div>
+            <div class="form-group form-action">
+              <button type="submit" 
+                      class="btn btn-primary" 
+                      validation-submit="baseConfigForm" 
+                      ng-click="systemAction.putGroup(key)">保存修改</button>
+            </div>
+          </form>
+          
+          <!-- 内容配置 -->
+          <form ng-switch-when="1"
+                class="form-field" 
+                name="contentConfigForm" 
+                role="form" 
+                method="POST">
+            <!-- 后台每页记录数 -->
+            <div class="form-group">
+              <label for="J_input_admin_rows" class="control-label">
+                {{ config_group[key].ADMIN_PAGE_COUNT.title }}
+                <span class="text-muted">（{{ config_group[key].ADMIN_PAGE_COUNT.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="J_input_admin_rows" 
+                     class="form-control input-20" 
+                     placeholder="{{ config_group[key].ADMIN_PAGE_COUNT.remark }}"
+                     ng-model="config_group[key].ADMIN_PAGE_COUNT.value">
+            </div>
+            <!-- 后台广告位配置 -->
+            <div class="form-group">
+              <label for="J_input_ad" class="control-label">
+                {{ config_group[key].SITE_AD_CONFIG.title }}
+                <span class="text-muted">（{{ config_group[key].SITE_AD_CONFIG.remark }}）</span>
+                </label>
+              <textarea id="J_input_ad" 
+                        class="form-control" 
+                        rows="3"
+                        ng-model="config_group[key].SITE_AD_CONFIG.value">
+              </textarea>
+            </div>
+            <div class="form-group form-action">
+              <button type="submit" 
+                      class="btn btn-primary"
+                      validation-submit="contentConfigForm" 
+                      ng-click="systemAction.putGroup(key)">保存修改</button>
+            </div>
+          </form>
+          
+          <!-- 用户配置 -->
+          <form ng-switch-when="2" 
+                class="form-field"
+                name="userConfigForm" 
+                role="form" 
+                method="POST">
+            <fieldset>
+              <div class="form-group">
+                <label for="J_input_can_reg" class="control-label">
+                  {{ config_group[key].SITE_REGISTER.title }}
+                  <span class="text-muted">（{{ config_group[key].SITE_REGISTER.remark }}）</span>
+                </label>
+                <select id="J_input_can_reg" 
+                        class="form-control" 
+                        name="can_reg"
+                        ng-model="config_group[key].SITE_REGISTER.value">
+                  <option value="1">允许</option>
+                  <option value="0">禁止</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="J_input_valicate" class="control-label">
+                  {{ config_group[key].SITE_REGISTER_PHONE.title }}
+                  <span class="text-muted">（{{ config_group[key].SITE_REGISTER_PHONE.remark }}）</span>
+                </label>
+                  <select id="J_input_valicate" 
+                          class="form-control" 
+                          name="can_reg"
+                          ng-model="config_group[key].SITE_REGISTER_PHONE.value">
+                    <option value="1">要</option>
+                    <option value="0">不要</option>
+                  </select>
+              </div>
+              <div class="form-group form-action">
+                <button type="submit" 
+                        class="btn btn-primary"
+                        validation-submit="userConfigForm" 
+                        ng-click="systemAction.putGroup(key)">保存修改</button>
+              </div>
+            </fieldset>
+          </form>
+
+          <!-- 系统配置 -->
+          <form ng-switch-when="3" 
+                class="form-field"
+                name="systemConfigForm" 
+                role="form" 
+                method="POST">
+            <div class="form-group" >
+              <label for="J_input_database_url" class="control-label">
+                {{ config_group[key].SYSTEM_DB_PATH.title }}
+                <span class="text-muted">（{{ config_group[key].SYSTEM_DB_PATH.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="J_input_database_url" 
+                     class="form-control input-50" 
+                     placeholder="{{ config_group[key].SYSTEM_DB_PATH.title }}"
+                     ng-model="config_group[key].SYSTEM_DB_PATH.value">
+            </div>
+            <div class="form-group">
+              <label for="config_database_baksize" class="control-label">
+                {{ config_group[key].SYSTEM_DB_SIZE.title }}
+                <span class="text-muted">（{{ config_group[key].SYSTEM_DB_SIZE.remark }}）</span>
+              </label>
+              <input type="text" 
+                     id="config_database_baksize" 
+                     name="database_baksize"
+                     class="form-control input-20" 
+                     placeholder="{{ config_group[key].SYSTEM_DB_SIZE.remark }}"
+                     ng-model="config_group[key].SYSTEM_DB_SIZE.value">
+            </div>
+            <div class="form-group">
+              <label for="J_input_database_compress" class="control-label">
+                {{ config_group[key].SYSTEM_DB_COMPRESS.title }}
+                <span class="text-muted">（{{ config_group[key].SYSTEM_DB_COMPRESS.remark }}）</span>
+              </label>
+              <select id="J_input_database_compress" 
+                      class="form-control"
+                      name="database_compress"
+                      ng-model="config_group[key].SYSTEM_DB_COMPRESS.value">
+                <option value="1">启用压缩</option>
+                <option value="0">不压缩</option>
+              </select>
+            </div>
+            <!-- <div class="form-group">
+              <label for="J_input_database_compress_level" class="control-label">
+                {{ config_group[key].SYSTEM_DB_COMPRESS_LEVEL.title }}
+                <span class="text-muted">（{{ config_group[key].SYSTEM_DB_COMPRESS_LEVEL.remark }}）</span>
+              </label>
+              <select class="form-control" 
+                      id="J_input_database_compress_level"
+                      ng-model="config_group[key].SYSTEM_DB_COMPRESS_LEVEL.value">
+                <option value="3">最高</option>
+                <option value="2">普通</option>
+                <option value="1">一般</option>
+              </select>
+            </div> -->
+            <div class="form-group">
+              <label for="J_input_api_acl" class="control-label">
+                {{ config_group[key].API_ACL.title }}
+                <span class="text-muted">（{{ config_group[key].API_ACL.remark }}）</span>
+              </label>
+              <select class="form-control" 
+                      name="api_acl" 
+                      id="J_input_api_acl"
+                      ng-model="config_group[key].API_ACL.value">
+                <option value="1">开启验证</option>
+                <option value="0">禁止验证</option>
+              </select>
+            </div>
+            <!-- 数据库调试开关 -->
+            <div class="form-group">
+              <label for="J_input_debug_sql" class="control-label">
+                {{ config_group[key].DEBUG_SQL.title }}
+                <span class="text-muted">（{{ config_group[key].DEBUG_SQL.remark }}）</span>
+              </label>
+              <select class="form-control" 
+                      name="api_acl" 
+                      id="J_input_debug_sql" 
+                      ng-model="config_group[key].DEBUG_SQL.value">
+                <option value="1">开启</option>
+                <option value="0">关闭</option>
+              </select>
+            </div>
+
+            <div class="form-group form-action">
+              <button type="submit" 
+                      class="btn btn-primary"
+                      validation-submit="systemConfigForm" 
+                      ng-click="systemAction.putGroup(key)">保存修改</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

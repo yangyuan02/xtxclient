@@ -1,0 +1,67 @@
+<form class="form-horizontal" ng-controller="SchoolController" name="teacherEdit" role="form" method="POST">
+  <div class="form-group">
+    <label for="teacher_real_name" class="col-xs-3 control-label important">修改用户</label>
+    <div class="col-xs-6">
+       <input type="text" 
+              id="teacher_real_name" 
+              name="teacher_real_name" 
+              ng-model="$root.teacher_edit.user.profile.rel_name" 
+              class="form-control" 
+              placeholder="输入用户真实姓名" 
+              validator="required" 
+              required-error-message="请输入真实姓名" 
+              disabled>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="user_phone" class="col-xs-3 control-label important">手机号码</label>
+    <div class="col-xs-6">
+       <input type="text" 
+              class="form-control" 
+              id="user_phone" 
+              name="user_phone" 
+              placeholder="输入手机号码（有效手机号码）" 
+              ng-model="$root.teacher_edit.user.phone" 
+              validator="required, mobile" 
+              required-error-message="请输入手机号码" 
+              mobile-error-message="手机号码无效" 
+              disabled>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="teacher_title" class="col-xs-3 control-label important">教衔职称</label>
+    <div class="col-xs-6" ng-init="$root.teacher_edit.title = $root.teacher_edit.title || undefined">
+       <input type="text" 
+              id="teacher_title" 
+              name="teacher_title" 
+              ng-change="$root.teacher_edit.title = $root.teacher_edit.title || undefined"
+              ng-model="$root.teacher_edit.title" 
+              class="form-control" 
+              placeholder="输入教衔职称,如：前端工程师 10年教龄"
+              validator="required" 
+              required-error-message="请输入教衔职称">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="teacher_introduction" class="col-xs-3 control-label important">个人简介</label>
+    <div class="col-xs-6" ng-init="$root.teacher_edit.introduction = $root.teacher_edit.introduction || undefined">
+     <textarea rows="7" 
+               class="form-control" 
+               name="teacher_introduction" 
+               id="teacher_introduction" 
+               ng-model="$root.teacher_edit.introduction" 
+               ng-change="$root.teacher_edit.introduction = $root.teacher_edit.introduction || undefined"
+               placeholder="请输入个人简介（500字以内）"
+               validator="required, maxlength=500" 
+               required-error-message="请输入个人简介" 
+               maxlength-error-message="个人简介不可以超过500字"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="user-name" class="col-xs-3 control-label"></label>
+    <div class="col-xs-6">
+        <button validation-submit="teacherEdit" class="btn btn-primary" 
+                ng-click="editTeacherInfo({ modal: false })">提交保存</button>
+    </div>
+  </div>
+</form>

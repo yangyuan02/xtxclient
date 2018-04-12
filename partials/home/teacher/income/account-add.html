@@ -1,0 +1,235 @@
+<div class="income-account-add">
+  <div class="col-xs-12 account-add form-horizontal" ng-init="bankAcount.type = 1" >
+
+    <!-- 添加账户成功 -->
+    <div ng-show="bankAcount.status == 1" class="toggle">
+      <p class="text-center">
+        <i class="icon icon-success text-primary"></i>
+        <span>恭喜您！账户添加成功</span>
+      </p>
+      <hr>
+      <p class="text-center">
+        <a href="/teacher/income/apply" class="btn btn-primary">前去提现</a>
+      </p>
+    </div>
+
+    <!-- 添加表单 -->
+    <div class="form" ng-hide="bankAcount.status == 1" class="toggle">
+
+      <!-- 切换卡 -->
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">账户类型</label>
+        <div class="col-xs-9">
+          <label class="radio-inline">
+            <input type="radio" 
+                   name="account_type" 
+                   value="1" 
+                   ng-model="bankAcount.type" 
+                   ng-checked="true"/> 支付宝
+          </label>
+          <label class="radio-inline">
+            <input type="radio" 
+                   name="account_type" 
+                   value="2" 
+                   ng-model="bankAcount.type" /> 银行卡
+          </label>
+        </div>
+      </div>
+
+      <!-- 支付宝 -->
+      <form name="addAlipayAccountForm" class="form-horizontal" role="form" method="POST">
+        <div class="alipay-form slide-top" 
+             ng-show="bankAcount.type == 1"
+             ng-init="bankAcount.alipay = bankAcount.alipay || {};
+                      bankAcount.alipay.account_name = '支付宝';
+                      bankAcount.alipay.account_code = 'alipay';
+                      ">
+          <div class="form-group">
+            <label for="alipay_account" class="col-xs-3 control-label important">支付宝账户</label>
+            <div class="col-xs-4">
+              <input type="text" 
+                     class="form-control input" 
+                     id="alipay_account" 
+                     name="alipay_account" 
+                     ng-model="bankAcount.alipay.account" 
+                     placeholder="请输入支付宝账户" 
+                     validator="required" 
+                     required-error-message="请输入支付宝账户" 
+                     ng-keyup="alipayIdFormat(bankAcount.alipay.account)"
+                     ng-change="bankAcount.alipay.account = bankAcount.alipay.account || undefined">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="alipay_phone_number" class="col-xs-3 control-label important">手机号码</label>
+            <div class="col-xs-4">
+               <input type="text" 
+                      ng-if="!!user"
+                      class="form-control input" 
+                      id="alipay_phone_number" 
+                      name="alipay_phone_number" 
+                      placeholder="请输入手机号" 
+                      ng-init="bankAcount.alipay.phone = user.phone || $root.user.phone"
+                      ng-model="bankAcount.alipay.phone" 
+                      disabled>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-4 col-xs-offset-3">
+               <button ng-click="getVerifyCode(bankAcount.alipay.phone)" class="btn btn-default" 
+                       ng-disabled="verify_seconds > 0">{{ verify_seconds == undefined ? '获取验证码' : ( verify_seconds > 0 ? verify_seconds + '秒后重新获取' : '重新获取验证码' ) }}</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="alipay_verification_code" class="col-xs-3 control-label important">验证码</label>
+            <div class="col-xs-4">
+               <input type="text" 
+                      class="form-control input" 
+                      id="alipay_verification_code" 
+                      name="alipay_verification_code" 
+                      placeholder="请输入验证码" 
+                      validator="required" 
+                      required-error-message="请输入验证码" 
+                      maxlength="6" 
+                      ng-change="bankAcount.alipay.v_code = bankAcount.alipay.v_code || undefined"
+                      ng-model="bankAcount.alipay.v_code">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-9">
+              <button validation-submit="addAlipayAccountForm" 
+                      class="btn btn-primary" 
+                      ng-click="addBankAccount(bankAcount.alipay)">提交保存</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- 银行卡 -->
+      <form name="addBankAccountForm" class="form-horizontal" role="form" method="POST">
+        <div class="bankcard-form slide-top" 
+             ng-show="bankAcount.type == 2"
+             ng-init="bankAcount.bank = bankAcount.bank || {}">
+
+          <div class="form-group">
+            <label for="bankcard_account" class="col-xs-3 control-label important">储蓄卡卡号</label>
+            <div class="col-xs-4">
+              <input 
+                type="text" 
+                class="form-control input" 
+                id="bankcard_account" 
+                name="bankcard_account" 
+                ng-model-options="{ debounce: 500 }"
+                ng-model="bankAcount.bank.account" 
+                placeholder="储蓄卡卡号" 
+                maxlength="23" 
+                validator="required, minlength=18, maxlength=23" 
+                required-error-message="请输入储蓄卡卡号" 
+                minlength-error-message="请输入正确的储蓄卡卡号" 
+                maxlength-error-message="请输入正确的储蓄卡卡号" 
+                ng-blur="getBankInfo(bankAcount.bank.account)" 
+                ng-change="getBankInfo(bankAcount.bank.account)">
+              <p class="clearfix"></p>
+              <div class="bank_name">
+                <img ng-src="https://apimg.alipay.com/combo.png?d=cashier&t={{ bankAcount.bank.info.bank_code }}" 
+                     style="border: 1px solid #eee" 
+                     ng-show="bankAcount.bank.info.card_type == 1" 
+                     title="{{ bankAcount.bank.info.bank_name }}" 
+                     alt="{{ bankAcount.bank.info.bank_name }}"/>
+                <span class="text-primary" ng-show="bankAcount.bank.info.card_type == 1">
+                     <span>&nbsp;<i class="icon icon-success"></i>&nbsp;{{ bankAcount.bank.info.bank_name }}</span>
+                </span>
+                <span class="text-danger" ng-show="bankAcount.bank.info.card_type == 0">
+                      <span><i class="icon icon-warning"></i>&nbsp;无法识别银行信息</span>
+                </span>
+                <span class="text-danger" ng-show="bankAcount.bank.info.card_type == -1">
+                      <span><i class="icon icon-warning"></i>&nbsp;仅支持储蓄卡提现</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="user_name" class="col-xs-3 control-label  important">姓名</label>
+            <div class="col-xs-4">
+               <input type="text" 
+                      class="form-control input" 
+                      id="user_name" 
+                      name="user_name" 
+                      ng-model="bankAcount.bank.name" 
+                      minlength="2" 
+                      maxlength="15" 
+                      placeholder="请输入您的真实姓名" 
+                      validator="required" 
+                      required-error-message="请输入您的真实姓名">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="identity_id" class="col-xs-3 control-label  important">身份证号码</label>
+            <div class="col-xs-4">
+               <input type="text" 
+                      class="form-control input" 
+                      id="identity_id" 
+                      name="identity_id" 
+                      ng-model="bankAcount.bank.identity" 
+                      placeholder="请输入有效的身份证号码" 
+                      maxlength="18" 
+                      validator="required, minlength=15, maxlength=18" 
+                      required-error-message="请输入您的身份证号码" 
+                      minlength-error-message="请输入有效的身份证号码" 
+                      maxlength-error-message="请输入有效的身份证号码" 
+                      ng-keyup="identityIdFormat(bankAcount.bank.identity)">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bank_phone_number" class="col-xs-3 control-label  important">手机号码</label>
+            <div class="col-xs-4">
+              <input type="text" 
+                     ng-if="!!user"
+                     class="form-control input" 
+                     id="bank_phone_number" 
+                     name="bank_phone_number" 
+                     ng-init="bankAcount.bank.phone = user.phone || $root.user.phone"
+                     ng-model="bankAcount.bank.phone" 
+                     placeholder="请输入您的手机号"
+                     disabled>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-4 col-xs-offset-3">
+               <button ng-click="getVerifyCode(bankAcount.bank.phone)" 
+                       class="btn btn-default" 
+                       ng-disabled="verify_seconds > 0">{{ verify_seconds == undefined ? '获取验证码' : ( verify_seconds > 0 ? verify_seconds + '秒后重新获取' : '重新获取验证码' ) }}</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bankcard_verification_code" class="col-xs-3 control-label  important">验证码</label>
+            <div class="col-xs-4">
+              <input type="text" 
+                     class="form-control input" 
+                     id="bankcard_verification_code" 
+                     name="bankcard_verification_code" 
+                     ng-model="bankAcount.bank.v_code" 
+                     placeholder="请输入验证码" 
+                     maxlength="6" 
+                     validator="required" 
+                     required-error-message="请输入验证码">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-9">
+              <button validation-submit="addBankAccountForm" 
+                      class="btn btn-primary" 
+                      ng-click="addBankAccount(bankAcount.bank)">提交保存</button>
+              <span class="text-danger" ng-show="bankAcount.bank.status == 0">&nbsp;&nbsp;<i class="icon icon-warning"></i>&nbsp;{{ bankAcount.bank.msg }}</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="page-list">
+  <!-- <div class="page-title">
+    <h3>仪表盘</h3>
+  </div>
+  <div class="page-content">
+  </div> -->
+
+  <div class="page-title"><h3>系统统计</h3></div>
+  <div class="page-content">
+    <!-- <div class="list-empty" ng-if="course_list.pagination.total == undefined">
+      <p class="text-center"><i class="icon icon-warning"></i></p>
+      <h5 class="text-center">暂无课程信息</h5>
+    </div>
+    <div class="list-loader" ng-if="course_list.pagination.total == undefined">
+      <p class="text-center"><img src="images/loader.svg" width="48"></p>
+      <h5 class="text-center">正在努力加载中...</h5>
+    </div>
+    <div class="list-loader" 
+      ng-include="'partials/admin/layout/loading.html'">
+    </div> -->
+
+    <div class="overview-panel">
+      <div class="row">
+        <div class="col-sm-3 col-xs-6">
+          <div class="well well-s">
+            <h4>会员数<span class="pull-right">460</span></h4>
+            <em>今日新增80人</em>
+          </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <div class="well well-s">
+            <h4>今日订单<span class="pull-right">160</span></h4>
+            <em>今日新增120个订单</em>
+          </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <div class="well well-s">
+            <h4>今日留言<span class="pull-right">20</span></h4>
+            <em>今日新增23条留言</em>
+          </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <div class="well well-s">
+            <h4>今日成交<span class="pull-right">1680</span></h4>
+            <em>历史成交23894.123元</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-title"><h3>常用操作</h3></div>
+  <div class="page-content">
+    <a class="btn btn-success"
+       ng-click="dashboardAction.clearcache({ tag: 'system' })">清除系统缓存</a>
+  </div>
+</div>

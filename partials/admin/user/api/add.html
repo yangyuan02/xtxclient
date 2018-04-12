@@ -1,0 +1,72 @@
+<div class="row" ng-controller="UserController">
+  <div class="col-xs-8 col-xs-offset-1">
+    <div class="register-form">
+      <form class="form-horizontal" name="apiForm" role="form" method="POST">
+        <div class="form-group">
+          <label for="api_name" class="col-xs-3 control-label">名称</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="api_name" 
+                   name="api_name" 
+                   class="form-control" 
+                   maxlength="20" 
+                   placeholder="请输入API名称" 
+                   ng-model="api.name"
+                   validator="required"  
+                   required-error-message="请输入API名称">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="api_slug" class="col-xs-3 control-label">别名</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="api_slug" 
+                   name="api_slug" 
+                   class="form-control" 
+                   maxlength="30" 
+                   placeholder="请输入API别名" 
+                   ng-model="api.slug"
+                   validator="required"  
+                   required-error-message="请输入API别名">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="api_path" class="col-xs-3 control-label">路径</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="api_path" 
+                   name="api_path" 
+                   class="form-control" 
+                   maxlength="30" 
+                   placeholder="请输入API路径" 
+                   ng-model="api.path"
+                   validator="required"  
+                   required-error-message="请输入API路径">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="api_method" class="col-xs-3 control-label">类型</label>
+          <div class="col-xs-9">
+            <select class="form-control" 
+                    id="api_method" 
+                    name="api_method" 
+                    ng-init="api.method = 'GET'"
+                    ng-model="api.method" 
+                    validator="required"  
+                   required-error-message="请选择API类型">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-9 col-xs-offset-3">
+            <button class="btn btn-primary" validation-submit="apiForm" ng-click="apiAction.add({ modal: false })">确认添加</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

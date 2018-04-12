@@ -1,0 +1,138 @@
+<div class="user-role" ng-init="roleAction.getLists()">
+  <div class="page-title">
+    <h3>角色管理({{ role_list.pagination.total || 0 }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-info" 
+              ng-click="roleAction.add({ modal: true })"
+              ng-if="page_permission['user.manage.role.add']">新增</button>
+      <button class="btn btn-sm btn-warning" 
+              ng-if="page_permission['user.manage.role.batch']"
+              ng-click="roleAction.disable({ batch: true })"
+              ng-disabled="!role_list.result.checked().length">禁用</button>
+      <button class="btn btn-sm btn-success"
+              ng-if="page_permission['user.manage.role.batch']"
+              ng-click="roleAction.enable({ batch: true })"
+              ng-disabled="!role_list.result.checked().length">启用</button>
+      <button class="btn btn-sm btn-danger"
+              ng-click="roleAction.del({ batch: true })"
+              ng-disabled="!role_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-default" 
+              ng-click="roleAction.getLists(role_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right" ng-if="false">
+      <form class="navbar-form" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control input-sm" placeholder="输入角色名称">
+        </div>
+        <button type="submit" class="btn btn-sm btn-default">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="role_list.result.setCheck(check_all)">
+          </th>
+          <th>编号</th>
+          <th>角色名称</th>
+          <th>描述</th>
+          <th>类型</th>
+          <th>权限</th>
+          <th>当前人数</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!role_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="role_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="role_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="role in role_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !role.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="role.checked">
+          </td>
+          <td>{{ role.id }}</td>
+          <td>{{ role.name }}</td>
+          <td>
+            <span ng-if="role.description" class="no-animation">{{ role.description }}</span>
+            <span ng-if="!role.description" class="text-muted no-animation">暂无描述</span>
+          </td>
+          <td>
+            <span ng-if="role.type == 1" class="no-animation">管理员用户</span>
+            <span ng-if="role.type == 2" class="no-animation">普通用户</span>
+            <span ng-if="role.type == undefined || role.type == ''" class="text-muted no-animation">默认未指定</span>
+          </td>
+          <td>
+            <span ng-show="!!role.permissions.length" class="toggle">
+              [ {{ role.permissions.length }}项权限 ] 
+              <a href="" class="text-info" ng-click="roleAction.permission(role)">[ 查看 ]</a>
+              <a ng-href="/user/manage/role/{{ role.id }}" 
+                 ng-if="page_permission['user.manage.role.permission']"> [ 编辑 ]</a>
+            </span>
+            <span ng-show="!role.permissions.length" class="toggle text-muted">
+              [ 暂无权限 ]
+              <a href="" class="text-danger" 
+                         ng-href="/user/manage/role/{{ role.id }}"
+                         ng-if="page_permission['user.manage.role.permission']"> [ 添加 ]</a>
+            </span>
+          </td>
+          <td>{{ role.user_count || 0 }}人</td>
+          <td>
+            <span class="text-success no-animation" ng-if="role.x_status">正常</span>
+            <span class="text-danger no-animation" ng-if="!role.x_status">已禁用</span>
+          </td>
+          <td>
+            <a href="" 
+               class="text-info" 
+               ng-click="roleAction.edit({ modal: true, role: this })"
+               ng-if="page_permission['user.manage.role.edit']">[ 编辑 ]</a>
+            <a href="" 
+               class="text-warning no-animation" 
+               ng-show="role.x_status" 
+               ng-click="roleAction.disable({ batch: false, role: this })" >[ 禁用 ]</a>
+            <a href="" 
+               class="text-success no-animation" 
+               ng-show="!role.x_status" 
+               ng-click="roleAction.enable({ batch: false, role: this })" >[ 启用 ]</a>
+            <a href="" 
+               class="text-danger"
+               ng-click="roleAction.del({ batch: false, role: this })" 
+               ng-if="page_permission['user.manage.role.delete']">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="role_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="role_list.pagination.total" 
+         items-per-page="role_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="roleAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false" ></div>
+  </div>
+</div>

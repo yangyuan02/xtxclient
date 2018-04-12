@@ -1,0 +1,70 @@
+<div class="container user">
+  <div class="row">
+    <div class="col-xs-12" >
+      <ol class="ab-nav breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li ng-if="breadcrumb.$current.parent.parent.data.title">
+          <a ng-href="{{ breadcrumb.$current.parent.parent.data.url }}">{{ breadcrumb.$current.parent.parent.data.title }}</a>
+        </li>
+        <li ng-if="breadcrumb.$current.parent.data.title">
+          <a ng-href="{{ breadcrumb.$current.parent.data.url }}">{{ breadcrumb.$current.parent.data.title }}</a>
+        </li>
+        <li ng-if="breadcrumb.current.data.title">
+          <a href="{{ breadcrumb.current.data.url }}">{{ breadcrumb.current.data.title }}</a>
+        </li>
+      </ol>
+    </div>
+    <div class="col-xs-2">
+      <div class="sidebar">
+        <div class="box">
+          <h4>教师中心</h4>
+          <ul>
+            <li ng-class="{ active: ('index' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/index">教师中心</a>
+            </li>
+            <li ng-class="{ active: ('trade' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/trade">已售课程</a>
+            </li>
+            <li ng-class="{ active: ('rate' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/rate">评价管理</a>
+            </li>
+            <li ng-class="{ active: ('course-add' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/course/add">发布课程</a>
+            </li>
+            <li ng-class="{ active: ('course' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/course/list">已开课程</a>
+            </li>
+            <li ng-class="{ active: ('organization' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/organization/list">我的学校</a>
+            </li>
+            <li ng-class="{ active: ('income' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/income/index">我的收入</a>
+            </li>
+            <li ng-class="{ active: ('apply' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/income/apply">申请提现</a>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="box setting">
+          <h4>个人设置</h4>
+          <ul>
+            <li ng-class="{ active: ('profile' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/profile">个人资料</a>
+            </li>
+            <li ng-class="{ active: ('password' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/password">修改密码</a>
+            </li>
+            <li ng-class="{ active: ('account' == (status.current  || status.parent)) }">
+              <a ng-href="/teacher/account">帐户绑定</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-xs-10">
+      <div ui-view class="content slide-top"></div>
+    </div>
+  </div>
+</div>

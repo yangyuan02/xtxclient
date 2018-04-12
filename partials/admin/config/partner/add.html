@@ -1,0 +1,30 @@
+<div class="row" ng-controller="ConfigController">
+  <div class="col-xs-9">
+    <div class="register-form">
+      <form class="form-horizontal" 
+            name="addPartnerForm" 
+            role="form" 
+            method="POST">
+        <div class="form-group">
+          <label for="partner_keyword" class="col-xs-3 control-label">机构名称</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="partner_keyword" 
+                   class="form-control" 
+                   name="partner_keyword" 
+                   maxlength="140" 
+                   placeholder="请您输入机构关键词" 
+                   ng-model="partner.keyword">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-9 col-xs-offset-3">
+            <button class="btn btn-primary" 
+                    validation-submit="addPartnerForm" 
+                    ng-click="partnerAction.add({ modal: false })">提交保存</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

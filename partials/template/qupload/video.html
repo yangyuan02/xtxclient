@@ -1,0 +1,18 @@
+<div class="upload-video" 
+     ng-class="{'upload-retry': video_status > 0 , 'upload-error': video_status < 0}" 
+     ng-mouseover="hoverEvent('over')" 
+     ng-mouseout="hoverEvent('out')">
+  <i class="icon icon-upload"></i>
+  <span>{{ video_text }}</span>
+  <div class="progress" 
+       ng-class="{ hidden: (upload_precent == 100 || upload_precent == 0) }">
+    <div class="progress-bar progress-bar-striped active" 
+         role="progressbar" 
+         aria-valuenow="{{ upload_precent }}" 
+         aria-valuemin="0" 
+         aria-valuemax="100" 
+         ng-style="{ 'width': upload_precent + '%' }">
+    </div>
+    <span class="progress-text">{{ upload_precent }}%</span>
+  </div>
+</div>

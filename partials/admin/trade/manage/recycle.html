@@ -1,0 +1,109 @@
+<div class="page-list" ng-init="tradeAction.getRecycle()">
+  <div class="page-title">
+    <h3>订单回收站({{ trade_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="tradeAction.del({ batch: true })"
+        ng-if="page_permission['trade.manage.list.del']"
+        ng-disabled="!trade_list.result.checked().length">删除</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search" ng-if="true">
+        <div class="form-group">
+          <select 
+            class="form-control input-sm" 
+            ng-model="filter.status" 
+            ng-change="tradeAction.filterChanged()">>
+            <option value="">所有订单</option>
+            <option value="-1">已关闭</option>
+            <option value="0">已体验</option>
+            <option value="1">待付款</option>
+            <option value="2">已付款</option>
+            <option value="3">已评价</option>
+          </select>
+          <input type="text" class="form-control input-sm" placeholder="请输入订单编号">
+        </div>
+        <button type="submit" class="btn btn-sm btn-default">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="trade_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>所购课程</th>
+          <th>用户</th>
+          <th class="text-right" width="120">支付金额(元)</th>
+          <th>状态</th>
+          <th>下单时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!trade_list.pagination.total" class="no-animation">
+          <td colspan="10"><h5 class="text-center">暂无订单数据</h5></td>
+        </tr>
+        <tr ng-repeat="trade in trade_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !trade.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="trade.checked">
+          </td>
+          <td>{{ trade.id }}</td>
+          <td>{{ trade.course.name }}</td>
+          <td><a href="">{{ trade.user.name }}</a></td>
+          <td class="text-right text-danger">{{ trade.rel_price }}</td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="trade.status">
+              <em class="text-danger"
+                  ng-switch-when="-1">已关闭</em>
+              <em class="text-danger"
+                  ng-switch-when="0">已试听</em>
+              <em class="text-warning"
+                  ng-switch-when="1">已购买</em>
+              <em class="text-success"
+                  ng-switch-when="2">已付款</em>
+              <em class="text-success"
+                  ng-switch-when="3">已评价</em>
+            </span>
+          </td>
+          <td>{{ trade.created_at }}</td>
+          <td>
+            <a href="/trade/manage/list/{{ trade.id }}" 
+               class="text-info" 
+               ng-if="page_permission['trade.manage.list.detail']">[ 查看 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['trade.manage.list.del']"
+               ng-click="tradeAction.del({ trade: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="trade_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="trade_list.pagination.total" 
+         items-per-page="trade_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="tradeAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

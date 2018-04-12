@@ -1,0 +1,74 @@
+<div class="page-title">
+  <h3>用户详情</h3>
+</div>
+<div class="row" ng-init="userAction.getItem()">
+  <div class="col-xs-12">
+    <div class="item-box">
+      <p>
+        <strong>用户UID：</strong>
+        <span>{{ user.id }}</span>
+        <span class="sep"></span>
+
+        <strong>学号：</strong>
+        <span>{{ user.open_id }}</span>
+      </p>
+      <p>
+        <strong>昵称：</strong>
+        <span>{{ user.name }}</span>
+        <span class="sep"></span>
+
+        <strong>手机：</strong>
+        <span>{{ user.phone }}</span>
+        <span class="sep"></span>
+
+        <strong>真实姓名：</strong>
+        <span>{{ user.profile.rel_name }}</span>
+      </p>
+      <p>
+        <strong>账户总额：</strong>
+        <span class="text-danger">{{ user.profile.account_remain }}</span>元
+        <span class="sep"></span>
+
+        <strong>用户积分：</strong>
+        <span class="text-danger">{{ user.profile.account_score }}</span>分
+        <span class="sep"></span>
+
+        <strong>性别：</strong>
+        <span ng-switch="user.profile.gender">
+          <em class="text-info" ng-switch-when="1">男</em>
+          <em class="text-info" ng-switch-when="2">女</em>
+        </span>
+      </p>
+      <p>
+        <strong>课程数：</strong>
+        <span>{{ user.profile.course_count }}</span>
+        <span class="sep"></span>
+
+        <strong>学校数：</strong>
+        <span>{{ user.profile.organization_count }}</span>
+        <span class="sep"></span>
+
+        <strong>学习时长：</strong>
+        <span>{{ user.profile.study_duration }}</span>分钟
+        <span class="sep"></span>
+
+        <strong>累计收入：</strong>
+        <span class="text-danger">{{ user.profile.income_total }}</span>元
+        <span class="sep"></span>
+
+        <strong>收入余额：</strong>
+        <span class="text-danger">{{ user.profile.income_remain }}</span>元
+      </p>
+      <p>
+        <strong>注册时间：</strong>
+        <span ng-switch="user.is_study_finish">
+        </span>
+        <span class="sep"></span>
+
+        <strong>学习时长：</strong>
+        <span>{{ user.total_study_duration }}秒</span>
+      </p>
+    </div>
+    <a href="/user/manage/list/index" class="btn btn-default">返回</a>
+  </div>
+</div>

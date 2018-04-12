@@ -1,0 +1,137 @@
+<div class="page-list" ng-init="paymentAction.getIndex()">
+  <div class="page-title">
+    <h3>收款单({{ payment_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="paymentAction.del({ batch: true })"
+        ng-if="page_permission['trade.manage.payment.del']"
+        ng-disabled="!payment_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="paymentAction.getLists(payment_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search">
+        <div class="form-group">
+          <select class="form-control input-sm" 
+                  ng-model="filter.pay_status" 
+                  ng-change="paymentAction.filterChanged()">>
+            <option value="all">所有支付状态</option>
+            <option value="0">未支付</option>
+            <option value="1">已支付</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="form-control input-sm" 
+                  ng-model="filter.pay_type" 
+                  ng-change="paymentAction.filterChanged()">
+            <option value="all">所有支付方式</option>
+            <option value="1">支付宝</option>
+            <option value="2">银行卡</option>
+            <option value="3">手机支付宝</option>
+            <option value="4">微信支付</option>
+            <option value="5">微信扫码支付</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="payment_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>收款单编号</th>
+          <th>支付编号</th>
+          <th>付款方式</th>
+          <th class="text-right" width="120">支付金额(元)</th>
+          <th>付款用户</th>
+          <th>支付状态</th>
+          <th>支付时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!payment_list.pagination.total" class="no-animation">
+          <td colspan="10">
+            <div class="list-loader" 
+              ng-if="payment_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="payment_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="payment in payment_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !payment.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="payment.checked">
+          </td>
+          <td>{{ payment.id }}</td>
+          <td>
+            <a ng-href="/trade/manage/payment/{{ payment.id }}">
+              {{ payment.pay_num }}
+            </a>
+          </td>
+          <td>{{ payment.pay_sn }}</td>
+          <td ng-switch="payment.pay_type">
+            <span ng-switch-when="1" class="no-animation">支付宝</span>
+            <span ng-switch-when="2" class="no-animation">银行卡</span>
+            <span ng-switch-when="3" class="no-animation">手机支付宝</span>
+            <span ng-switch-when="4" class="no-animation">微信支付</span>
+            <span ng-switch-when="5" class="no-animation">微信扫码支付</span>
+          </td>
+          <td class="text-right text-danger">{{ payment.total_amount }}</td>
+          <td>
+            <a ng-href="/user/manage/list/{{ payment.user.id }}" target="_blank">{{ payment.user.name }}</a>
+          </td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="payment.pay_status">
+              <em class="text-danger no-animation"
+                  ng-switch-when="0">未支付</em>
+              <em class="text-success no-animation"
+                  ng-switch-when="1">已支付</em>
+            </span>
+          </td>
+          <td>{{ payment.created_at }}</td>
+          <td>
+            <a ng-href="/trade/manage/payment/{{ payment.id }}" 
+               class="text-info" 
+               ng-if="page_permission['trade.manage.payment.item']">[ 查看 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['trade.manage.payment.del']"
+               ng-click="paymentAction.del({ payment: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="payment_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="payment_list.pagination.total" 
+         items-per-page="payment_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="paymentAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

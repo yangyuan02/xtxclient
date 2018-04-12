@@ -1,0 +1,82 @@
+<div class="section-live-info" ng-controller="LessonController" ng-init="updateSectionInit()">
+
+  <form name="sectionLiveForm" 
+        class="form-horizontal" 
+        role="form" 
+        method="POST"
+        ng-submit="updateSectionLiveInfo({ modal: true, live: live })">
+    <div class="form-group" 
+         ng-class="{ 'has-error': live.at.format() == '无效时间' || !(live.at > minDate) }">
+      <div class="col-xs-offset-3 col-xs-6">
+        <div class="live-at-time">
+          <h4 class="text-center">
+            <label for="J_live_at">选择直播开始时间</label>
+          </h4>
+          <div class="date-picker">
+            <input date-time 
+                   ng-model="live.at" 
+                   min-date="minDate" 
+                   max-date="maxDate" 
+                   view="date" 
+                   min-view="minutes" 
+                   format="YYYY年MM月DD日 HH:mm" 
+                   class="form-control text-center" 
+                   id="J_live_at">
+          </div>
+          <div class="text-center no-animation" ng-if="live.at.format() == '无效时间' || !(live.at > minDate)">
+            <p></p>
+            <p class="text-danger">
+              <i class="icon icon-warning text-danger"></i>
+              <span ng-if="live.at.format() == '无效时间'">请重新选择有效的直播时间</span>
+              <span ng-if="live.at.format() != '无效时间' && !(live.at > minDate)">直播开始时间必须大于此刻</span>
+            </p>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
+    <div class="form-group"
+         ng-class="{ 'has-error': (!live.duration.moments && !live.duration.hours) }">
+      <div class="col-xs-offset-3 col-xs-6">
+        <div class="live-duration">
+          <h4 class="text-center">
+            <label>填写预计直播时长</label>
+          </h4>
+          <div class="time-picker">
+            <div class="input-group">
+              <input type="number" 
+                     placeholder="0~8" 
+                     class="form-control text-center hours" 
+                     ng-model="live.duration.hours"
+                     min="0"
+                     max="60">
+              <span class="input-group-addon">小时</span>
+              <input type="number" 
+                     placeholder="0~60" 
+                     class="form-control text-center" 
+                     ng-model="live.duration.moments"
+                     min="0"
+                     max="60">
+              <span class="input-group-addon monents">分钟</span>
+            </div>
+          </div>
+          <div class="text-center no-animation" ng-if="(!live.duration.moments && !live.duration.hours)">
+            <p></p>
+            <p class="text-danger">
+              <i class="icon icon-warning text-danger"></i>
+              <span>请填写预计直播时间</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+    <div class="col-xs-12"><br></div>
+      <div class="col-xs-offset-3 col-xs-6 text-center">
+        <button class="btn btn-primary"
+                ng-disabled="(!live.duration.moments && !live.duration.hours) || live.at.format() == '无效时间' || live.at <= minDate">提交保存</button>
+        <a href="" class="btn btn-default" ng-click="$root.modal.close()">取消操作</a>
+      </div>
+    </div>
+  </form>
+</div>

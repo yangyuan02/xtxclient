@@ -1,0 +1,27 @@
+//盒子定位的函数
+//可以直接使用position亦可以使用absolute等函数
+//输入两个值，1：定位方式 2：边距
+@mixin position($position, $args) {
+  position: $position;
+    $offsets: top right bottom left;
+  @each $o in $offsets {
+    $i: index($args, $o);
+    @if $i
+    and $i + 1 <= length($args)
+    and type-of( nth($args, $i + 1) ) == number {
+      #{$o}: nth($args, $i + 1);
+    }
+  }
+}
+//预定义absolute函数
+@mixin absolute($args) {
+  @include position("absolute", $args);
+}
+//fixed
+@mixin fixed($args) {
+  @include position("fixed", $args);
+}
+//relative
+@mixin relative($args) {
+  @include position("relative", $args);
+}

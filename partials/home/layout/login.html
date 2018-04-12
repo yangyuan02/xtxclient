@@ -1,0 +1,209 @@
+<div class="global-login" ng-controller="AuthController">
+  <div class="col-xs-12">
+
+    <!-- 第三方绑定账户信息 -->
+    <div class="third-info form-horizontal" ng-if="auth.bind">
+      <div class="form-group">
+        <label class="col-xs-3 control-label important">第三方账户</label>
+        <div class="col-xs-5">
+          <p class="text-dark form-control-static name">
+            <span>{{ thirdLoginInfo.name }}</span>
+            <span ng-if="thirdLoginInfo.type == 1">（微博）</span>
+            <span ng-if="thirdLoginInfo.type == 2">（QQ）</span>
+            <span ng-if="thirdLoginInfo.type == 3">（微信）</span>
+          </p>
+        </div>
+      </div>
+      <hr>
+    </div>
+
+    <!-- 登录表单 -->
+    <div class="login-form no-animation" ng-show="auth.mode == 'login'">
+      <form name="loginFrom" class="form-horizontal" role="form" method="POST">
+        <div class="form-group">
+          <label for="J_input_mobile" class="col-xs-3 control-label important">手机号/学号</label>
+          <div class="col-xs-5">
+             <input type="text" 
+                    id="J_input_mobile" 
+                    class="form-control" 
+                    maxlength="11" 
+                    placeholder="请输入您的登录手机号/学号" 
+                    autocomplete="off" 
+                    ng-model="user.phone" 
+                    validator="required, minlength=10" 
+                    required-error-message="请您输入手机号/学号" 
+                    minlength-error-message="请输入正确的手机号/学号">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_password" class="col-xs-3 control-label important">密码</label>
+          <div class="col-xs-5">
+             <input type="password" 
+                    class="form-control" 
+                    id="J_input_password" 
+                    placeholder="请输入密码" 
+                    autocomplete="off" 
+                    ng-model="user.password" 
+                    validator="required, minlength=6, maxlength=16" 
+                    required-error-message="请您输入密码" 
+                    minlength-error-message="密码长度至少为6位字符" 
+                    maxlength-error-message="密码长度不能超过16位字符">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-5">
+            <label class="pull-left">
+              <input type="checkbox" 
+                     name="auto_login" 
+                     class="for-control checkbox-inline" 
+                     id="J_input_auto_login" 
+                     ng-model="user.auto_login">
+                <span>&nbsp;下次自动登录</span>
+              </label>
+            <span class="pull-right">
+              <a href="/user/forgot" target="_blank">忘记密码？</a>
+            </span>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group no-animation" ng-show="!auth.bind">
+          <div class="col-xs-offset-3 col-xs-8">
+            <button class="btn btn-primary" 
+                    validation-submit="loginFrom" 
+                    ng-click="login({ user: user, modal: true })">现在登录</button>
+            <a class="btn btn-default" ng-click="auth.mode = 'register'">没有账户？立即注册</a>
+          </div>
+        </div>
+        <div class="form-group no-animation" ng-show="auth.bind">
+          <div class="col-xs-offset-3 col-xs-5">
+            <button class="btn btn-block btn-primary" 
+                    validation-submit="loginFrom" 
+                    ng-click="bindLogin({ modal: true })">登录账户并绑定</button>
+          </div>
+        </div>
+        <div class="form-group no-animation" ng-show="auth.bind">
+          <div class="col-xs-offset-3 col-xs-5 text-center">
+            <a href="" ng-click="auth.mode = 'register'">没有账户？立即注册</a>
+          </div>
+        </div>
+        <hr ng-if="!auth.bind">
+        <div class="form-group no-animation" ng-if="!auth.bind">
+          <div class="col-xs-offset-3 col-xs-7">
+            <div class="third-party clearfix">
+              <span ng-click="thirdLogin({ provider: 'qq', modal: true, bind: false })" 
+                    class="btn btn-warning">QQ登录</span>
+              <span ng-click="thirdLogin({ provider: 'weibo', modal: true, bind: false })" 
+                    class="btn btn-danger">微博登录</span>
+              <span ng-click="thirdLogin({ provider: 'wechat', modal: true, bind: false })" 
+                    class="btn btn-primary">微信登录</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- 注册表单 -->
+    <div class="login-form no-animation" ng-show="auth.mode == 'register'">
+      <form name="registerFrom" class="form-horizontal" role="form" method="POST">
+        <div class="form-group">
+          <label for="J_input_mobile" class="col-xs-3 control-label important">手机号码</label>
+          <div class="col-xs-5">
+            <input type="text" 
+                   class="form-control" 
+                   id="J_input_mobile" 
+                   maxlength="11" 
+                   placeholder="请输入您的手机号码" 
+                   autocomplete="off" 
+                   ng-model="user.phone" 
+                   validator="required, mobile" 
+                   required-error-message="请您输入手机号">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_randcode" class="col-xs-3 control-label important">验证码</label>
+          <div class="col-xs-5">
+            <input type="text" 
+                   class="form-control" 
+                   id="J_input_randcode" 
+                   placeholder="请输入验证码" 
+                   ng-model="user.code" 
+                   validator="required, number" 
+                   required-error-message="请您输入验证码">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-8 col-xs-offset-3">
+            <a href="" class="btn btn-default" 
+                       ng-click="getVerifyCode({ type: 'register', modal: true })" 
+                       ng-class="{ 'disabled': verify.status }">{{ verify.text }}</a>
+            <span class="validation-msg small text-danger" ng-if="verify.warning">
+              <i class="icon icon-warning text-danger"></i>
+              <span>{{ verify.message }}</span>
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_password" class="col-xs-3 control-label important">密码</label>
+          <div class="col-xs-5">
+             <input type="password" 
+                    class="form-control" 
+                    id="J_input_password" 
+                    placeholder="请输入密码" 
+                    ng-model="user.password" 
+                    validator="required, minlength=6, maxlength=16" 
+                    required-error-message="请您输入密码" 
+                    minlength-error-message="密码长度至少为6位字符" 
+                    maxlength-error-message="密码长度不能超过16位字符">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="J_input_repassword" class="col-xs-3 control-label important">确认密码</label>
+          <div class="col-xs-5">
+            <input type="password" 
+                   name="repassword" 
+                   class="form-control" 
+                   id="J_input_repassword" 
+                   placeholder="请再次输入密码" 
+                   ng-model="user.repassword" 
+                   validator="required, minlength=6, maxlength=16, pwdVerify=user.password" 
+                   required-error-message="请再次确认密码" 
+                   minlength-error-message="密码长度至少为6位字符" 
+                   maxlength-error-message="密码长度不能超过16位字符">
+          </div>
+        </div>
+        <div class="form-group" ng-init="auth.agree = true">
+          <div class="col-xs-offset-3 col-xs-7">
+            <label class="license">
+              <input type="checkbox" class="checkbox inline" ng-model="auth.agree">
+              <span>我已阅读并同意</span>
+            </label>
+            <a href="/article/license" class="text-primary" target="_blank">《学天下服务协议》</a>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group no-animation" ng-show="!auth.bind">
+          <div class="col-xs-offset-3 col-xs-8">
+            <button class="btn btn-primary" 
+                    validation-submit="registerFrom" 
+                    ng-click="register()" 
+                    ng-disabled="!auth.agree">立即注册</button>
+            <a class="btn btn-default" ng-click="auth.mode = 'login'">已有账户？立即登录</a>
+          </div>
+        </div>
+        <div class="form-group no-animation" ng-if="auth.bind">
+          <div class="col-xs-offset-3 col-xs-5">
+            <button class="btn btn-block btn-primary" 
+                    validation-submit="loginFrom" 
+                    ng-disabled="!auth.agree"
+                    ng-click="bindRegister({ modal: true })">注册账户并绑定</button>
+          </div>
+        </div>
+        <div class="form-group no-animation" ng-show="auth.bind">
+          <div class="col-xs-offset-3 col-xs-5 text-center">
+            <a href="" ng-click="auth.mode = 'login'">已有账户？立即登录</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

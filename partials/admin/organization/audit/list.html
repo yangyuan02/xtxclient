@@ -1,0 +1,111 @@
+<div class="page-list" ng-init="auditAction.getLists()">
+  <div class="page-title">
+    <h3>机构资质列表({{ audit_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="auditAction.del({ batch: true })"
+        ng-if="false && page_permission['organization.manage.audit.del']"
+        ng-disabled="!audit_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="auditAction.getLists(audit_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search">
+        <div class="form-group">
+          <select class="form-control input-sm" 
+                  ng-model="filter.status" 
+                  ng-change="auditAction.filterChanged()">
+            <option value="all">所有状态</option>
+            <option value="-1">审核失败</option>
+            <option value="0">审核中</option>
+            <option value="1">审核通过</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="audit_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>所属机构</th>
+          <th>公司名称</th>
+          <th>申请人</th>
+          <th>手机号</th>
+          <th>审核状态</th>
+          <th>申请时间</th>
+          <th class="text-center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!audit_list.pagination.total" class="no-animation">
+          <td colspan="10">
+            <div class="list-loader" 
+              ng-if="audit_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="audit_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr class="slide-down"
+            ng-class="{ 'disabled': !audit.x_status }"
+            ng-repeat="audit in audit_list.result track by $index" >
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="audit.checked">
+          </td>
+          <td>{{ audit.id }}</td>
+          <td>{{ audit.organization.name }}</td>
+          <td><a ng-href="/organization/manage/audit/{{ audit.organization_id }}">{{ audit.name }}</a></td>
+          <td>{{ audit.user_name }}</td>
+          <td>{{ audit.phone }}</td>
+          <td>
+            <span class="no-animation" ng-switch="audit.status">
+              <em class="text-danger no-animation"  ng-switch-when="-1">审核失败</em>
+              <em class="text-muted  no-animation"  ng-switch-when="-1" ng-if="!!audit.memo">（{{ audit.memo || '无' }}）</em>
+              <em class="text-warning no-animation" ng-switch-when="0">审核中</em>
+              <em class="text-success no-animation" ng-switch-when="1">审核通过</em>
+            </span>
+          </td>
+          <td>{{ audit.created_at }}</td>
+          <td class="text-right">
+            <a ng-href="/organization/manage/audit/{{ audit.organization_id }}" 
+               class="text-warning" 
+               ng-if="page_permission['organization.manage.audit.edit']">[ 审核 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="false && page_permission['organization.manage.audit.del']" 
+               ng-click="auditAction.del({ audit: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="audit_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="audit_list.pagination.total" 
+         items-per-page="audit_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="auditAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

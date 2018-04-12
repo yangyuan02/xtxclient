@@ -1,0 +1,306 @@
+<div class="box rate" ng-init="rateInit()">
+  <div class="panel panel-default no-animation" ng-if="!user.is_teacher">
+    <br><br>
+    <div class="panel-body text-center">
+      <span><i class="icon icon-warning text-warning"></i></span>
+      <span>您还不是老师，无法查看评价信息，</span>
+      <a href="/teacher/organization/search" class="text-success">加入学校</a>
+    </div>
+    <br><br>
+  </div>
+  <div tabset 
+       justified="false" 
+       largesize="false" 
+       class="no-animation" 
+       ng-if="!!user.is_teacher">
+
+      <!-- 全部评价 -->
+      <div tab heading="全部评价（{{ rates.all.pagination.total || 0 }}）" ng-init="getRates({ type: 'all' })">
+        <p class="text-center text-muted no-animation" ng-if="rates.all.pagination.total == 0"><br>无有效评价数据</p>
+        <p class="text-center text-muted no-animation" ng-if="rates.all.pagination.total == undefined"><br>数据加载中</p>
+        <table class="table table-hover rate-lists no-animation" ng-if="!!rates.all.pagination.total">
+          <thead>
+            <tr>
+              <th>课程信息</th>
+              <th>评价内容</th>
+              <th>评分</th>
+              <th>评价时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="rate in rates.all.result" class="slide-top">
+              <td>
+                <p class="clearfix"></p>
+                <a ng-href="/course/{{ rate.course.id }}" target="_blank" title="{{ rate.course.name }}">
+                  <p class="gravatar text-center">
+                    <img ng-src="{{ getThumbnail(rate.course.thumb, 'course_thumb', { width: 120, height: 50 }) }}" width="130"/>
+                  </p>
+                  <p class="name text-center">《{{ rate.course.name | limitTo : 10 }}》</p>
+                </a>
+              </td>
+              <td width="36%">
+                <p class="clearfix">
+                  <a ng-href="/space/student/{{ rate.user_id }}" target="_blank">
+                    <span class="gravatar">
+                      <img ng-src="{{ getThumbnail(rate.user.gravatar, 'small_gravatar', { width: 20, height: 20 }) }}" width="20"/>
+                      &nbsp;
+                    </span>
+                    <span class="name">{{ rate.user.name }}</span>：
+                  </a>
+                </p>
+                <h5 class="content clearfix text-dark text-height">{{ rate.content }}</h5>
+                <p class="clearfix no-animation" ng-if="rate.reply_info">我的回复：{{ rate.reply_info.content }}</p>
+                <p class="clearfix no-animation text-muted" ng-if="!rate.reply_info">未回复</p>
+              </td>
+              <td>
+                <div ng-if="rate.description_score || rate.quality_score || rate.satisfaction_score">
+                  <p ng-if="rate.description_score > 0">
+                    <span>课程内容：</span>
+                    <span uib-rating 
+                          ng-model="rate.description_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                  </p>
+                  <p ng-if="rate.quality_score > 0">
+                    <span>授课服务：</span>
+                    <span uib-rating 
+                          ng-model="rate.quality_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                  </p>
+                  <p ng-if="rate.satisfaction_score > 0">
+                    <span>满意程度：</span>
+                    <span uib-rating 
+                          ng-model="rate.satisfaction_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                  </p>
+                </div>
+                <div ng-if="!rate.description_score && !rate.quality_score && !rate.satisfaction_score" 
+                      class="text-info">该用户未打分</div>
+              </td>
+              <td>{{ rate.created_at | toYMD }}</td>
+              <td>
+                <a href="" 
+                   class="btn btn-danger" 
+                   ng-if="!rate.is_replied"
+                   ng-click="replyRate({ modal: true, rate: this })">回复评价</a>
+                <a href="" 
+                   class="btn btn-default" 
+                   ng-if="!!rate.reply.length && !!rate.is_replied"
+                   ng-click="delReply(this.$parent)">删除回复</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="clearfix"></p>
+        <div class="page-wrap" ng-if="!!rates.all.pagination.total">
+          <div pagination 
+               total-items="rates.all.pagination.total" 
+               items-per-page="rates.all.pagination.per_page" 
+               ng-model="rates.all.pagination.current_page" 
+               ng-change="getRates({ type: 'all', page: rates.all.pagination.current_page })" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+        </div>
+      </div>
+
+      <!-- 已回复 -->
+      <div tab  heading="已回复（{{ rates.replied.pagination.total || 0 }}）" ng-init="getRates({ type: 'replied', is_replied: 1 })">
+        <p class="text-center text-muted no-animation" ng-if="!rates.all.pagination.total"><br>无有效评价数据</p>
+        <table class="table table-hover rate-lists no-animation" ng-if="!!rates.all.pagination.total">
+          <thead>
+            <tr>
+              <th>课程信息</th>
+              <th>评价内容</th>
+              <th>评分</th>
+              <th>评价时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="rate in rates.replied.result" class="slide-top">
+              <td>
+                <p class="clearfix"></p>
+                <a ng-href="/course/{{ rate.course.id }}" target="_blank" title="{{ rate.course.name }}">
+                  <p class="gravatar text-center">
+                    <img ng-src="{{ getThumbnail(rate.course.thumb, 'course_thumb', { width: 120, height: 50 }) }}" width="130"/>
+                  </p>
+                  <p class="name text-center">《{{ rate.course.name | limitTo : 10 }}》</p>
+                </a>
+              </td>
+              <td width="36%">
+                <p class="clearfix">
+                  <a ng-href="/space/student/{{ rate.user.id }}" target="_blank">
+                    <span class="gravatar">
+                      <img ng-src="{{ getThumbnail(rate.user.gravatar, 'small_gravatar', { width: 20, height: 20 }) }}" width="20"/>
+                      &nbsp;
+                    </span>
+                    <span class="name">{{ rate.user.name }}</span>：
+                  </a>
+                </p>
+                <h5 class="content clearfix text-dark text-height">{{ rate.content }}</h5>
+                <p class="clearfix no-animation" ng-if="rate.reply_info">我的回复：{{ rate.reply_info.content }}</p>
+                <p class="clearfix no-animation text-muted" ng-if="!rate.reply_info">未回复</p>
+              </td>
+              <td>
+                <div ng-if="rate.description_score || rate.quality_score || rate.satisfaction_score">
+                  <p ng-if="rate.description_score > 0">
+                    <span>课程内容：</span>
+                    <span uib-rating 
+                          ng-model="rate.description_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                  </p>
+                  <p ng-if="rate.quality_score > 0">
+                    <span>授课服务：</span>
+                    <span uib-rating 
+                          ng-model="rate.quality_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                  </p>
+                  <p ng-if="rate.satisfaction_score > 0">
+                    <span>满意程度：</span>
+                    <span uib-rating 
+                          ng-model="rate.satisfaction_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                  </p>
+                </div>
+                <div ng-if="!rate.description_score && !rate.quality_score && !rate.satisfaction_score" 
+                      class="text-info">该用户未打分</div>
+              </td>
+              <td>{{ rate.created_at | toYMD }}</td>
+              <td>
+                <a href="" 
+                   class="btn btn-danger" 
+                   ng-if="rate.is_replied == 0"
+                   ng-click="replyRate(rate)">回复评价</a>
+                <a href="" 
+                   class="btn btn-default" 
+                   ng-if="!!rate.reply.length"
+                   ng-click="delReply(rate.reply[0])">删除回复</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="clearfix"></p>
+        <div class="page-wrap" ng-if="!!rates.replied.pagination.total">
+          <div pagination 
+               total-items="rates.replied.pagination.total" 
+               items-per-page="rates.replied.pagination.per_page" 
+               ng-model="rates.replied.pagination.current_page" 
+               ng-change="getRates({ type: 'replied', page: rates.replied.pagination.current_page })" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+        </div>
+      </div>
+
+      <!-- 已删除 -->
+      <div tab 
+           ng-if="false" 
+           heading="已删除（{{ rates.trashed.pagination.total || 0 }}）" 
+           ng-init="getRates({ type: 'trashed', x_status: '0' })">
+        <p class="text-center text-muted no-animation" ng-if="!rates.trashed.pagination.total"><br>无有效评价数据</p>
+        <table class="table table-hover rate-lists no-animation" ng-if="!!rates.trashed.pagination.total">
+          <thead>
+            <tr>
+              <th>课程信息</th>
+              <th>评价内容</th>
+              <th>评分</th>
+              <th>评价时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="rate in rates.trashed.result" class="slide-top">
+              <td>
+                <p class="clearfix"></p>
+                <a ng-href="/course/{{ rate.course_id }}" target="_blank" title="{{ rate.course_name }}">
+                  <p class="gravatar text-center">
+                    <img ng-src="{{ getThumbnail(rate.thumb, 'course_thumb', { width: 120, height: 50 }) }}" width="130"/>
+                  </p>
+                  <p class="name text-center">《{{ rate.course_name | limitTo : 10 }}》</p>
+                </a>
+              </td>
+              <td width="36%">
+                <p class="clearfix">已删除回复：</p>
+                <h5 class="content clearfix text-dark text-height">{{ rate.reply[0].content }}</h5>
+                <p class="clearfix" ng-repeat="reply in rate.reply">
+                  <span class="gravatar">
+                    <img ng-src="{{ getThumbnail(rate.gravatar, 'small_gravatar', { width: 15, height: 15 }) }}" width="15"/>&nbsp;
+                  </span>
+                  <span class="name">{{ rate.user_name }}：{{ rate.content }}</span>
+                </p>
+              </td>
+              <td>
+                <div ng-if="rate.description_score || rate.quality_score || rate.satisfaction_score">
+                  <p ng-if="rate.description_score > 0">
+                    <span>课程内容：</span>
+                    <span uib-rating 
+                          ng-model="rate.description_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star"></span>
+                  </p>
+                  <p ng-if="rate.quality_score > 0">
+                    <span>授课服务：</span>
+                    <span uib-rating 
+                          ng-model="rate.quality_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star"></span>
+                  </p>
+                  <p ng-if="rate.satisfaction_score > 0">
+                    <span>满意程度：</span>
+                    <span uib-rating 
+                          ng-model="rate.satisfaction_score" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star"></span>
+                  </p>
+                </div>
+                <div ng-if="!rate.description_score && !rate.quality_score && !rate.satisfaction_score" 
+                     class="text-info">该用户未打分</div>
+              </td>
+              <td>{{ rate.created_at | toYMD }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="clearfix"></p>
+        <div class="page-wrap" ng-if="!!rates.trashed.pagination.total">
+          <div pagination 
+               total-items="rates.trashed.pagination.total" 
+               items-per-page="rates.trashed.pagination.per_page" 
+               ng-model="rates.trashed.pagination.current_page" 
+               ng-change="getRates({ type: 'trashed', page: rates.trashed.pagination.current_page })" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+        </div>
+      </div>
+
+      <div class="action-btn" ng-if="false">
+        <a class="btn btn-sm btn-primary" href="/teacher/course/list">课程管理</a>
+      </div>
+  </div>
+</div>

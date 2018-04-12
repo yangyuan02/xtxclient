@@ -1,0 +1,96 @@
+<div class="user-apis" ng-init="apiAction.getLists()">
+  <div class="page-title">
+    <h3>API管理({{ api_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-info" 
+              ng-click="apiAction.add({ modal: true })"
+              ng-if="page_permission['user.manage.api.add']">新增</button>
+      <button class="btn btn-sm btn-danger" 
+              ng-click="apiAction.del({ batch: true })" 
+              ng-if="page_permission['user.manage.api.del']"
+              ng-disabled="!api_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-default" 
+              ng-click="apiAction.getLists(api_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right"></div>
+  </div>
+  <!-- <hr> -->
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="api_list.result.setCheck(check_all)">
+          </th>
+          <th>名称</th>
+          <th>别名</th>
+          <th>路径</th>
+          <th>类型</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!api_list.pagination.total" class="no-animation">
+          <td colspan="7">
+            <div class="list-loader" 
+              ng-if="api_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="api_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="api in api_list.result track by $index | limitTo: 20" 
+            class="slide-down"
+            ng-class="{ 'disabled': !api.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="api.checked">
+          </td>
+          <td>{{ api.name || '暂无' }}</td>
+          <td>{{ api.slug || '暂无别名' }}</td>
+          <td>{{ api.path || '暂无路径' }}</td>
+          <td>{{ api.method || '暂无类型' }}</td>
+          <td>
+            <span class="text-success no-animation" 
+                  ng-if="api.x_status">正常</span>
+            <span class="text-danger no-animation" 
+                  ng-if="!api.x_status">已禁用</span>
+          </td>
+          <td>
+            <a href="" 
+               class="text-info" 
+               ng-show="page_permission['user.manage.api.edit']"
+               ng-click="apiAction.put({ modal: true, api: this })">[ 编辑 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-show="page_permission['user.manage.api.del']"
+               ng-click="apiAction.del({ batch: false, api: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="api_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="api_list.pagination.total" 
+         items-per-page="api_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="apiAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false">
+    </div>
+  </div>
+</div>

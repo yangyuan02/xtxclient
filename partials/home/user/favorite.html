@@ -1,0 +1,53 @@
+<div class="box favorite" ng-init="getFavorite({ page: 1 })">
+  <div class="text-center text-info no-animation" ng-if="!favorites.pagination.total">
+    <br><br>
+    <p>暂无课程，<a href="/course" class="text-primary">去选课</a><p>
+    <br>
+  </div>
+  <ul class="item-list" ng-if="!!favorites.pagination.total">
+    <li class="item slide-top" ng-repeat="favorite in favorites.result">
+      <div class="inner">
+        <div class="thumbnail">
+          <a href="/course/{{ favorite.course_id }}" class="course-thumb">
+            <img ng-src="{{ getThumbnail(favorite.thumb, 'favorite_course', { width: 210, height: 120 }) }}" >
+            <span class="live live-xs" ng-if="!course.course.is_live">直播</span>
+          </a>
+        </div>
+        <div class="info">
+          <h4 class="title">
+            <a href="/course/{{ favorite.course_id }}">{{ favorite.course_name }}</a>
+          </h4>
+          <p class="organization">
+            <a href="/organization/{{ favorite.organization_id }}">{{ favorite.organization_name }}</a>
+          </p>
+          <p class="other">
+            <span ng-class="{ false: 'free', true: 'price' }[{{favorite.rel_price > 0}}]" >
+              <span ng-show="{{ favorite.rel_price > 0 }}" ng-bind="'￥' + favorite.rel_price"></span>
+            </span>
+            <span class="small" ng-show="favorite.price > favorite.rel_price && favorite.price > 0" >
+              <s>￥{{ favorite.price }}</s>
+            </span>
+            <span class="attention">
+              <i class="icon icon-study-user"></i>
+              <span class="num" >{{ favorite.study_count }}</span>人在学习
+            </span>
+          </p>
+          <div class="delete">
+            <a href="" class="btn btn-danger del-btn" ng-click="delFav({ id: favorite.course_id })" >删除</a>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <div class="page-wrap" ng-if="!!favorites.pagination.total">
+    <div pagination 
+         total-items="favorites.pagination.total" 
+         items-per-page="favorites.pagination.per_page" 
+         ng-model="favorites.pagination.current_page" 
+         ng-change="getFavorite({ page: favorites.pagination.current_page })" 
+         class="pagination-sm" 
+         boundary-links="true" 
+         rotate="false">
+    </div>
+  </div>
+</div>

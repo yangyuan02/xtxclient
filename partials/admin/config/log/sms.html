@@ -1,0 +1,79 @@
+<div class="user-actionsms" ng-init="smsAction.getIndex()">
+  <div class="page-title">
+    <h3>短信记录({{ sms_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-danger"
+        ng-if="page_permission['config.log.sms.del']"
+        ng-click="smsAction.del({ batch: true })"
+        ng-disabled="!sms_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-default"
+        ng-click="smsAction.getIndex(sms_list.pagination.current_page)">刷新</button>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+              type="checkbox"
+              ng-model="check_all"
+              ng-change="sms_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>接收手机</th>
+          <th>发送内容</th>
+          <th>发送时间</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!sms_list.pagination.total" class="no-animation">
+          <td colspan="7">
+            <div class="list-loader" 
+              ng-if="sms_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="sms_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr class="toggle" ng-repeat="sms in sms_list.result track by $index">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="sms.checked">
+          </td>
+          <td>{{ sms.id }}</td>
+          <td>{{ sms.to }}</td>
+          <td>{{ sms.content }}</td>
+          <td>{{ sms.created_at }}</td>
+          <td>{{ sms.status }}</td>
+          <td>
+            <a href="" 
+              class="text-danger" 
+              ng-if="page_permission['config.log.sms.del']"
+              ng-click="smsAction.del({ batch: false, sms: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="!!sms_list.pagination.total">
+    <div pagination 
+         total-items="sms_list.pagination.total" 
+         items-per-page="sms_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="smsAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false" ></div>
+  </div>
+</div>

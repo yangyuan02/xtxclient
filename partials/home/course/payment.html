@@ -1,0 +1,242 @@
+<div class="container" ng-init="getPrepay()">
+  <div class="row">
+    <div class="col-xs-12" id="payment">
+      <div class="payment clearfix no-animation" ng-if="payment_model.payment_warning">
+        <div class="col-xs-10 col-xs-offset-1">
+          <dl>
+            <dt class="h3 clearfix">
+              <span class="pull-left">付款遇到问题了？先看看是不是由于下面的原因。</span>
+              <span class="pull-right">
+                <a href="" ng-click="payment_model.payment_warning = false">×</a>
+              </span>
+              </dt>
+            <hr>
+            <dd>
+              <dl>
+                <dt>要求开通网上银行？</dt>
+                <dd>建议选择银联在线支付付款，如果是信用卡还可选择快捷支付，再选择对应银行支付。</dd>
+              </dl>
+              <dl>
+                <dt>所需支付金额超过了银行支付限额？</dt>
+                <dd>建议先分若干次充值到学天下余额，或登录网上银行提高上限额度，即可轻松支付。</dd>
+              </dl>
+              <dl>
+                <dt>要求开通网上银行？</dt>
+                <dd>建议选择银联在线支付付款，如果是信用卡还可选择快捷支付，再选择对应银行支付。</dd>
+              </dl>
+              <dl>
+                <dt>收不到银行的短信验证码？</dt>
+                <dd>建议重新获取短信验证码，如果还是收不到短信，直接打各银行的客服电话获取短信验证码。</dd>
+              </dl>
+              <dl>
+                <dt>网银页面显示错误或者空白？</dt>
+                <dd>建议更换到IE浏览器进行支付操作，或使用银联在线支付或支付宝付款。</dd>
+              </dl>
+              <dl>
+                <dt>网上银行扣款后，课程订单仍显示"未付款"怎么办？</dt>
+                <dd>可能是由于银行的数据没有即时传输，请您不要担心，稍后刷新页面查看。如较长时间仍显示未付款，可先向银行或支付平台获取支付凭证（扣款订单号/第三方交易号），联系学天下客服为您解决。</dd>
+              </dl>
+              <hr>
+              <p class="clearfix"><a href="" target="_blank">将您的问题反馈给我们</a></p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div class="payment text-center no-animation" ng-if="payment_model.payment_success">
+        <br><br>
+        <h2 class="text-primary">
+          <i class="icon icon-success text-success h1"></i>
+          <span>恭喜您，课程购买成功</span>
+        </h2>
+        <br><br>
+        <h4>{{ path_seconds }}秒后进入<a href="/user/course">我的课程</a>...</h4>
+        <br>
+      </div>
+      <br>
+      <div class="payment no-animation" ng-hide="payment_model.payment_success">
+        <div class="title">
+          <h3>购买课程</h3>
+        </div>
+
+        <!-- 课程列表 -->
+        <ul class="courses">
+          <li class="course media no-animation" ng-repeat="trade in trades">
+            <div class="media-left">
+              <a ng-href="/course/{{ trade.course_id }}" target="_blank">
+                <img class="media-object thumbnail" 
+                     ng-src="{{ trade.course_thumb !== '' && config.fileUrl + trade.course_thumb || 'images/thumbnail-course.png'}}">
+              </a>
+            </div>
+            <div class="media-body">
+              <div class="info">
+                <h4 class="media-heading">
+                  <a ng-href="/course/{{ trade.course_id }}" target="_blank">{{ trade.course_name }}</a>
+                </h4>
+                <p>{{ trade.organization_name }}</p>
+                <p>共{{ trade.section_count }}节 {{ trade.duration }}分钟</p>
+              </div>
+              <div class="price"><strong class="text-danger">￥{{ trade.rel_price }}</strong> 元</div>
+              <div class="discount">优惠（<del>原价：{{ trade.price }}元</del>）</div>
+            </div>
+          </li>
+        </ul>
+        
+        <!-- 订单总额 -->
+        <div class="amount clearfix">
+          <p class="pull-left col-xs-6 text-left">
+            <span class="h2 inline"></span>
+            <span>订单数量：共</span>
+            <strong class="text-danger" ng-bind="trades.length"></strong>
+            <span>套课程</span>
+          </p>
+          <p class="pull-right col-xs-6 text-right">
+            <span>订单总额：</span>
+            <span class="text-danger">
+              <span>&yen;</span>
+              <strong class="inline h2 text-danger" ng-bind="total_amount"></strong>
+            </span>
+            <span>元</span>
+          </p>
+        </div>
+
+        <!-- 支付方式 -->
+        <div class="item-list">
+
+          <!-- 余额支付 -->
+          <div class="item" 
+               ng-class="{ active: payment_model.is_use_remain, disabled: !is_remain_avariable }">
+            <div class="inner">
+              <label for="J_input_remain" class="title clearfix">
+                <input type="checkbox" 
+                       name="payment_remain" 
+                       id="J_input_remain" 
+                       ng-model="payment_model.is_use_remain" 
+                       class="pull-left" 
+                       ng-disabled="!is_remain_avariable" 
+                       ng-change="paymentChange()">
+                <div class="col-xs-1">账户余额</div>
+                <div class="col-xs-10">
+                  <span ng-if="account_remain > 0">
+                    可用余额： <h4 class="text-danger inline"><strong>￥{{ account_remain }}</strong></h4> 元
+                  </span>
+                  <span ng-if="account_remain <= 0">
+                    <span>您的账户余额不足，请进行</span>
+                    <a ng-href="/user/recharge" class="text-danger">充值</a>
+                    <span>，或选择其他方式进行付款。</span>
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 第三方支付 -->
+          <div class="item"  id="payment_thirdparty"
+               ng-class="{active: payment_model.is_use_thirdparty, disabled: payment_model.thirdparty_disabled}">
+            <div class="inner">
+              <label for="J_input_thirdparty" class="title clearfix">
+                <input type="checkbox" 
+                       name="payment_thirdparty" 
+                       id="J_input_thirdparty" 
+                       ng-model="payment_model.is_use_thirdparty" 
+                       class="pull-left" 
+                       ng-disabled="payment_model.thirdparty_disabled" 
+                       ng-change="paymentChange()">
+                <div class="col-xs-10">银行卡及支付平台</div>
+              </label>
+              <div class="box no-animation" ng-show="payment_model.is_use_thirdparty">
+
+                <!-- 第三方平台 -->
+                <ul class="type clearfix">
+
+                  <!-- 支付宝 -->
+                  <li class="type-item">
+                    <label for="J_payment_alipay">
+                      <input type="radio" 
+                             name="bank_code" 
+                             id="J_payment_alipay" 
+                             value="ALIPAY" 
+                             ng-model="payment_model.bank_code" 
+                             checked="checked">
+                      <img src="images/pay/PAY_ALIPAY.png" alt="支付宝">
+                    </label>
+                  </li>
+
+                  <!-- 微信 -->
+                  <li class="type-item">
+                    <label for="J_payment_wechat">
+                      <input type="radio" 
+                             name="bank_code" 
+                             id="J_payment_wechat" 
+                             value="WECHAT" 
+                             ng-model="payment_model.bank_code" 
+                             checked="checked">
+                      <img src="images/pay/PAY_WECHAT.png" alt="微信支付">
+                    </label>
+                  </li>
+                </ul>
+
+                <!-- 网银支付 -->
+                <ul class="type clearfix">
+                  <li class="type-item" ng-repeat="(index, bank) in banks">
+                    <label for="{{ bank.value }}">
+                      <input type="radio" 
+                             name="bank_code" 
+                             id="{{ bank.value }}" 
+                             value="{{ bank.value }}" 
+                             ng-model="payment_model.bank_code">
+                      <img ng-src="images/pay/PAY_{{ index }}.png" alt="{{ bank.name }}">
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 使用余额支付，且验证码已获取时，才显示 -->
+          <div class="item" ng-show="payment_model.verify_status && payment_model.is_use_remain">
+            <div class="inner">
+              <label for="J_payment_verify_code" class="title clearfix">
+                <input type="text" 
+                       name="payment_verify_code" 
+                       id="J_payment_verify_code" 
+                       ng-model="payment_verify_code" 
+                       class="pull-left form-control inline" 
+                       maxlength="6" 
+                       placeholder="请输入手机验证码" 
+                       ng-keyup="verifyCodeCheck(payment_verify_code)" 
+                       ng-change="payment_verify_code_status = 0">
+                <h5 class="text-danger">
+                  &nbsp;&nbsp;
+                  <span ng-show="payment_verify_code_status == 1 && !payment_verify_code">
+                    <i class="icon icon-warning h4 text-danger"></i>
+                    <span>&nbsp;请输入手机验证码</span>
+                  </span>
+                  <span ng-show="payment_verify_code_status == 2 && payment_verify_code">
+                    <i class="icon icon-warning h4 text-danger"></i>
+                    <span>&nbsp;验证码错误</span>
+                  </span>
+                </h5>
+            </label>
+            <h5>
+              <label for="J_payment_verify_code" class="text-primary">
+                <i class="icon icon-success text-success"></i>
+                <span>&nbsp;验证码已发送至 {{ user.phone }}</span>
+              </label>
+            </h5>
+          </div>
+        </div>
+        </div>
+
+        <!-- 支付按钮 -->
+        <div class="action">
+          <a ng-click="submitPayment()" class="btn btn-lg btn-danger">立即付款</a>
+          <span class="warning-prompt" 
+                ng-show="payment_model.warning_slug && payment_model.is_use_thirdparty && !payment_model.bank_code">
+            <i class="icon icon-warning"></i>
+            <span>&nbsp;请选择支付方式</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

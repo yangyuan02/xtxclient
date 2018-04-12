@@ -1,0 +1,139 @@
+<div class="page-title">
+  <h3>编辑学校</h3>
+</div>
+<div class="row" ng-init="organizationAction.getItem()">
+  <div class="col-xs-6">
+    <form class="form-field" 
+          name="organizationEditForm" 
+          role="form" 
+          method="POST" 
+          ng-init="organization.is_audit = 1">
+      <div class="form-group" 
+           ng-init="organizationAction.getCategory()">
+        <label for="organization_category_id" class="control-label">
+          所属类别<span class="text-muted">（学校所属的上级类别）</span>
+        </label>
+        <div class="control-group">
+          <select id="organization_category_id" 
+                  class="form-control" 
+                  name="category_id"  
+                  validator="required" 
+                  required-error-message="请您选择学校分类" 
+                  ng-model="organization.category_id"
+                  ng-options="category.id as category.name for category in category_list">
+            <option value="">请您选择分类</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="organization_name" class="control-label">学校名称</label>
+        <div class="control-group">
+          <input type="text" 
+                 id="organization_name" 
+                 class="form-control input-50" 
+                 name="name" 
+                 placeholder="请您输入学校名称" 
+                 validator="required, minlength=2" 
+                 required-error-message="请您输入学校名称" 
+                 minlength-error-message="学校名称不能少于2个字" 
+                 ng-model="organization.name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="user_name" class="control-label">学校LOGO</label>
+        <div class="control-group">
+          <div class="pull-left" 
+               ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 100, min_height: 100 })" 
+               default-file="getThumbnail(organization.logo, 'organization_logo', { width: 100, height: 100 })" 
+               uploaded="organizationAction.getUploadLogo"></div>
+          <div class="pull-left text-info">
+            <h5 class="small">纯白色背景学校LOGO</h5>
+            <h5 class="small">文件小于2M，比例1:1，最小尺寸：100 x 100px</h5>
+            <h5 class="small">支持JPG/PNG/BMP等格式图片</h5>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="user_name" class="control-label">学校实景图</label>
+        <div class="control-group">
+          <div class="pull-left" 
+               ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 300, min_height: 300 })" 
+               default-file="getThumbnail(organization.scenery, 'organization_scenery', { width: 300, height: 300 })" 
+               uploaded="organizationAction.getUploadScenery"></div>
+          <div class="pull-left text-info">
+            <h5 class="small">为学校实景照片</h5>
+            <h5 class="small">文件小于2M，尺寸大于300 x 300像素</h5>
+            <h5 class="small">支持JPG/PNG/BMP等格式图片</h5>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="organization_introduction" class="control-label">
+          学校简介<span class="text-muted">（学校简介不超过500字）</span>
+        </label>
+        <div class="control-group">
+          <textarea id="organization_introduction"
+                    class="form-control input-50" 
+                    name="introduction" 
+                    rows="8" 
+                    placeholder="请您输入学校简介，不超过500个字" 
+                    validator="required, minlength=10, maxlength=500" 
+                    required-error-message="请您输入学校简介" 
+                    maxlength-error-message="学校简介不能超过500个字" 
+                    minlength-error-message="学校简介不能少于10个字" 
+                    ng-model="organization.introduction">
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="organization_url" class="control-label">
+          学校网址
+        </label>
+        <div class="control-group">
+          <input type="text" 
+               id="organization_url" 
+               class="form-control input-50" 
+               placeholder="请您输入http://开头的学校网址" 
+               ng-model="organization.url">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          学校状态
+        </label>
+        <div class="control-group">
+          <div class="radio">
+            <label class="radio-inline text-danger" for="organization_status_01">
+              <input type="radio"
+                     name="status" 
+                     id="organization_status_01"
+                     value="-1"
+                     ng-model="organization.status"> 审核失败
+            </label>
+            <label class="radio-inline text-warning" for="organization_status_0">
+              <input type="radio"
+                     name="status" 
+                     id="organization_status_0"
+                     value="0"
+                     ng-model="organization.status"> 审核中
+            </label>
+            <label class="radio-inline text-success" for="organization_status_1">
+              <input type="radio"
+                     name="status" 
+                     id="organization_status_1"
+                     value="1"
+                     ng-model="organization.status"> 审核通过
+            </label>
+          </div>
+        </div>
+      </div>
+      <button type="submit"
+              class="btn btn-primary"
+              validation-submit="organizationEditForm"
+              ng-click="organizationAction.edit()">
+        保存提交
+      </button>
+    </form>
+  </div>
+</div>
+

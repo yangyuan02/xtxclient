@@ -1,0 +1,210 @@
+// 系统配置
+
+.view-box {
+
+  &.config {
+
+  }
+
+}
+
+// 首页配置
+.config-index {
+  
+  > .item {
+    margin-bottom: @grid-gutter-width;
+
+    > .hd {
+      margin-bottom: @grid-gutter-width / 2;
+      background-color: #f9f9f9;
+
+      > h3 {
+        margin: 0;
+        padding: @grid-gutter-width / 2 @grid-gutter-width;
+      }
+
+      > .fl,
+      > .fr {
+        position: relative;
+        padding-left: @grid-gutter-width;
+        width: 50%;
+        min-height: 290px;
+
+        > .info {
+
+          > a {
+            display: inline-block;
+            margin: 0 @grid-gutter-width / 3 @grid-gutter-width / 3 0;
+            padding: (@grid-gutter-width / 3 - 2) (@grid-gutter-width / 3 * 2);
+            border: 1px solid #eaeaea;
+            border-radius: 21px;
+
+            &:hover {
+              border-color: @brand-success;
+              // background-color: @brand-success;
+              // color: #fff;
+            }
+          }
+        }
+
+        > .action {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 50px;
+        }
+      }
+
+      > .fl {
+        border-right: 1px solid #eaeaea;
+      }
+    }
+
+    > .bd {
+
+      > .item {
+        margin-bottom: @grid-gutter-width / 2;
+
+        > .inner {
+          border: 1px solid #eee;
+
+          > a {
+            display: block;
+
+            > .info {
+              padding: 0 @grid-gutter-width / 3;
+
+              > h5 {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+            }
+          }
+        }
+      }
+
+        
+    }
+  }
+}
+
+// 管理配置
+.config-manage {
+
+  .form-group {
+    margin: 0;
+
+    > .control-action {
+      padding-top: @grid-gutter-width / 2;
+      border-top: 1px solid #eee;
+    }
+  }
+
+  .item-list {
+
+    > .item {
+      float: left;
+      margin: 0 @grid-gutter-width / 3 @grid-gutter-width / 3 0;
+      overflow: hidden;
+
+      > a {
+        position: relative;
+        display: block;
+        padding: @grid-gutter-width / 6 @grid-gutter-width / 2;
+        border: 1px solid #eee;
+        overflow: hidden;
+
+        > .cover {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, .7);
+          .opacity(0);
+          line-height: 30px;
+          text-align: center;
+
+          > .icon {
+            color: #fff;
+          }
+        }
+
+        &:hover {
+
+          > .cover {
+            .opacity(1);
+          }
+        }
+      }
+    }
+  }
+
+  .form-search {
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    
+    > .control-group {
+
+      &.selects {
+
+        select {
+
+          &.form-control {
+            float: left;
+            margin-right: @grid-gutter-width / 4;
+          }
+        }
+
+        > .category-selects {
+          float: left;
+          margin: @grid-gutter-width / 2 0 0 0;
+
+          > li {
+            float: left;
+            margin-right: @grid-gutter-width / 2;
+
+            > label {
+              font-weight: 100;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+
+    > .control-label {
+      margin-right: 10px;
+      line-height: 29px;
+    }
+
+    > .btn-sm {
+      margin-left: 5px;
+      padding: 7px 9px;
+    }
+
+    > .dropdown-menu {
+      margin: 0 0 20px 0;
+      padding: 0;
+      width: 280px;
+      border-radius: 0;
+      border: none;
+      background-color: #f2f2f2;
+
+      > li {
+        cursor: pointer;
+
+        > a {
+          padding: 8px 20px;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+

@@ -1,0 +1,85 @@
+<div ng-controller="OrganizationController"
+     ng-init="organizationAction.getLists({ per_page: 1000 })">
+  <div class="col-xs-10">
+    <form class="form-field" 
+          name="organizationUserEditForm" 
+          role="form" 
+          method="POST">
+      <div class="form-group">
+        <label for="J_organization_user_organization" class="control-label">所属机构</label>
+        <div>
+          <select class="form-control" 
+                  id="J_organization_user_organization" 
+                  ng-model="organization_user.organization_id"
+                  ng-options="organization.id as organization.name for organization in organization_list.result">
+            <option value="" disabled>选择机构</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_organization_user_id" class="control-label">老师ID：</label>
+        <div class="control-group">
+          <input type="number" 
+                 id="J_organization_user_rel_name" 
+                 class="form-control input-50" 
+                 ng-model="organization_user.id">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_organization_user_title" class="control-label">职称：</label>
+        <div class="control-group">
+          <input type="text" 
+                 id="J_organization_user_title" 
+                 class="form-control input-50" 
+                 validator="required" 
+                 required-error-message="职称不能为空" 
+                 ng-model="organization_user.title">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_organization_user_introduction" class="control-label">老师介绍：</label>
+        <div class="control-group">
+          <textarea id="J_organization_user_introduction" 
+                     class="form-control input-50" 
+                     validator="required" 
+                     required-error-message="介绍不能为空" 
+                     ng-model="organization_user.introduction">
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_organization_user_status" class="control-label">教师状态：</label>
+        <div>
+          <select class="form-control" id="J_organization_user_status" ng-model="organization_user.status">
+            <option value="" disabled>选择状态</option>
+            <option value="-2">机构已拒绝</option>
+            <option value="-1">用户已拒绝</option>
+            <option value="0">已邀请</option>
+            <option value="1">已申请</option>
+            <option value="2">已加入</option>
+            <option value="3">已申请管理员</option>
+            <option value="4">管理员</option>
+            <option value="5">创始人</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_organization_user_memo" class="control-label">备注信息：</label>
+        <div class="control-group">
+          <textarea id="J_organization_user_memo" 
+                    class="form-control input-50"
+                    placeholder="如果拒绝请输入拒绝原因" 
+                    ng-model="organization_user.memo">
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group form-action">
+        <button type="submit"
+                class="btn btn-primary"
+                validation-submit="organizationUserEditForm"
+                ng-click="organizationUserAction.addItem()">保存修改</button>
+        <a href="" class="btn btn-default" ng-click="$root.modal.close()">取消</a>
+      </div>
+    </form>
+  </div>
+</div>

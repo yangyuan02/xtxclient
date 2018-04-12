@@ -1,0 +1,99 @@
+<div class="page-list" ng-init="linkAction.getIndex()">
+  <div class="page-title">
+    <h3>友情链接管理({{ link_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-success" 
+        ng-click="linkAction.add({ modal: true })" 
+        ng-if="page_permission['config.usual.link.add']">新增</button>
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="linkAction.del({ batch: true })" 
+        ng-if="page_permission['config.usual.link.del']" 
+        ng-disabled="!link_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="linkAction.getIndex(link_list.pagination.current_page)">刷新</button>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="link_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>名称</th>
+          <th>地址</th>
+          <th>状态</th>
+          <th>添加时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!link_list.pagination.total" class="no-animation">
+          <td colspan="7">
+            <div class="list-loader" 
+              ng-if="link_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="link_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr class="slide-down" 
+            ng-repeat="link in link_list.result | orderBy: 'id' : true track by $index" 
+            ng-class="{ 'disabled': !link.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="link.checked">
+          </td>
+          <td>{{ link.id }}</td>
+          <td>{{ link.name }}</td>
+          <td><a ng-href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="link.x_status">
+              <em class="text-danger"
+                  ng-switch-when="0">已禁用</em>
+              <em class="text-success"
+                  ng-switch-when="1">正常</em>
+            </span>
+          </td>
+          <td>{{ link.created_at }}</td>
+          <td>
+            <a href="" 
+               class="text-info" 
+               ng-if="page_permission['config.usual.link.edit']"
+               ng-click="linkAction.edit({ modal: true, link: this })" >[ 编辑 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['config.usual.link.del']"
+               ng-click="linkAction.del({ batch: false, link: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="link_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="link_list.pagination.total" 
+         items-per-page="link_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="linkAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

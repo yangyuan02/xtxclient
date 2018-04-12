@@ -1,0 +1,34 @@
+<div class="income-account-list" ng-init="getBankAccount()">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>类型</th>
+        <th>机构</th>
+        <th>账户</th>
+        <th>绑定时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="bank in withdraw.banks.result" class="slide-top">
+        <td ng-if="bank.account_type == 1"><img src="/images/alipay.png"></td>
+        <td ng-if="bank.account_type == 2">
+          <img ng-src="https://apimg.alipay.com/combo.png?d=cashier&t={{ bank.account_code }}" />
+        </td>
+         <td>{{ bank.account_name }}</td>
+        <td class="bank-num" >{{ bank.account_num }}</td>
+        <td>{{ bank.created_at }}</td>
+        <td>
+          <a href="" class="btn btn-sm btn-danger" ng-click="delAccount(bank)">删除</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="text-center clearfix no-animation text-muted" 
+     ng-if="withdraw.banks.pagination.total == undefined">加载中...<br><br></p>
+  <p class="text-center clearfix no-animation text-muted" 
+     ng-if="withdraw.banks.pagination.total == 0">暂无可用提现账户，请点击下方按钮添加<br><br></p>
+  <p class="text-center">
+    <a href="/teacher/income/account-add" class="btn btn-primary">添加提现账户</a>
+  </p>
+</div>

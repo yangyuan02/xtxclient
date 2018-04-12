@@ -1,0 +1,52 @@
+<form ng-controller="SchoolController"
+      class="form-horizontal" 
+      name="edit_Announcement" 
+      role="form" 
+      method="POST"
+      ng-init="is_edit = !!$root.announcement_edit.id">
+  <div class="form-group">
+    <label for="announcement_title" 
+            class="col-xs-2 control-label important">公告标题</label>
+    <div class="col-xs-8" ng-init="$root.announcement_edit.title = $root.announcement_edit.title || undefined">
+       <input type="text" 
+              id="announcement_title" 
+              name="announcement_title" 
+              ng-model="$root.announcement_edit.title" 
+              ng-change="$root.announcement_edit.title = $root.announcement_edit.title || undefined"
+              class="form-control" 
+              placeholder="输入公告标题" 
+              validator="required" 
+              required-error-message="不能为空">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="announcement_content" class="col-xs-2 control-label important">公告内容</label>
+    <div class="col-xs-8" ng-init="$root.announcement_edit.content = $root.announcement_edit.content || undefined">
+     <textarea rows="12" 
+               class="form-control" 
+               name="announcement_content" 
+               id="announcement_content" 
+               ng-model="$root.announcement_edit.content" 
+               ng-change="$root.announcement_edit.content = $root.announcement_edit.content || undefined"
+               placeholder="请输入公告内容（500字以内）" 
+               validator="required, maxlength=500" 
+               required-error-message="不能为空" 
+               maxlength-error-message="500字以内">
+      </textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="user-name" 
+            class="col-xs-2 control-label"></label>
+    <div class="col-xs-8">
+      <button class="btn btn-lg btn-primary" 
+              validation-submit="edit_Announcement" 
+              ng-click="editAnnouncement({ modal: false })" 
+              ng-if="is_edit">提交更新</button>
+      <button class="btn btn-lg btn-primary" 
+              validation-submit="edit_Announcement" 
+              ng-click="addAnnouncement({ modal: false })" 
+              ng-if="!is_edit">发布公告</button>
+    </div>
+  </div>
+</form>

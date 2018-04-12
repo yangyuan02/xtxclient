@@ -1,0 +1,133 @@
+<div class="row" ng-controller="UserController">
+  <div class="col-xs-8 col-xs-offset-1">
+    <div class="register-form">
+      <form class="form-horizontal form-field" 
+            name="permissionForm" 
+            role="form" 
+            method="POST" 
+            ng-init="permission.belong = {}">
+        <div class="form-group">
+          <label for="permission_type" class="col-xs-2 control-label">类型</label>
+          <div class="col-xs-10">
+            <select class="form-control" 
+                    ng-model="permission.type" 
+                    ng-init="permission.type = '1'" 
+                    validator="required"  
+                    required-error-message="请选择类型">
+              <option value="1">菜单 - （顶部菜单）</option>
+              <option value="2">分组 - （左侧分组）</option>
+              <option value="3">页面 - （左侧菜单）</option>
+              <option value="4">功能 - （页面操作）</option>
+            </select>
+          </div>
+        </div>
+        <!-- 归属用来选择父级，仅在选择：分组、页面、功能时供选择 -->
+        <div class="form-group slide-down" ng-if="permission.type != '1'">
+          <label for="permission_pid" class="col-xs-2 control-label">从属</label>
+          <div class="col-xs-10">
+            <select class="form-control" 
+                    ng-init="permission.belong.root = undefined"
+                    ng-model="permission.belong.root" 
+                    ng-options="{ id: menu.id, index: index } as menu.name for (index, menu) in permission_list" 
+                    validator="required"  
+                    required-error-message="请选择父权限">
+              <option value disabled>父权限</option>
+            </select>
+          </div>
+          <p class="clearfix" ng-if="permission.type == '3' || permission.type == '4'"></p>
+          <div class="col-xs-10 col-xs-offset-2" ng-if="permission.type == '3' || permission.type == '4'">
+            <select class="form-control slide-down" 
+                    ng-model="permission.belong.node" 
+                    ng-options="{ id: node.id, index: index } as node.name for (index, node) in permission_list[permission.belong.root.index].children" 
+                    validator="required"  
+                    required-error-message="请选择父分组">
+              <option value disabled>父分组</option>
+            </select>
+          </div>
+          <p class="clearfix" ng-if="permission.type == '4'"></p>
+          <div class="col-xs-10 col-xs-offset-2" ng-if="permission.type == '4'">
+            <select class="form-control slide-down" 
+                    ng-model="permission.belong.page" 
+                    ng-options="{ id: page.id, index: index } as page.name for (index, page) in permission_list[permission.belong.root.index].children[permission.belong.node.index].children" 
+                    validator="required"  
+                    required-error-message="请选择父页面">
+              <option value disabled>父页面</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="permission_name" class="col-xs-2 control-label">名称</label>
+          <div class="col-xs-10">
+            <input type="text" 
+                   id="permission_name" 
+                   name="permission_name" 
+                   class="form-control" 
+                   maxlength="15" 
+                   placeholder="请输入权限名称" 
+                   ng-model="permission.name"
+                   validator="required"  
+                  required-error-message="请输入权限名称">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="permission_describe" class="col-xs-2 control-label">描述</label>
+          <div class="col-xs-10">
+            <input type="text" 
+                   id="permission_describe" 
+                   name="permission_describe" 
+                   class="form-control" 
+                   maxlength="15" 
+                   placeholder="请输入权限描述" 
+                   ng-model="permission.description"
+                   validator="required"  
+                   required-error-message="请输入权限描述">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="permission_menu" class="col-xs-2 control-label">菜单</label>
+          <div class="col-xs-10">
+            <input type="text" 
+                   id="permission_menu" 
+                   name="permission_menu" 
+                   class="form-control" 
+                   maxlength="15" 
+                   placeholder="请输入对应菜单名称" 
+                   ng-model="permission.display_name" >
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="permission_url" class="col-xs-2 control-label">路由</label>
+          <div class="col-xs-10">
+            <input type="text" 
+                   id="permission_url" 
+                   name="permission_url" 
+                   class="form-control" 
+                   maxlength="50" 
+                   placeholder="请输入功能对应链接（可以为空）" 
+                   ng-model="permission.url" 
+                   ng-change="permissionAction.toSlug()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="permission_slug" class="col-xs-2 control-label">标识</label>
+          <div class="col-xs-10">
+            <input type="text" 
+                   id="permission_slug" 
+                   name="permission_slug" 
+                   class="form-control" 
+                   maxlength="50" 
+                   placeholder="请输入对应标识（必填）" 
+                   ng-model="permission.slug"
+                   validator="required"  
+                   required-error-message="请输入权限标示">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-10 col-xs-offset-2">
+            <button class="btn btn-primary" validation-submit="permissionForm" ng-click="permissionAction.add({ modal: false })">确认添加</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

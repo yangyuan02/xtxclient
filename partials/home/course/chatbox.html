@@ -1,0 +1,82 @@
+<div class="chat-box">
+  <div class="chat-history">
+    <ul class="chat-lists" id="J_chat_lists">
+      <li class="item" 
+          ng-repeat="message in messages" 
+          ng-class="{ true: 'go', false: 'come' }[message.from == $root.user.id]">
+        <div class="media" ng-if="message.msg_type != 'status'">
+          <div class="media-left" ng-if="message.from != $root.user.id">
+            <a href="">
+              <img class="media-object img-circle" 
+                   width="30" 
+                   height="30" 
+                   ng-src="{{ $root.getThumbnail(message.ext.weichat.user.gravatar || 'gravatar.jpg', 'gravatar') }}">
+            </a>
+          </div>
+          <div class="media-body">
+            <h5 class="media-heading">
+              <a href="" 
+                 class="name" 
+                 ng-if="message.from != $root.user.id">{{ message.ext.weichat.user.name || '...' }}</a>
+              <small class="text-info">{{ message.date }}</small>
+              <a href="" 
+                 class="name" 
+                 ng-if="message.from == $root.user.id">{{ message.ext.weichat.user.name || '...' }}</a>
+            </h5>
+            <p class="content" ng-bind-html="message.data || '' | toHtml"></p>
+          </div>
+          <div class="media-right" ng-if="message.from == $root.user.id">
+            <a href="">
+              <img class="media-object img-circle" 
+                   width="30" 
+                   height="30" 
+                   ng-src="{{ $root.getThumbnail(message.ext.weichat.user.gravatar || 'gravatar.jpg', 'gravatar') }}">
+            </a>
+          </div>
+        </div>
+        <div class="status" ng-if="message.msg_type == 'status'">
+          <small class="status-content">{{ message.content }}</small>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="chat-inputs" ng-class="{ 'disabled': room.playback }">
+    <div class="chat-input-tool">
+      <a href="" class="chat-tool-btn" ng-click="chat.emotion.show = !chat.emotion.show">
+        <i class="icon icon-face"></i>
+      </a>
+      <span class="chat-tool-btn">
+        <i class="icon icon-image"></i>
+        <input type="file" 
+               id="J_emotion_pic" 
+               accept="image/*" 
+               name="emotion_pic" 
+               class="emotion-pic-upload" 
+               onchange="angular.element(this).scope().sendPicMessage()"/>
+      </span>
+      <div class="emotion-box toggle" ng-show="chat.emotion.show" id="J_emotion_box">
+        <ul class="emotion-lists">
+          <li class="item slide-top" ng-repeat="(key, path) in room.faces.map">
+            <a href="" class="item-content" ng-click="addEmotion(key)">
+              <img ng-src="{{ room.faces.path + path }}" class="emotion-img">
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <form class="chat-input-text" ng-submit="sendTextMessage(chat.content)">
+      <textarea placeholder="请输入内容" 
+                maxlength="150"
+                ng-model="chat.content" 
+                id="J_chat_textarea"
+                ng-click="authorizeNotification()"></textarea>
+      <button class="btn btn-sm btn-primary">发送</button>
+    </form>
+  </div>
+  <div class="chat-errs" ng-if="room.error">
+    <p class="error-content">
+      <i class="icon icon-warning"></i>
+      <span>聊天室未就绪</span>
+    </p>
+  </div>
+</div>

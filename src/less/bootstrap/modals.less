@@ -1,0 +1,402 @@
+//
+// Modals
+// --------------------------------------------------
+
+// .modal-open      - body class for killing the scroll
+// .modal           - container to scroll within
+// .modal-dialog    - positioning shell for the actual modal
+// .modal-content   - actual modal w/ bg and corners and shit
+
+@-webkit-keyframes scaleIn {
+  from {
+    -webkit-transform: scale(1.2);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes scaleIn {
+  from {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@-webkit-keyframes scaleOut {
+  from {
+    -webkit-transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    -webkit-transform: scale(0.8);
+    opacity: 0;
+  }
+}
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100px, 0) scale3d(1.5, 1.5, 1.5);
+    transform: translate3d(0, -100px, 0) scale3d(1.5, 1.5, 1.5);
+  }
+}
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100px, 0) scale3d(1.5, 1.5, 1.5);
+    transform: translate3d(0, -100px, 0) scale3d(1.5, 1.5, 1.5);
+  }
+}
+.fade {
+  opacity: 0;
+  -webkit-transition: opacity 0.25s linear;
+  -o-transition: opacity 0.25s linear;
+  transition: opacity 0.25s linear;
+}
+.fade.in {
+  opacity: 1;
+}
+
+// Kill the scroll on the body
+.modal-open {
+  // overflow: hidden;
+}
+
+// Container that the modal scrolls within
+.modal {
+  display: none;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: @zindex-modal;
+  -webkit-overflow-scrolling: touch;
+
+  // Prevent Chrome on Windows from adding a focus outline. For details, see
+  // https://github.com/twbs/bootstrap/pull/10951.
+  outline: 0;
+
+  // When fading in the modal, animate it to slide down
+  &.fade .modal-dialog {
+    // .translate(0, -25%);
+    // .transition-transform(~"0.3s ease-out");
+
+    .animation-name(scaleOut);
+    .animation-duration(@modal-animation-duration);
+    .animation-timing-function(ease-in-out);
+    .animation-fill-mode(both);
+  }
+  &.in .modal-dialog {
+    // .translate(0, 0);
+    
+    .animation-name(scaleIn);
+    .animation-duration(@modal-animation-duration);
+    .animation-timing-function(ease-in-out);
+  }
+  &.modal-image {
+    text-align: center;
+
+    > .modal-dialog {
+      display: inline-block;
+      width: auto;
+      max-width: 100%;
+
+      > .modal-content {
+        text-align: center;
+
+        > img {
+          border: 5px solid @gray-lighter;
+        }
+
+        > .close,
+        > .prev,
+        > .next {
+          position: absolute;
+        }
+
+        > .close {
+          top: 0;
+          right: -50px;
+          width: 50px;
+          height: 50px;
+          background-color: #fff;
+        }
+
+        > .prev,
+        > .next {
+          top: 50%;
+          margin-top: -40px;
+          width: 80px;
+          height: 80px;
+          line-height: 80px;
+          text-align: center;
+          color: #fff;
+          background-color: #000;
+          .opacity(0.2);
+
+          &:hover {
+            .opacity(0.6);
+          }
+
+          > .icon {
+            font-size: 32px;
+          }
+        }
+
+        > .prev {
+          left: -100px;
+        }
+
+        > .next {
+          right: -100px;
+        }
+      }
+    }
+  }
+  
+  &.modal-loading {
+    position: fixed;
+    background-color: rgba(0,0,0,0.2);
+
+    > .loader {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 80px;
+      height: 80px;
+      background-color: rgba(255,255,255,0.7);
+      border-radius: 10px;
+      padding: 10px;
+    }
+  }
+}
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+// Shell div to position the modal with bottom padding
+.modal-dialog {
+  position: relative;
+  margin: 0 auto;
+  margin-top: 100px;
+  width: auto;
+
+  &.modal-message,
+  &.modal-confirm {
+    width: 500px;
+
+    > .modal-content {
+
+      > .modal-body {
+        margin-left: 100px;
+        padding-left: 40px;
+        font-size: 24px;
+
+        > .icon {
+          position: absolute;
+          left: 0;
+          top: 0;
+          margin-top: 20px;
+          font-size: 28px;
+
+          &.icon-success {
+            color: @brand-success;
+          }
+
+          &.icon-error {
+            color: @brand-danger;
+          }
+
+          &.icon-warning {
+            color: @brand-warning;
+          }
+        }
+
+        > .info {
+          margin-top: 10px;
+          text-align: left;
+          font-size: 14px;
+          // color: lighten(@gray-lighter, 10%);
+        }
+      }
+
+      > .modal-footer {
+        padding-left: 115px;
+      }
+    }
+  }
+
+  &.modal-message {
+
+    > .modal-content {
+
+      > .modal-footer {
+        padding: 0 15px 25px 115px;
+        border-top: none;
+      }
+    }
+  }
+
+  &.modal-confirm {
+
+    > .modal-content {
+
+      > .modal-body {
+
+        > .info {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Actual modal
+.modal-content {
+  position: relative;
+  background-color: @modal-content-bg;
+  // border-radius: @border-radius-large;
+  .box-shadow(0 3px 9px rgba(0,0,0,.3));
+  background-clip: padding-box;
+  border-top: 4px solid @brand-primary;
+  border-radius: @radius;
+}
+
+// Modal background
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: @zindex-modal-background;
+  background-color: @modal-backdrop-bg;
+  // Fade for backdrop
+  &.fade { .opacity(0); }
+  &.in { .opacity(@modal-backdrop-opacity); }
+}
+
+// Modal header
+// Top section of the modal w/ title and dismiss
+.modal-header {
+  padding: @modal-title-padding @modal-title-padding * 1.5;
+  border-bottom: 1px solid @modal-header-border-color;
+  &:extend(.clearfix all);
+
+  // Close icon
+  > .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: (@modal-title-padding * 4) + @modal-title-line-height + 4;
+    height: (@modal-title-padding * 4) + @modal-title-line-height + 4;
+    line-height: 100%;
+    background-color: #eee;
+
+    > .icon {
+
+      &.h3 {
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Title text within header
+.modal-title {
+  margin: 0;
+  line-height: @modal-title-line-height;
+}
+
+// Modal body
+// Where all modal content resides (sibling of .modal-header and .modal-footer)
+.modal-body {
+  position: relative;
+  padding: @modal-inner-padding * 0.8;
+  max-height: 650px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .btn {
+    margin-right: @grid-gutter-width / 2;
+  }
+}
+
+// Footer (for actions)
+.modal-footer {
+  padding: @modal-inner-padding;
+  text-align: right; // right align buttons
+  border-top: 1px solid @modal-footer-border-color;
+  &:extend(.clearfix all); // clear it in case folks use .pull-* classes on buttons
+
+  // Properly space out buttons
+  .btn + .btn {
+    margin-left: 5px;
+    margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+  }
+  // but override that for button groups
+  .btn-group .btn + .btn {
+    margin-left: -1px;
+  }
+  // and override it for block buttons as well
+  .btn-block + .btn-block {
+    margin-left: 0;
+  }
+}
+
+// Measure scrollbar width for padding body during modal show/hide
+.modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+}
+
+// Scale up the modal
+@media (min-width: @screen-sm-min) {
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    width: @modal-md;
+    margin: 0 auto;
+    // margin-top: 40px;
+    // transition: margin .1s;
+  }
+  .modal-content {
+    .box-shadow(0 5px 15px rgba(0,0,0,.1));
+  }
+
+  // Modal sizes
+  .modal-sm { width: @modal-sm; }
+}
+
+@media (min-width: @screen-md-min) {
+  .modal-lg { width: @modal-lg; }
+}

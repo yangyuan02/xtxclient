@@ -1,0 +1,74 @@
+<div class="row" ng-controller="OrganizationController">
+  <div class="col-xs-8 col-xs-offset-1">
+    <form class="form-horizontal" 
+          name="auditOrganizationForm" 
+          role="form" 
+          method="POST" 
+          ng-init="organization = $root.organization_edit">
+      <div class="form-group">
+        <label for="category_id" class="col-xs-3 control-label">所属类别</label>
+        <div class="col-xs-6">
+          <select id="category_id" 
+                  class="form-control" 
+                  disabled="true" 
+                  ng-model="organization.category_id">
+            <option value="">大学</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="organization_name" class="col-xs-3 control-label">学校名称</label>
+        <div class="col-xs-9">
+          <p class="form-control-static">{{ organization.name }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="organization_name" class="col-xs-3 control-label">学校LOGO</label>
+        <div class="col-xs-9">
+          <p class="form-control-static">{{ organization.name }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="organization_url" class="col-xs-3 control-label">学校网址</label>
+        <div class="col-xs-9">
+          <p class="form-control-static"><a href="{{ organization.url }}" target="_blank">{{ organization.url }}</a></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label">
+          学校状态
+        </label>
+        <div class="col-xs-9">
+          <label class="radio-inline text-danger" for="organization_status_01">
+            <input type="radio"
+                   name="status" 
+                   id="organization_status_01"
+                   value="-1"
+                   ng-model="organization.status"> 审核失败
+          </label>
+          <label class="radio-inline text-warning" for="organization_status_0">
+            <input type="radio"
+                   name="status" 
+                   id="organization_status_0"
+                   value="0"
+                   ng-model="organization.status"> 审核中
+          </label>
+          <label class="radio-inline text-success" for="organization_status_1">
+            <input type="radio"
+                   name="status" 
+                   id="organization_status_1"
+                   value="1"
+                   ng-model="organization.status"> 审核通过
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-9 col-xs-offset-3">
+          <button class="btn btn-primary" 
+                  validation-submit="auditOrganizationForm" 
+                  ng-click="organizationAction.audit({ modal: false })">提交保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

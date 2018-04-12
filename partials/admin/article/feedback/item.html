@@ -1,0 +1,38 @@
+<div class="page-title">
+  <h3>反馈详情</h3>
+</div>
+<div class="row" ng-init="feedbackAction.getItem()">
+  <div class="col-xs-12">
+    <div class="item-box">
+      <p>
+        <strong>反馈状态：</strong>
+        <span class="no-animation" 
+              ng-switch="feedback.status">
+          <em class="text-danger"
+              ng-switch-when="0">未处理</em>
+          <em class="text-warning"
+              ng-switch-when="1">已处理</em>
+        </span>
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>反馈用户：</strong>
+        <span>{{ feedback.name }}</span>
+        <span class="sep"></span>
+
+        <strong>用户手机：</strong>
+        <span>{{ feedback.phone }}</span>
+        <span class="sep"></span>
+
+        <strong>用户邮箱：</strong>
+        <span>{{ feedback.email }}</span>
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>反馈内容：</strong>
+        <span>{{ feedback.content }}</span>
+      </p>
+    </div>
+    <a href="/article/feedback/list/index" class="btn btn-default">返回</a>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="page-title">
+  <h3>订单详情</h3>
+</div>
+<div class="row" ng-init="tradeAction.getItem()">
+  <div class="col-xs-12">
+    <div class="item-box">
+      <p>
+        <strong>订单状态：</strong>
+        <span class="no-animation" 
+              ng-switch="trade.status">
+          <em class="text-danger"
+              ng-switch-when="-1">已关闭</em>
+          <em class="text-danger"
+              ng-switch-when="0">已试听</em>
+          <em class="text-warning"
+              ng-switch-when="1">已购买</em>
+          <em class="text-success"
+              ng-switch-when="2">已付款</em>
+          <em class="text-success"
+              ng-switch-when="3">已评价</em>
+        </span>
+        <span class="sep"></span>
+
+        <strong>订单编号：</strong>
+        <span>{{ trade.num }}</span>
+      </p>
+      <p>
+        <strong>订单总额：</strong>
+        <span class="text-danger">{{ trade.rel_price }}</span>元
+        <span class="sep"></span>
+
+        <strong>下单用户：</strong>
+        <span>{{ trade.user.name }}</span>
+        <span class="sep"></span>
+
+        <strong>下单时间：</strong>
+        <span>{{ trade.created_at }}</span>
+        <span class="sep"></span>
+
+        <strong>所购课程：</strong>
+        <span>{{ trade.course.name }}</span>
+      </p>
+      <p>
+        <strong>学习进度：</strong>
+        <span ng-switch="trade.is_study_finish">
+          <em class="text-success" 
+                ng-switch-when="1">已学完</em>
+          <em class="text-warning" 
+                ng-switch-when="0">学习中</em>
+        </span>
+        <span class="sep"></span>
+
+        <strong>学习时长：</strong>
+        <span>{{ trade.total_study_duration }}秒</span>
+      </p>
+    </div>
+    <a href="/trade/manage/list/index" class="btn btn-default">返回</a>
+  </div>
+</div>

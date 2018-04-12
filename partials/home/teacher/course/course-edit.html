@@ -1,0 +1,200 @@
+<i init="courseInit()"></i>
+<div class="panel panel-default no-animation" ng-if="!user.is_teacher">
+  <br><br>
+  <div class="panel-body text-center">
+    <span><i class="icon icon-warning text-warning"></i></span>
+    <span>您还不是老师，加入学校即可成为老师，发布课程，现在去</span>
+    <a href="/teacher/organization/search" class="text-success">加入学校</a>
+  </div>
+  <br><br>
+</div>
+<div class="edit" ng-if="!!user.is_teacher" ng-init="editCourse()">
+  <form name="updateLessonForm" class="form-horizontal" role="form" method="POST">
+    <div class="form-inline form-group">
+      <label class="col-xs-2 control-label important">所属学校</label>
+      <div class="col-xs-6">
+
+        <!-- 学校/选择 -->
+        <select 
+          name="organizations"
+          class="form-control no-animation" 
+          ng-if="!!organizations.length"
+          ng-model="course.organization_id" 
+          ng-options="org.organization.id as org.organization.name for org in organizations"
+          ng-disabled="!!course_id && !!course.organization_id && !!organizations.contain(course.organization_id, 'id')"
+          ng-readonly="!!course_id && !!course.organization_id && !!organizations.contain(course.organization_id, 'id')"
+          validator="required" 
+          required="required"
+          required-error-message="请选择所属学校">
+          <option disabled selected value>- 选择学校 -</option>
+        </select>
+
+        <!-- 隐藏控件 -->
+        <input type="text" 
+               class="hide" 
+               ng-model="course.organization_id" 
+               validator="required" 
+               required="required"
+               required-error-message="您需要加入学校，才可继续操作"/>
+
+        <!-- 加载中 -->
+        <p class="form-control-static text-default no-animation" ng-if="organizations.length == undefined">
+           <span>加载中...</span>
+        </p>
+
+        <!-- 新发布时，用户没有有效学校 -->
+        <p class="form-control-static text-danger no-animation" 
+           ng-if="organizations.length == 0 && !course_id">
+           <span>您当前没有加入任何有效学校，不能发布课程，请先</span>
+           <a href="/teacher/organization/search">加入学校</a>
+        </p>
+
+        <!-- 编辑课程，用户已被学校移除，且用户不再拥有学校 -->
+        <p class="form-control-static text-danger no-animation" 
+           ng-if="organizations.length == 0 && !!course_id && !course.organization_id">
+           <span>当前课程已不再属于原学校，且您当前未属于任何学校，需要编辑课程，请先</span>
+           <a href="/teacher/organization/search">加入学校</a>
+        </p>
+
+      </div>
+
+      <!-- 编辑课程，用户已被学校移除，用户拥有其他学校 -->
+      <div class="col-xs-offset-2 col-xs-6 toggle" 
+           ng-if="!!organizations.length && !!course_id && !organizations.contain(course.organization_id, 'organization_id')">
+        <p></p>
+        <span class="text-danger form-control-static">警告：当前课程已不再属于原学校，请您重新选择。</span>
+      </div>
+    </div>
+
+    <div class="form-inline form-group">
+      <label class="col-xs-2 control-label important">课程分类</label>
+      <div class="col-xs-6">
+
+        <!-- 联动选择 -->
+        <div related-select 
+             selects="categories" 
+             is-edit="!!course.id" 
+             select-id="course.category_id" 
+             select-change="selectChange">
+        </div>
+
+        <!-- 加载中 -->
+        <p class="form-control-static text-default no-animation" ng-if="categories[0] == undefined">
+           <span>加载中...</span>
+        </p>
+
+      </div>
+      <div class="col-xs-offset-2 col-xs-6">
+        <p></p>
+        <span class="text-info form-control-static">提示：课程发布成功后，分类修改需要审核；学校不可修改；请谨慎选择。</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="J_input_name" class="col-xs-2 control-label important">课程名称</label>
+      <div class="col-xs-6">
+        <input type="text" 
+               name="name" 
+               class="form-control" 
+               id="J_input_name" 
+               placeholder="请输入课程名称，如：大学物理" 
+               ng-model="course.name" 
+               validator="required" 
+               required-error-message="请输入课程名称">
+      </div>
+    </div>
+
+    <div class="form-group form-inline group-price">
+      <label for="J_input_relprice" class="col-xs-2 control-label important">课程价格</label>
+      <div class="col-xs-6">
+        <input type="text" 
+               name="rel_price" 
+               class="form-control" 
+               id="J_input_relprice" 
+               min="0" 
+               ng-init="course.is_free = false"
+               placeholder="请输入价格" 
+               ng-disabled="course.is_free" 
+               ng-model="course.rel_price" 
+               maxlength="55" 
+               validator="price,number" 
+               price-error-message="请输入正确的课程价格" 
+               number-error-message="价格格式不正确"> 元
+        <input type="checkbox" 
+               class="hidden free-price" 
+               ng-model="course.free_before_price">
+        <span ng-if="course.id" ng-init="course.is_free = !course.rel_price" ng-show="false"></span>
+        <label for="J_is_free" 
+               class="btn btn-default" 
+               ng-click="course.is_free = !course.is_free;
+                         course.free_before_price =  course.rel_price || course.free_before_price || 0;
+                         course.rel_price = course.is_free ? 0 : course.free_before_price">
+          <i class="icon" 
+             ng-class="{ true: 'icon-check-fill', false: 'icon-check' }[course.is_free]"></i>
+          <span>免费</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="J_input_desc" class="col-xs-2 control-label important">课程简介</label>
+      <div class="col-xs-6">
+        <textarea rows="7" 
+                  name="description" 
+                  class="form-control" 
+                  id="J_input_desc" 
+                  placeholder="请您在这里输入课程简介（150字之内）" 
+                  ng-model="course.description" 
+                  number validator="required, maxlength=150" 
+                  required-error-message="课程简介不能为空" 
+                  maxlength-error-message="课程简介不可以超过150字">
+        </textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="J_upload_thumb" class="col-xs-2 control-label important">封面图片</label>
+      <div class="col-xs-6 upload-thumb">
+        <div class="pull-left" 
+             ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 500, min_height: 300 })" 
+             default-file="getThumbnail(course.thumb, 'lesson_thumb', { width: 160, height: 80 })" 
+             uploaded="getUploadThumb">
+        </div>
+        <div class="pull-left text-info">
+          <p class="">请上传大于500 x 300像素的图片</p>
+          <p class="">文件小于2M</p>
+          <p class="">支持JPG/PNG/BMP等格式图片</p>
+        </div>
+      </div>
+      <input type="text" 
+             class="hidden pull-right" 
+             ng-model="course.thumb" 
+             name="thumb" 
+             validator="required, minlength=2" 
+             required-error-message="请上传封面图片" 
+             minlength-error-message="请上传封面图片">
+    </div>
+
+    <div class="form-group">
+      <label for="J_input_introduction" class="col-xs-2 control-label important">课程详情</label>
+      <div class="col-xs-6">
+        <!-- 加载编辑器的容器 -->
+        <div umeditor 
+             ng-model="course.introduction" 
+             id="J_course_introduction" 
+             style="width: 600px; height: 300px;">{{ course.introduction }}</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-offset-2 col-xs-6">
+        <button validation-submit="updateLessonForm" 
+                class="btn btn-lg btn-primary" 
+                ng-click="updateCourse()">{{ course_id ? '提交保存' : '下一步' }}</button>
+      </div>
+    </div>
+  </form>
+  <link href="editor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="editor/umeditor.config.js"></script>
+  <script type="text/javascript" src="editor/umeditor.min.js"></script>
+  <script type="text/javascript" src="editor/lang/zh-cn/zh-cn.js"></script>
+</div>

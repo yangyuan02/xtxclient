@@ -1,0 +1,130 @@
+<div class="auth-service forgot">
+  <div class="auth-bg"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-6 pull-right">
+        <div class="auth-wrap clearfix">
+          <div class="auth-content clearfix">
+            <h2 class="title">
+              <span>找回密码</span>
+            </h2>
+
+            <!-- 找回成功 -->
+            <div class="text-center no-animation" ng-if="auth.success">
+              <br>
+              <h3 class="text-primary">
+                <i class="icon icon-success h3 text-primary"></i>
+                <span>密码找回成功</span>
+              </h3>
+              <br>
+              <h4 class="text-muted">
+                <span>现在去</span>
+                <a href="/auth/login" class="text-primary">登录</a>
+              </h4>
+              <br>
+            </div>
+
+            <!-- 找回表单 -->
+            <div class="col-xs-12 no-animation" ng-if="!auth.success">
+              <form name="forgotFrom" 
+                    class="form-horizontal" 
+                    role="form" 
+                    method="POST">
+                <div class="form-group">
+                  <div class="col-xs-10 col-xs-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="icon icon-user"></i>
+                      </div>
+                      <input type="text" 
+                             name="phone" 
+                             class="form-control form-input" 
+                             id="J_input_mobile" 
+                             maxlength="11" 
+                             placeholder="请输入注册时的手机号" 
+                             autocomplete="off" 
+                             ng-model="user.phone" 
+                             validator="required, mobile" 
+                             required-error-message="请您输入注册时的手机号">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-10 col-xs-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="icon icon-mobile"></i>
+                      </div>
+                      <input type="text" 
+                             name="code" 
+                             maxlength="6" 
+                             class="pull-left form-control input-code" 
+                             id="J_input_verify_code" 
+                             ng-model="user.code" 
+                             placeholder="请输入校验码" 
+                             ng-model="user.code" 
+                             validator="required, number" 
+                             required-error-message="请输入校验码">
+                      <div class="input-group-addon btn-code">
+                        <a href="" 
+                           ng-click="getVerifyCode({ modal: false, type: 'exist' })" 
+                           ng-class="{ 'disabled': verify.status }">{{ verify.text }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-10 col-xs-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="icon icon-password"></i>
+                      </div>
+                      <input type="password" 
+                             name="password" 
+                             maxlength="16" 
+                             class="form-control form-input" 
+                             id="J_input_password" 
+                             placeholder="请输入新密码，长度6~16位" 
+                             ng-model="user.password" 
+                             validator="required, minlength=6, maxlength=16" 
+                             required-error-message="请您输入新密码" 
+                             minlength-error-message="密码长度至少为6位字符" 
+                             maxlength-error-message="密码长度不能超过16位字符">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-10 col-xs-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="icon icon-password"></i>
+                      </div>
+                      <input type="password" 
+                             name="repassword" 
+                             maxlength="16" 
+                             class="form-control form-input" 
+                             id="J_input_repassword" 
+                             placeholder="请再次输入新密码" 
+                             ng-model="user.repassword" 
+                             validator="required, minlength=6, maxlength=16, pwdVerify=user.password" 
+                             required-error-message="请再次确认新密码" 
+                             minlength-error-message="密码长度至少为6位字符" 
+                             maxlength-error-message="密码长度不能超过16位字符">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-offset-1 col-xs-10">
+                    <button validation-submit="forgotFrom" 
+                            class="btn btn-lg btn-block btn-primary" 
+                            ng-click="forgot()">找回密码</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

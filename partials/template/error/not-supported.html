@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+  <title>您的浏览器需要升级 - 学天下</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico" />
+  <style>
+
+  * {
+    box-sizing: border-box;
+    outline: none;
+    -webkit-transition: background-color 0.25s linear, opacity 0.25s linear;
+    -moz-transition: background-color 0.25s linear, opacity 0.25s linear;
+    -o-transition: background-color 0.25s linear, opacity 0.25s linear;
+    transition: background-color 0.25s linear, opacity 0.25s linear;
+  }
+
+  body {
+    font-family: "Microsoft Yahei", "Hiragino Sans GB", Helvetica, "Helvetica Neue", "微软雅黑", Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.43;
+    color: #777777;
+    background-color: #fff;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    color: #333;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #159988;
+  }
+
+  .text-primary {
+    color: #159988;
+  }
+
+  .error {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .error > .not-supported {
+    padding: 10% 0;
+    text-align: center;
+  }
+
+  .error > .not-supported > .logo {
+    margin-bottom: 40px;
+  }
+
+  .error > .not-supported > .logo > a > img {
+    border: none;
+  }
+
+  .error > .not-supported > .title {
+    color: #333;
+  }
+
+  .error > .not-supported > .btw {
+    color: #333;
+  }
+
+  .error > .not-supported > .btw > a {
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #159988;
+    border-radius: 3px;
+  }
+
+  .error > .not-supported > .btw > a:hover {
+    background-color: #128374;
+  }
+
+  .error > .not-supported > .hr {
+    height: 1px;
+    background-color: #eee;
+    width: 450px;
+    margin: 20px auto;
+  }
+
+  .error > .not-supported > .recommend {
+    margin-top: 80px;
+  }
+
+  .error > .not-supported > .recommend > .title{
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .error > .not-supported > .recommend > .browers {
+
+  }
+
+  .error > .not-supported > .recommend > .browers > .item {
+    display: inline-block;
+    width: 100px;
+    height: 120px;
+    margin: 0 10px;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a {
+    display: block;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .name {
+    font-weight: 700;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .logo {
+    width: 100%;
+    height: 80px;
+    display: block;
+    background-image: url('/images/browers.png');
+    background-position-y: -12px;
+    margin-bottom: 20px;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .logo.chrome {
+    background-position-x: -13px;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .logo.firefox {
+    background-position-x: -135px;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .logo.ie {
+    background-position-x: -263px;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .logo.safari {
+    background-position-x: -387px;
+  }
+
+  .error > .not-supported > .recommend > .browers > .item > a > .logo.opera {
+    background-position-x: 95px;
+  }
+  </style>
+</head>
+<body>
+  <div class="error">
+    <div class="not-supported container">
+      <p class="logo">
+        <a href="/" target="_self"><img src="/images/logo.png"></a>
+      </p>
+      <h3 class="title">为了获得更好的在线学习体验，建议您对浏览器进行升级</h3>
+      <p class="btw">如果是双核浏览器，请您切换到 <span class="text-primary">"极速模式"</span> ，并点击 <a href="/" target="_self" class="btn btn-xs btn-primary">刷新</a> 重试</p>
+
+      <div class="hr"></div>
+
+      <div class="recommend">
+        <h3 class="title">我们强烈推荐您使用以下浏览器</h3>
+        <ul class="browers">
+          <li class="item">
+            <a href="http://chrome.360.cn/index.html" target="_blank">
+              <span class="logo safari"></span>
+              <span class="name">360极速</span>
+            </a> 
+          </li>
+          <li class="item">
+            <a href="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=chrome&oq=blink&rsv_pq=ead73d460003c379&rsv_t=fad5O9LAt%2BkmyN0185A7CL2xBq6bwdP%2B14XOR4pPaXa%2BqbfAYQInaC%2BYJi0&rsv_enter=1&inputT=770&rsv_sug3=25&rsv_sug1=26&bs=blink" target="_blank">
+              <span class="logo chrome"></span>
+              <span class="name">Chrome</span>
+            </a> 
+          </li>
+          <li class="item">
+            <a href="http://firefox.com.cn/download/" target="_blank">
+              <span class="logo firefox"></span>
+              <span class="name">Firefox</span>
+            </a> 
+          </li>
+          <li class="item">
+            <a href="http://windows.microsoft.com/zh-CN/internet-explorer/downloads/ie" target="_blank">
+              <span class="logo ie"></span>
+              <span class="name">IE 8+</span>
+            </a> 
+          </li>
+          <li class="item">
+            <a href="http://www.opera.com/zh-cn" target="_blank">
+              <span class="logo opera"></span>
+              <span class="name">Opera</span>
+            </a> 
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

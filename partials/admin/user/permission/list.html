@@ -1,0 +1,30 @@
+<div class="user-permission" ng-init="permissionAction.getLists()">
+  <div class="page-title">
+    <h3>权限管理({{ permission_list.result.length || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-info" 
+              ng-if="page_permission['user.manage.permission.add']"
+              ng-click="permissionAction.add({ modal: true })">新增</button>
+      <button class="btn btn-sm btn-success" 
+              ng-if="page_permission['user.manage.permission.batch']" 
+              ng-click="permissionAction.enable({ batch: true })"
+              ng-disabled="!permission_list.result.checked('children').length">启用</button>
+      <button class="btn btn-sm btn-warning" 
+              ng-if="page_permission['user.manage.permission.batch']"
+              ng-click="permissionAction.disable({ batch: true })"
+              ng-disabled="!permission_list.result.checked('children').length">禁用</button>
+      <button class="btn btn-sm btn-danger" 
+              ng-if="page_permission['user.manage.permission.batch-del']"
+              ng-click="permissionAction.del({ batch: true })"
+              ng-disabled="!permission_list.result.checked('children').length">删除</button>
+      <button class="btn btn-sm btn-default" 
+              ng-click="permissionAction.getLists()">刷新</button>
+    </div>
+    <div class="pull-right"></div>
+  </div>
+  <div class="page-content">
+    <div ng-include="'partials/admin/user/permission/permission-list.html'" include-replace></div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="box account" ng-init="getThirdAccounts()">
+  <table class="table table-hover user-account">
+    <thead>
+      <tr>
+        <th>账号</th>
+        <th>状态</th>
+        <th>绑定用户</th>
+        <th>绑定时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="account in third_accounts" class="no-animation">
+        <td ng-if="account.type == 1" class="type">
+          <i class="icon icon-weibo h4"></i>
+          <span>新浪微博</span>
+        </td>
+        <td ng-if="account.type == 2" class="type">
+          <i class="icon icon-qq h4"></i>
+          <span>QQ账户</span>
+        </td>
+        <td ng-if="account.type == 3" class="type">
+          <i class="icon icon-wechat h4"></i>
+          <span>微信账户</span>
+        </td>
+        <td>{{ account.binding_at ? '已绑定' : '未绑定' }}</td>
+        <td>{{ account.name }}</td>
+        <td>{{ (account.binding_at | toYMD) || '无' }}</td>
+        <td ng-if="account.binding_at" class="no-animation">
+          <a href="" class="btn btn-sm btn-danger" ng-click="thirdUnbind(account)">解除绑定</a>
+        </td>
+        <td ng-if="!account.binding_at" class="no-animation">
+          <a href="" class="btn btn-sm btn-default" 
+             ng-click="thirdLogin({ provider: account.type_name, modal: false, bind: true })">立即绑定</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,118 @@
+<div class="page-list" ng-init="withdrawAction.getIndex()">
+  <div class="page-title">
+    <h3>提现列表({{ withdraw_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="withdrawAction.del({ batch: true })"
+        ng-if="page_permission['trade.withdraw.list.del']"
+        ng-disabled="!withdraw_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="withdrawAction.getIndex(withdraw_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search" ng-if="true">
+        <div class="form-group">
+          <select 
+            class="form-control input-sm" 
+            ng-model="filter.status" 
+            ng-change="withdrawAction.filterChanged()">>
+            <option value="">所有提现状态</option>
+            <option value="0">已申请</option>
+            <option value="1">已审批通过</option>
+            <option value="2">已付款</option>
+            <option value="-1">审核失败</option>
+            <option value="-2">付款失败</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="withdraw_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>提现用户</th>
+          <th class="text-right" width="120">提现金额(元)</th>
+          <th>提现账户</th>
+          <th>备注</th>
+          <th>状态</th>
+          <th>申请时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!withdraw_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="withdraw_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="withdraw_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="withdraw in withdraw_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !withdraw.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="withdraw.checked">
+          </td>
+          <td>{{ withdraw.id }}</td>
+          <td>
+            <a ng-href="/user/manage/list/{{ withdraw.user_id }}" target="_blank">
+              {{ withdraw.user.name }}
+            </a>
+          </td>
+          <td class="text-right text-danger">{{ withdraw.amount }}</td>
+          <td>{{ withdraw.bank_account.account_name }}（{{ withdraw.bank_account.account_num || '暂无' }}）</td>
+          <td>{{ withdraw.remark }}</td>
+          <td ng-switch="withdraw.status">
+            <span class="text-warning" ng-switch-when="0">已申请</span>
+            <span class="text-success" ng-switch-when="1">已审核通过</span>
+            <span class="text-success" ng-switch-when="2">已付款</span>
+            <span class="text-danger" ng-switch-when="-1">审核失败</span>
+            <span class="text-danger" ng-switch-when="-2">付款失败</span>
+          </td>
+          <td>{{ withdraw.created_at }}</td>
+          <td>
+            <a href="" 
+               ng-click="withdrawAction.edit({ modal: true, withdraw: this })"
+               class="text-info" 
+               ng-if="page_permission['trade.withdraw.list.edit']">[ 处理提现 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['trade.withdraw.list.del']"
+               ng-click="withdrawAction.del({ withdraw: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="withdraw_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="withdraw_list.pagination.total" 
+         items-per-page="withdraw_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="withdrawAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

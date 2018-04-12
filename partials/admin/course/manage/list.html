@@ -1,0 +1,193 @@
+<div class="page-list" ng-init="courseAction.getIndex()">
+  <div class="page-title">
+    <h3>课程列表({{ course_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-danger" 
+              ng-click="courseAction.del({ batch: true })"
+              ng-if="page_permission['course.manage.list.del']"
+              ng-disabled="!course_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-warning" 
+              ng-if="page_permission['course.manage.list.batch']"
+              ng-disabled="!course_list.result.checked().length"
+              ng-click="courseAction.enable({ batch: true, course: this })">上架</button>
+      <button class="btn btn-sm btn-warning" 
+              ng-if="page_permission['course.manage.list.batch']"
+              ng-disabled="!course_list.result.checked().length"
+              ng-click="courseAction.disable({ batch: true, course: this })">下架</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="courseAction.getLists(course_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form clearfix" role="search">
+        <div class="form-group">
+
+          <!-- 排序方式 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.sort_id"
+                  ng-change="courseAction.filterChanged()">
+            <option value="all">综合排序</option>
+            <option value="1">最新创建</option>
+            <option value="2">价格升序</option>
+            <option value="3">价格倒序</option>
+          </select>
+
+          <!-- 上下架状态 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.x_status"
+                  ng-change="courseAction.filterChanged()">
+            <option value="all">所有状态</option>
+            <option value="1">已上架</option>
+            <option value="0">已下架</option>
+          </select>
+
+          <!-- 课程类型 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.is_live"
+                  ng-change="courseAction.filterChanged()">
+                  <option value="all">所有类型</option>
+                  <option value="1">直播</option>
+                  <option value="0">录播</option>
+          </select>
+
+          <!-- 审核状态 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.status"
+                  ng-change="courseAction.filterChanged()">
+                  <option value="all">所有状态</option>
+                  <option value="0">待审核</option>
+                  <option value="1">审核通过</option>
+                  <option value="-1">审核失败</option>
+          </select>
+
+          <!-- 分类筛选 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.category_id"
+                  ng-change="courseAction.filterChanged()">
+                  <option value="all">所有分类</option>
+            <option value="{{ category.id }}" ng-repeat="category in categories">{{ category.name }}</option>
+          </select>
+          <input type="text" 
+            class="form-control input-sm" 
+            placeholder="请输入课程名称、介绍" 
+            ng-model="search.keyword">
+        </div>
+        <button type="submit" 
+          class="btn btn-sm btn-default" 
+          ng-click="courseAction.getSearch()">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="course_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>机构</th>
+          <th>类别</th>
+          <th>课程名称</th>
+          <th class="text-right" width="100">价格(元)</th>
+          <th>老师</th>
+          <th>类型</th>
+          <th>状态</th>
+          <th>审核状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!course_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="course_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="course_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="course in course_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !course.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="course.checked">
+          </td>
+          <td>{{ course.id }}</td>
+          <td>{{ course.organization.name }}</td>
+          <td>{{ course.category.name }}</td>
+          <td>
+            <a ng-href="http://www.xuetianxia.cn/course/{{ course.id }}" target="_blank">《{{ course.name | textOverflow: 22 }}》</a>
+          </td>
+          <td class="text-right text-danger">{{ course.rel_price }}</td>
+          <td>
+            <a ng-href="/user/manage/list/{{ course.teacher.id }}" target="_blank">{{ course.teacher.name }}</a>
+          </td>
+          <td>
+            <span class="text-success no-animation" ng-if="!course.is_live">录播</span>
+            <span class="text-danger no-animation" ng-if="course.is_live">直播</span>
+          </td>
+          <td>
+            <span class="text-success no-animation" 
+                  ng-if="course.x_status">正常</span>
+            <span class="text-danger no-animation" 
+                  ng-if="!course.x_status">已下架</span>
+          </td>
+          <td>
+            <span class="text-success no-animation" 
+                  ng-if="course.status == 1">审核通过</span>
+            <span class="text-warning no-animation" 
+                  ng-if="course.status == 0">待审核</span>
+            <span class="text-danger no-animation" 
+                  ng-if="course.status == -1">审核失败</span>
+          </td>
+          <td>
+            <a href="" 
+               class="text-warning" 
+               ng-show="course.x_status" 
+               ng-if="page_permission['course.manage.list.batch']"
+               ng-click="courseAction.disable({ batch: false, course: this })">[ 下架 ]</a>
+            <a href="" 
+               class="text-warning" 
+               ng-show="!course.x_status" 
+               ng-if="page_permission['course.manage.list.batch']"
+               ng-click="courseAction.enable({ batch: false, course: this })">[ 上架 ]</a>
+            <a ng-href="/course/manage/list/{{ course.id }}" 
+               class="text-info" 
+               ng-if="page_permission['course.manage.list.edit']">[ 编辑 ]</a>
+            <a ng-href="/course/manage/list/section/{{ course.id }}" 
+               class="text-warning no-animation" 
+               ng-show="course.x_status" 
+               ng-if="page_permission['course.manage.list.section']">[ 管理章节 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['course.manage.list.del']"
+               ng-click="courseAction.del({ course: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="course_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="course_list.pagination.total" 
+         items-per-page="course_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="courseAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

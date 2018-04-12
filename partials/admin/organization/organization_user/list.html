@@ -1,0 +1,155 @@
+<div class="page-list" ng-init="organizationUserAction.getIndex()">
+  <div class="page-title">
+    <h3>老师列表({{ organization_user_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button ng-if="false"
+              class="btn btn-sm btn-primary" 
+              ng-click="organizationUserAction.addTeacher()">增加教师</button>
+      <button class="btn btn-sm btn-default"
+              ng-click="organizationUserAction.getLists(organization_user_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" ng-init="filter = { status: 'all', organization_id: null, user_id: '' }">
+        <div class="form-group">
+          <select class="form-control input-sm" 
+                  ng-model="filter.status" 
+                  ng-change="organizationUserAction.filterChanged()">
+            <option value="all">所有状态</option>
+            <option value="-2">机构已拒绝</option>
+            <option value="-1">用户已拒绝</option>
+            <option value="0">已邀请</option>
+            <option value="1">已申请</option>
+            <option value="2">已加入</option>
+            <option value="3">已申请管理员</option>
+            <option value="4">管理员</option>
+            <option value="5">创始人</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="form-control input-sm" 
+                  ng-model="filter.organization_id" 
+                  ng-change="organizationUserAction.filterChanged()"
+                  ng-options="organization.id as organization.name group by organization.type for organization in organization_list.result | orderBy: ['type', 'name']">
+            <option value="">所有机构</option>
+          </select>
+        </div>
+        <input type="Number" 
+               class="form-control input-sm" 
+               placeholder="教师ID" 
+               ng-model="filter.user_id"
+               ng-model-options="{ 
+                  updateOn: 'submit default blur', 
+                  debounce: { default: 500, blur: 0, submit: 0 }, 
+                  getterSetter: true 
+               }"
+               ng-blur="organizationUserAction.filterChanged()"
+               ng-change="organizationUserAction.filterChanged()">
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="organization_user_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>机构</th>
+          <th>用户</th>
+          <th>职称</th>
+          <th>老师介绍</th>
+          <th>状态</th>
+          <th>创建时间</th>
+          <th class="text-center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!organization_user_list.pagination.total" class="no-animation">
+          <td colspan="8">
+            <div class="list-loader" 
+              ng-if="organization_user_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="organization_user_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="organization_user in organization_user_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !organization_user.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="organization_user.checked">
+          </td>
+          <td>{{ organization_user.id }}</td>
+          <td>
+            <a ng-href="/organization/manage/list/{{ organization_user.organization.id }}">{{ organization_user.organization.name }}</a>
+          </td>
+          <td>
+            <a ng-href="/user/manage/list/{{ organization_user.user.id }}" target="_blank">
+              {{ organization_user.user.name }}
+            </a>
+          </td>
+          <td>{{ organization_user.title }}</td>
+          <td>
+            <a ng-href="/organization/manage/organization_user/{{ organization_user.id }}">
+              {{ organization_user.introduction | textOverflow: 16 }}
+            </a>
+          </td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="organization_user.status">
+              <em class="text-danger no-animation"
+                  ng-switch-when="-2">机构已拒绝</em>
+              <em class="text-danger no-animation"
+                  ng-switch-when="-1">用户已拒绝</em>
+              <em class="text-danger no-animation"
+                  ng-switch-when="0">已邀请</em>
+              <em class="text-warning no-animation"
+                  ng-switch-when="1">已申请</em>
+              <em class="text-success no-animation"
+                  ng-switch-when="2">已加入</em>
+              <em class="text-success no-animation"
+                  ng-switch-when="3">已申请管理员</em>
+              <em class="text-success no-animation"
+                  ng-switch-when="4">管理员</em>
+              <em class="text-success no-animation"
+                  ng-switch-when="5">创始人</em>
+            </span>
+          </td>
+          <td>{{ organization_user.created_at }}</td>
+          <td class="text-right">
+            <a ng-href="/organization/manage/organization_user/{{ organization_user.id }}" 
+               class="text-info" 
+               ng-if="page_permission['organization.manage.organization_user.item']">[ 编辑 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['organization.manage.organization_user.del']" 
+               ng-click="organizationUserAction.del({ organization_user: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="organization_user_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="organization_user_list.pagination.total" 
+         items-per-page="organization_user_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="organizationUserAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

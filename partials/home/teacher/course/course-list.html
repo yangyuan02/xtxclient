@@ -1,0 +1,119 @@
+<div class="list" ng-init="courseInit()">
+  <div class="panel panel-default no-animation" ng-if="!user.is_teacher">
+    <br><br>
+    <div class="panel-body text-center">
+      <span><i class="icon icon-warning text-warning"></i></span>
+      <span>您还不是老师，加入学校即可成为老师，发布课程，现在去</span>
+      <a href="/teacher/organization/search" class="text-success">加入学校</a>
+    </div>
+    <br><br>
+  </div>
+  <div tabset justified="false" largesize="false" ng-if="!!user.is_teacher">
+    <!-- 基本信息 -->
+    <div tab 
+         heading="{{ type.name }}（{{ type.courses.pagination.total || 0 }}）" 
+         ng-repeat="type in all_courses"
+         ng-init="getCourses({ x_status: type.x_status })"
+         select="all_courses.setAttr('active', false);type.active = true">
+      <p class="text-center no-animation" ng-if="type.courses.pagination.total == 0">
+        <br>暂无课程，<a href="/teacher/course/add" class="text-primary">立即添加</a>
+      </p>
+      <p class="text-center no-animation" ng-if="type.courses.pagination.total == undefined">
+        <br>加载中
+      </p>
+      <div class="lesson-list no-animation" ng-if="!!type.courses.pagination.total">
+        <!-- 列表标题 -->
+        <div class="list-title">
+          <span class="checkall">
+            <div>
+              <label>
+                <input type="checkbox" 
+                       ng-model="type.check_all" 
+                       ng-click="type.courses.result.setCheck(type.check_all)">
+                       <span>{{ check_all ? '反选' : '全选' }}</span>
+              </label>
+              <a href="" 
+                 ng-click="sellCourse()" 
+                 ng-if="type.x_status == '0' || type.x_status == 'all'">上架</a>
+              <a href="" 
+                 ng-click="delistingCourse()" 
+                 ng-if="type.x_status == '1' || type.x_status == 'all'">下架</a>
+              <a href="" 
+                 ng-click="delCourse()" 
+                 ng-if="type.x_status == '0'">删除</a>
+            </div>
+          </span>
+          <span class="course">课程</span>
+          <span class="statistics">统计</span>
+          <span class="action">操作</span>
+        </div>
+        
+        <!-- 列表内容 -->
+        <ul class="item-list">
+          <li class="item slide-top" ng-repeat="course in type.courses.result">
+            <!-- 多选框 -->
+            <div class="checkbox">
+              <input type="checkbox" ng-model="course.checked">
+            </div>
+            <!-- 课程缩略图 -->
+            <div class="thumb course-thumb">
+              <a ng-href="/course/{{ course.id }}">
+                <img class="media-object thumbnail" 
+                     ng-src="{{ getThumbnail(course.thumb, 'course_thumb', { width: 220, height: 120 }) }}">
+              </a>
+              <span class="live live-xs" ng-if="!!course.is_live">直播</span>
+            </div>
+            <!-- 课程描述信息 -->
+            <div class="info">
+              <h4 class="title">
+                <a ng-href="/course/{{ course.id }}" target="_blank">{{ course.name }}</a>
+              </h4>
+              <p class="describe">{{ course.description }}</p>
+              <p class="course">
+                <span>共{{ course.section_count }}节</span>
+                <span>{{ course.duration | toHHMMSS : 'HHMMSS' : '小时' : '分钟' : '秒' }}</span>
+              </p>
+              <p class="clearfix">
+                <!-- <a ng-href="/teacher/course/section/edit/{{ course.id }}" class="show-course">查看章节</a> -->
+              </p>
+              <p class="price"><em>&yen;</em>{{ course.rel_price }}</p>
+            </div>
+            <!-- 统计 -->
+            <div class="statistics">
+              <p class="buys">购买数：{{ course.study_count }}</p>
+              <p class="favorites">收藏数：{{ course.follow_count }}</p>
+              <p class="comments">评价数：{{ course.comment_count }}</p>
+            </div>
+            <!-- 操作 -->
+            <div class="action">
+              <a class="btn btn-default edit" ng-href="/teacher/course/edit/{{ course.id }}">
+                <i class="icon icon-edit"></i>
+                <span>编辑</span>
+              </a>
+              <a class="btn btn-default add" ng-href="/teacher/course/section/edit/{{ course.id }}">
+                <i class="icon icon-add"></i>
+                <span>管理章节</span>
+              </a>
+            </div>
+          </li>
+          <div class="page-wrap" ng-if="!!type.courses.pagination.total">
+            <div pagination 
+                 total-items="type.courses.pagination.total" 
+                 items-per-page="type.courses.pagination.per_page" 
+                 ng-model="type.courses.pagination.current_page" 
+                 ng-change="getCourses({ x_status: type.x_status, page: type.courses.pagination.current_page })" 
+                 max-size="8" 
+                 class="pagination-sm" 
+                 boundary-links="true" 
+                 rotate="false">
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
+
+    <div class="action-btn">
+      <a class="btn btn-sm btn-primary" href="/teacher/course/add">添加课程</a>
+    </div>
+  </div>
+</div>

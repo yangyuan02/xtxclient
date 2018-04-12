@@ -1,0 +1,72 @@
+<div class="container user">
+  <div class="row">
+    <div class="col-xs-12" >
+      <ol class="ab-nav breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li ng-if="breadcrumb.$current.parent.parent.data.title">
+          <a ng-href="{{ breadcrumb.$current.parent.parent.data.url }}">{{ breadcrumb.$current.parent.parent.data.title }}</a>
+        </li>
+        <li ng-if="breadcrumb.$current.parent.data.title">
+          <a ng-href="{{ breadcrumb.$current.parent.data.url }}">{{ breadcrumb.$current.parent.data.title }}</a>
+        </li>
+        <li ng-if="breadcrumb.current.data.title">
+          <a href="{{ breadcrumb.current.data.url }}">{{ breadcrumb.current.data.title }}</a>
+        </li>
+      </ol>
+    </div>
+    <div class="col-xs-2">
+      <div class="sidebar">
+        <div class="box">
+          <h4>个人中心</h4>
+          <ul>
+            <li ng-class="{ active: ('index' == (status.current  || status.parent)) }">
+              <a ng-href="/user/index">个人中心</a>
+            </li>
+            <li ng-class="{ active: ('course' == (status.current  || status.parent)) }">
+              <a ng-href="/user/course">我的课程</a>
+            </li>
+            <li ng-class="{ active: ('history' == (status.current  || status.parent)) }">
+              <a ng-href="/user/history">学习记录</a>
+            </li>
+            <li ng-class="{ active: ('favorite' == (status.current  || status.parent)) }">
+              <a ng-href="/user/favorite">我的收藏</a>
+            </li>
+            <li ng-class="{ active: ('question' == (status.current  || status.parent)) }">
+              <a ng-href="/user/question">我的问答</a>
+            </li>
+            <li ng-class="{ active: ('note' == (status.current  || status.parent)) }">
+              <a ng-href="/user/note">我的笔记</a>
+            </li>
+            <li ng-class="{ active: ('bill' == (status.current  || status.parent)) }">
+              <a ng-href="/user/bill">我的账单</a>
+            </li>
+            <li ng-class="{ active: ('msg' == (status.current  || status.parent)) }">
+              <a ng-href="/user/msg">我的通知</a>
+            </li>
+            <li ng-class="{ active: ('score' == (status.current  || status.parent)) }">
+              <a ng-href="/user/score">我的积分</a>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="box setting">
+          <h4>个人设置</h4>
+          <ul>
+            <li ng-class="{ active: ('profile' == (status.current  || status.parent)) }">
+              <a ng-href="/user/profile">个人资料</a>
+            </li>
+            <li ng-class="{ active: ('password' == (status.current  || status.parent)) }">
+              <a ng-href="/user/password">修改密码</a>
+            </li>
+            <li ng-class="{ active: ('account' == (status.current  || status.parent)) }">
+              <a ng-href="/user/account">帐户绑定</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-10">
+      <div ui-view class="content slide-top"></div>
+    </div>
+  </div>
+</div>

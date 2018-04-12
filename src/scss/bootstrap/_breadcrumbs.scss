@@ -1,0 +1,115 @@
+//
+// Breadcrumbs
+// --------------------------------------------------
+
+
+.breadcrumb {
+  margin: ($line-height-computed / 2) 0;
+  padding: $breadcrumb-padding-vertical 0;
+  list-style: none;
+
+  > li {
+    display: inline-block;
+
+    > a {
+      display: block;
+      position: relative;
+      padding: 5px 10px;
+      background-color: $gray-xlightest;
+      border-radius: $border-radius-base;
+      color: $gray-light;
+
+      @include transition(all .25s);
+
+      &:hover {
+        color: $gray-dark;
+        background-color: #e2e2e2;
+        @include transition(all .25s);
+
+        &:after {
+          border-left: 10px solid #e2e2e2;
+          @include transition(all .25s);
+        }
+      }
+    }
+
+    &:first-child {
+
+      > a {
+        margin-right: 8px;
+        @include transition(all .25s);
+
+        &:hover {
+          @include transition(all .25s);
+
+          &:after {
+            border-left: 10px solid #e2e2e2;
+            @include transition(all .25s);
+          }
+        }
+
+        &:after {
+          position: absolute;
+          top: 0px;
+          right: -25px;
+          width: 10px;
+          height: 10px;
+          border: 15px solid transparent;
+          border-left: 10px solid #EEE;
+          content: "";
+          @include transition(all .25s);
+        }
+      }
+      
+    }
+
+    + li {
+
+      > a {
+        margin-right: 12px;
+        padding: 5px 10px;
+        padding-left: 20px;
+        @include transition(all .25s);
+
+        &:before {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          width: 10px;
+          height: 10px;
+          border: 15px solid transparent;
+          border-left: 10px solid #FFF;
+          content: "";
+        }
+
+        &:after {
+          position: absolute;
+          top: 0px;
+          right: -25px;
+          width: 10px;
+          height: 10px;
+          border: 15px solid transparent;
+          border-left: 10px solid #EEE;
+          content: "";
+          @include transition(all .25s);
+        }
+      }
+    }
+  }
+
+  > .active {
+    display: inline-block;
+    padding: 5px;
+    color: $gray-light;
+
+    > a {
+      padding: 0;
+
+      &:after,
+      &:before {
+        display: none;
+        content: no-close-quote;
+      }
+    }
+  }
+}

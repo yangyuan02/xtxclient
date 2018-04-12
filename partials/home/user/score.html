@@ -1,0 +1,105 @@
+<div class="box score" ng-init="userScoreInit()">
+  <div tabset  justified="false" largesize="false">
+    <div tab heading="我的积分">
+      <table class="table">
+        <thead>
+          <tr>
+            <!-- <th>操作</th> -->
+            <th>积分变更</th>
+            <th>详情</th>
+            <th>时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="score in score.lists.result" class="slide-top">
+            <!-- <td>{{ score.type }}</td> -->
+            <td><span class="success">+{{ score.score }}</span></td>
+            <td>{{ score.description | textOverflow: 40 }}</td>
+            <td>{{ score.created_at | relativeTime }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="page-wrap" ng-if="!!score.lists.pagination.total">
+          <div pagination 
+               total-items="score.lists.pagination.total" 
+               ng-model="score.lists.pagination.current_page" 
+               items-per-page="score.lists.pagination.per_page" 
+               ng-change="getScore({ page: score.lists.pagination.current_page })"
+               max-size="6" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+      </div>
+    </div>
+    <div tab heading="积分规则">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>名称</th>
+            <th>周期范围</th>
+            <th>周期内最多奖励次数</th>
+            <th>积分变更（点）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="rule in score.rules.result">
+            <td>{{ rule.name }}</td>
+            <td>{{ rule.cycle  == 'day' ? '每天' : ( rule.cycle  == 'week' ? '每周' : '不限' ) }}</td>
+            <td>{{ rule.count == 0 ? '不限' : rule.count + '次' }}</td>
+            <td><span class="success">+{{ rule.score }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="page-wrap" ng-if="score.rules.pagination.total_page > 1">
+        <div pagination 
+             total-items="score.rules.pagination.total" 
+             ng-model="score.rules.pagination.current_page" 
+             items-per-page="score.rules.pagination.per_page" 
+             ng-change="getScore({ page: score.rules.pagination.current_page })"
+             max-size="6" 
+             class="pagination-sm" 
+             boundary-links="true" 
+             rotate="false">
+        </div>
+      </div>
+    </div>
+    <div tab heading="积分等级">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>等级</th>
+            <th>等级名称</th>
+            <th>等级图标</th>
+            <th>积分值</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="level in score.levels.result">
+            <td>{{ level.id }}</td>
+            <td>{{ level.name }}</td>
+            <td>
+              <div class="level-icon">
+                <i class="icon icon-rank h2 text-warning"></i>
+                <span class="level-id text-warning">{{ level.id }}</span>
+              </div>
+            </td>
+            <td><span class="success">{{ level.start + '-' + level.end }}点</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="page-wrap" ng-if="score.levels.pagination.total_page > 1">
+        <div pagination 
+             total-items="score.levels.pagination.total" 
+             ng-model="score.levels.pagination.current_page" 
+             items-per-page="score.levels.pagination.per_page" 
+             ng-change="getScore({ page: score.levels.pagination.current_page })"
+             max-size="6" 
+             class="pagination-sm" 
+             boundary-links="true" 
+             rotate="false">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

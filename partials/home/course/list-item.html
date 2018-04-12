@@ -1,0 +1,50 @@
+<div ng-repeat="course in courses | limitTo : 12">
+  <div class="item">
+    <a ng-href="/course/{{ course.id }}" class="pic" target="_blank">
+      <!-- <div afkl-lazy-image="{{ getThumbnail(course.thumb, 'course', { width: 500, height: 300 }) }}"
+           class="afkl-img-ratio-{{ course.thumb }}"></div> -->
+        <img ng-src="{{ getThumbnail(course.thumb, 'course', { width: 500, height: 300 }) }}">
+      <div class="mask">
+        <span class="play"><i class="icon icon-play"></i></span>
+      </div>
+    </a>
+    <div class="organization">
+      <a ng-href="/organization/{{ course.organization_id }}" target="_blank" class="logo">
+        <!-- <div afkl-lazy-image="{{ getThumbnail(course.organization.logo, 'logo', { width: 45, height: 45 }) }}" 
+             class="afkl-img-ratio-{{ course.organization.logo }}"
+             width="45"></div> -->
+        <img ng-src="{{ getThumbnail(course.organization.logo, 'logo', { width: 45, height: 45 }) }}" width="45">
+      </a>
+    </div>
+    <div class="info">
+      <h4 class="name">
+        <a ng-href="/course/{{ course.id }}" target="_blank">
+          <span class="text-danger" ng-if="!!course.is_live">
+            <span ng-if="course.live_info && course.live_info.course_live_status == 0">( 已结束 )</span>
+            <!-- <span ng-if="course.live_info && course.live_info.course_live_status == 1">( 未开始 )</span> -->
+            <span ng-if="course.live_info && course.live_info.course_live_status == 2">( 直播中 )</span>
+          </span>
+          <span>{{ course.name }}</span>
+        </a>
+      </h4>
+      <p class="line">
+        <span class="ornament"></span>
+      </p>
+      <p class="price">
+        <span class="text-info study-count">
+          <i class="icon icon-study-user"></i>{{ course.study_count }}人在学习</span>
+        <a ng-href="/course/{{ course.id }}"
+           target="_blank"
+           class="pull-right text-price"
+           ng-class="{true: 'free'}[course.rel_price <= 0]">
+          <i class="yen" ng-if="course.rel_price">&yen;</i> {{ course.rel_price ? course.rel_price : '免费' | priceFormat }}
+        </a>
+      </p>
+    </div>
+    <span class="live" ng-if="!!course.is_live">直播</span>
+    <span class="duration">
+      <span ng-if="!course.is_live || !course.live_info">{{ course.duration | toHHMMSS : 'HHMM' : '小时' : '分钟' }}</span>
+      <span ng-if="!!course.is_live && !!course.live_info">最近：{{ course.live_info.live_at }}</span>
+    </span>
+  </div>
+</div>

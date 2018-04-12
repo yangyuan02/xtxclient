@@ -1,0 +1,37 @@
+<div class="box coupons" ng-init="getStudyCards()">
+  <div tabset justified="false" largesize="false">
+
+    <!-- 学习卡 -->
+    <div tab heading="学习卡">
+      <p class="text-center text-info" ng-show="courses.total == 0"><br>暂无学习卡</p>
+      <!-- 学习卡列表 -->
+      <ul class="item-list">
+        <!-- 单张学习卡 -->
+        <li class="item">
+          单张学习卡内容
+        </li>
+      </ul>
+
+      <div class="page-wrap" ng-if="true">
+        <div pagination total-items="courses.total" items-per-page="courses.per_page" ng-model="current_page" ng-change="getCourse(courses.status, current_page)" class="pagination-sm" boundary-links="true" rotate="false" ></div>
+      </div>
+    </div>
+
+    <!-- 优惠卡 -->
+    <div tab heading="优惠券">
+      <p class="text-center text-info" ng-show="courses.total == 0"><br>暂无优惠券</p>
+      <!-- 优惠券列表 -->
+      <ul class="item-list">
+        <!-- 单张优惠券 -->
+        <li class="item">
+          单张优惠券内容
+        </li>
+      </ul>
+
+      <div class="page-wrap" ng-if="study_cards.last_page > 1">
+        <div pagination total-items="study_cards.total" items-per-page="study_cards.per_page" ng-model="study_cards.current_page" ng-change="getStudyCards(study_cards.current_page)" class="pagination-sm" boundary-links="true" rotate="false" ></div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="user-actionlog" ng-init="logAction.getIndex()">
+  <div class="page-title">
+    <h3>操作日志({{ log_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-info"
+              ng-if="page_permission['config.actionlog.list.clear']"
+              ng-click="logAction.clear()">清空</button>
+      <button class="btn btn-sm btn-danger"
+              ng-if="page_permission['config.actionlog.list.del']"
+              ng-click="logAction.del({ batch: true })"
+              ng-disabled="!log_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-default"
+              ng-click="logAction.get_lists(log_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right"></div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="log_list.result.setCheck(check_all)">
+          </th>
+          <th>编号</th>
+          <th>行为描述</th>
+          <th>执行者</th>
+          <th>执行时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!log_list.pagination.total" class="no-animation">
+          <td colspan="6">
+            <div class="list-loader" 
+              ng-if="log_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="log_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr class="toggle" ng-repeat="log in log_list.result track by $index">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="log.checked">
+          </td>
+          <td>{{ log.id }}</td>
+          <td>{{ log.description }}</td>
+          <td>{{ log.user_name }}</td>
+          <td>{{ log.updated_at }}</td>
+          <td>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['config.actionlog.list.del']"
+               ng-click="logAction.del({ batch: false, log: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="!!log_list.pagination.total">
+    <div pagination 
+         total-items="log_list.pagination.total" 
+         items-per-page="log_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="logAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false" ></div>
+  </div>
+</div>

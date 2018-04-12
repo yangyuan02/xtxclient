@@ -1,0 +1,51 @@
+<div class="income-record" ng-init="getWithdrawRecord({})">
+  <table class="table table-striped details-table">
+    <thead>
+      <tr>
+        <th>提现金额（元）</th>
+        <th>提现时间</th>
+        <th>状态</th>
+        <th>备注</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="record in withdraw.records.result" class="slide-top">
+        <td>
+          <span class="sum">+{{ record.amount }}</span>
+        </td>
+        <td>{{ record.created_at }}</td>
+        <td>
+          <span class="inprogress" 
+                ng-if="record.status ==  0 || record.status ==  1">处理中...</span>
+          <span class="success" 
+                ng-if="record.status ==  2">提现成功</span>
+          <span class="text-danger" 
+                ng-if="record.status ==  -1 || record.status ==  -2" >提现失败</span>
+        </td>
+          <span class="text-info" >{{ record.remark != null ? record.remark : '' }}</span>
+        <td>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="text-center text-height clearfix no-animation" ng-if="withdraw.records.pagination.total == 0">
+    <span class="text-muted">暂无提现记录，</span>
+    <a href="/teacher/income/apply" class="text-muted">去提现</a>
+  </p>
+  <p class="text-center text-height clearfix no-animation" ng-if="withdraw.records.pagination.total == undefined">
+    <span class="text-muted">加载中...</span>
+  </p>
+  <div class="pagenavi">
+    <div class="page-wrap" ng-if="!!withdraw.records.pagination.total">
+      <div pagination 
+           total-items="withdraw.records.pagination.total" 
+           items-per-page="withdraw.records.pagination.per_page" 
+           ng-model="withdraw.records.pagination.current_page" 
+           ng-change="getWithdrawRecord({ page: withdraw.records.pagination.current_page })" 
+           class="pagination-sm" 
+           boundary-links="true" 
+           rotate="false">
+      </div>
+    </div>
+  </div>
+</div>

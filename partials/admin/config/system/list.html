@@ -1,0 +1,112 @@
+<div class="config-list" ng-init="systemAction.getLists()">
+  <div class="page-title">
+    <h3>配置管理({{ config_list.pagination.total || 0 }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-info"
+              ng-click="systemAction.add({ modal: true })"
+              ng-if="page_permission['config.system.manage.add']">新增</button>
+      <button class="btn btn-sm btn-danger" 
+              ng-if="page_permission['config.system.manage.del']"
+              ng-click="systemAction.del({ batch: true })" >删除</button>
+    </div>
+    <div class="pull-right"></div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="config_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>别名</th>
+          <th>名称</th>
+          <th>描述</th>
+          <th>类型</th>
+          <th>分组</th>
+          <th>是否公开</th>
+          <th>最后更新</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody sv-root 
+             sv-on-sort="systemAction.sort($item, $partFrom, $partTo, $indexFrom, $indexTo)"
+             sv-part="config_list.result">
+        <tr ng-if="!config_list.pagination.total" class="no-animation">
+          <td colspan="10">
+            <div class="list-loader" 
+              ng-if="config_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="config_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr class="slide-down" 
+            ng-repeat="config in config_list.result | orderBy: sort" 
+            sv-element 
+            sv-handle>
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="config.checked">
+          </td>
+          <td>{{ config.id }}</td>
+          <td>{{ config.name }}</td>
+          <td>{{ config.title | textOverflow: 8 }}</td>
+          <td>
+            <span ng-if="config.remark">{{ config.remark | textOverflow: 8 }}</span>
+            <span ng-if="!config.remark" class="text-muted">暂无备注</span>
+          </td>
+          <td>
+            <span ng-if="config.type == 1">字符串</span>
+            <span ng-if="config.type == 2">数字</span>
+            <span ng-if="config.type == 3">数组</span>
+            <span ng-if="config.type == 4">对象</span>
+            <span ng-if="config.type == 5">布尔</span>
+          </td>
+          <td>
+            <span ng-if="config.group == 1">基本设置</span>
+            <span ng-if="config.group == 2">内容设置</span>
+            <span ng-if="config.group == 3">用户设置</span>
+            <span ng-if="config.group == 4">系统设置</span>
+          </td>
+          <td>
+            <span class="text-success" ng-if="config.is_front == 1">公开</span>
+            <span class="text-danger" ng-if="config.is_front == 0">不公开</span>
+          </td>
+          <td>{{ config.updated_at | toYMD }}</td>
+          <td>
+            <a href="" 
+               class="text-info" 
+               ng-show="page_permission['config.system.manage.edit']"
+               ng-click="systemAction.edit({ modal: true, config: this })">[ 编辑 ]</a>
+            <a href="" 
+               class="text-danger"
+               ng-click="systemAction.del({ batch: false, config: this })" 
+               ng-if="page_permission['config.system.manage.del']">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="!!config_list.pagination.total">
+    <div pagination 
+         total-items="config_list.pagination.total" 
+         items-per-page="config_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="systemAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

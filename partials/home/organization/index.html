@@ -1,0 +1,374 @@
+<div class="organization-index" 
+     ng-init="getIndex()"
+     ng-class="{
+       'pink': organization.info.profile.index_template == 0 || !organization.info.profile,
+       'blue': organization.info.profile.index_template == 1,
+       'yellow': organization.info.profile.index_template == 2,
+       'gray': organization.info.profile.index_template == 3,
+       'green': organization.info.profile.index_template == 4,
+       'love': organization.info.profile.index_template == 5 
+      }">
+
+  <!-- 主页banner -->
+  <div class="banner" ng-style="{ 
+       'background-image': organization.info.profile.big_banner ? 
+       'url(' + getThumbnail(organization.info.profile.big_banner, 'big_banner', { width: 1920, height: 300 }) + ')' : ''}">
+    <div class="container">
+      <div class="brief">
+        <div class="info">
+          <p class="logo">
+            <img ng-src="{{ config.fileUrl + organization.info.logo }}">
+          </p>
+          <h3 class="title">{{ organization.info.name }}</h3>
+          <div class="audit" 
+               ng-if="organization.info.type == 2 && organization.info.is_audit == 2">
+            <i class="icon icon-audit"></i>
+            <span class="slug">已认证</span>
+          </div>
+        </div>
+        <div class="site" ng-if="false">
+          <a ng-href="{{ organization.info.url ? organization.info.url : '#' }}" target="_blank">进入官网</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主页内容 -->
+  <div class="container-fluid">
+    <div class="row">
+      <div tabset justified="true" largesize="true" class="organization-tab">
+
+        <!-- 学校主页 -->
+        <div tab heading="学校主页" icon="icon-home">
+          <div class="container">
+            <div class="box-header course">
+              <h3 class="title">精品课程</h3>
+              <!-- <p class="text-info">GREAT COURSES</p> -->
+              <p class="iconfont"><i class="icon icon-book"></i></p>
+            </div>
+
+            <!-- 课程列表 -->
+            <div class="course-lists">
+              <h5 class="text-center text-info no-animation" 
+                  ng-if="!organization.info.courses.length">该学校暂无推荐课程</h5>
+              <div class="col-xs-3 slide-top" course-list="organization.info.courses"></div>
+            </div>
+          </div>
+
+          <div class="index-teachers">
+            <div class="box-header">
+              <h3 class="title">推荐名师</h3>
+              <!-- <p class="text-info">GREAT TEACHERS</p> -->
+              <p class="iconfont"><i class="icon icon-recommend"></i></p>
+            </div>
+            <h5 class="text-muted text-center no-animation" 
+                ng-if="organization.info.teachers.length == 0">该学校暂无推荐名师</h5>
+            <h5 class="text-muted text-center no-animation" 
+                ng-if="organization.info.teachers.length == undefined">数据加载中</h5>
+            <ul class="teacher-lists">
+              <li class="item" ng-repeat="teacher in organization.info.teachers">
+                <a target="_blank"
+                   ng-href="/organization/{{ organization_id }}/teacher/{{ teacher.user.id }}">
+                  <img width="120" 
+                       height="120" 
+                       ng-src="{{ getThumbnail(teacher.user.gravatar, 'small_gravatar', { width: 120, height: 120 }) }}" 
+                       class="img-circle avatar">
+                  <h4 class="name">{{ teacher.user.profile.rel_name || teacher.user.name }}</h4>
+                  <small class="name" ng-if="!!teacher.title">（{{ teacher.title }}）</small>
+                </a>
+              </li>
+            </ul>
+
+          </div>
+
+          <div class="index-descrption">
+            <div class="container">
+              <div class="index-announcement">
+                <h3 class="title">最新公告</h3>
+                <div ng-if="organization.info.announcements.length == 0" class="no-animation">
+                  <br><br><br><br><br><br><br>
+                  <h5 class="text-center text-info">该学校暂无公告</h5>
+                </div>
+                <div ng-if="organization.info.announcements.length == undefined" class="no-animation">
+                  <br><br><br><br><br><br><br>
+                  <h5 class="text-center text-info">公告加载中</h5>
+                </div>
+                <ul class="announcement-list">
+                  <li class="item" ng-repeat="announcement in organization.info.announcements | limitTo : 15">
+                    <i class="icon icon-instruction-right"></i>
+                    <a href="" title="{{ announcement.title }}" ng-click="announcementDetail(announcement)">
+                      <span>{{ announcement.title }}</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="index-logo">
+                <div class="logo-content">
+                  <p class="logo">
+                    <img ng-src="{{ config.fileUrl + organization.info.logo }}">
+                  </p>
+                  <h3 class="title">
+                    <span>{{ organization.info.name }}</span>
+                    <span ng-if="organization.info.type == 2 && organization.info.is_audit == 2">(认证学校)</span>
+                  </h3>
+                  <div class="audit" ng-if="false">
+                    <i class="icon icon-audit"></i>
+                    <span class="slug">已认证</span>
+                  </div>
+                  <div class="share">
+                    <p class="share-title">
+                      <span class="title-carrier">分享到</span>
+                    </p>
+                    <p class="share-btn">
+                      <a href="" class="icon icon-weibo" ng-click="share('weibo')"></a>
+                      <a href="" class="icon icon-wechat" ng-click="share('qrcode')"></a>
+                      <a href="" class="icon icon-qq" ng-click="share('qq')"></a>
+                    </p>
+                  </div>
+                  <p class="site">
+                    <a ng-href="{{ organization.info.url || '#' }}" target="_blank">进入官网</a>
+                  </p>
+                </div>
+              </div>
+              <div class="index-thumb" 
+                   ng-style="{ 'background-image': organization.info.scenery ? 
+                   'url(' + getThumbnail(organization.info.scenery, '', { width: 570, height: 500 }) + ')' : ''}">
+              </div>
+              <div class="index-brief">
+                <div class="org-icon">
+                <i class="icon icon-left-marks h2"></i>
+                </div>
+                <h3 class="title">学校简介</h3>
+                <div class="content" ng-bind-html="organization.info.introduction || '' | toHtml" >
+                  <div ng-if="!organization.info.introduction">
+                    <br><br><br><br>
+                    <h5 class="text-center text-info">该学校暂无简介</h5>
+                  </div>
+                </div>
+                <p class="read-more">
+                  <a href="" 
+                     class="text-info"
+                     ng-click="descriptionDetail(organization.info, 300)">了解更多 >></a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 课程目录 -->
+        <div tab heading="课程目录" icon="icon-catalogue" select="getCourseLists()">
+          <div class="container">
+            <!-- 课程排序 -->
+            <div class="clearfix">
+              <div class="col-xs-12">
+                <div class="course-order no-animation">
+                  <ul class="sort">
+                    <li ng-class="{active: organization.courses.sort_id == 0}" ng-click="sortCourseLists(0)">
+                      <a href="">综合排序<i class="icon icon-sort-down-height"></i></a>
+                    <li ng-class="{active: organization.courses.sort_id == 1}" ng-click="sortCourseLists(1)">
+                      <a href="">最新发布<i class="icon icon-sort-down-height"></i></a>
+                    <li ng-class="{active: organization.courses.sort_id == 2}" ng-click="sortCourseLists(2)">
+                      <a href="">价格由低到高<i class="icon icon-sort-up"></i></a>
+                    </li>
+                    <li ng-class="{active: organization.courses.sort_id == 3}" ng-click="sortCourseLists(3)">
+                      <a href="">价格由高到低<i class="icon icon-sort-down"></i></a>
+                    </li>
+                  </ul>
+                  <div pager 
+                       total-items="organization.courses.pagination.total" 
+                       items-per-page="organization.courses.pagination.per_page" 
+                       ng-model="organization.courses.pagination.current_page" 
+                       ng-change="getCourseLists(organization.courses.pagination.current_page)" 
+                       template-url="partials/template/pagination/pager_course.html">
+                  </div>
+                  <ul class="filter">
+                    <li ng-class="{ active: organization.courses.is_live == 1 }" 
+                        ng-click="liveCourseLists(!organization.courses.is_live)">
+                      <a href="" class="btn btn-xs btn-danger">
+                        <span>
+                          <i class="icon" 
+                             ng-class="{ 0: 'icon-check', 1: 'icon-check-fill' }[organization.courses.is_live]"></i>
+                        </span>
+                        <span>直播</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="text-center text-info no-animation" 
+                ng-if="!organization.courses.pagination.total"><br>暂无相关课程</h5>
+
+            <div class="course-lists">
+              <div class="col-xs-3 slide-top" course-list="organization.courses.result"></div>
+            </div>
+
+            <!-- 翻页模块 -->
+            <div class="page-wrap no-animation" ng-if="!!organization.courses.pagination.total">
+              <div pagination 
+                   total-items="organization.courses.pagination.total" 
+                   items-per-page="organization.courses.pagination.per_page" 
+                   ng-model="organization.courses.pagination.current_page" 
+                   ng-change="getCourseLists(organization.courses.pagination.current_page)" 
+                   sortCourseLists="pagination" 
+                   boundary-links="true" 
+                   rotate="false" >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 名师介绍 -->
+        <div tab heading="名师介绍" icon="icon-teacher" select="getTeacherLists({})">
+          <div class="container">
+            <div class="teacher">
+              <ul class="teacher-list">
+                <h5 ng-if="!organization.teachers.pagination.total" 
+                    class="text-center text-info no-animation"><br>该学校暂无老师</h5>
+                <li class="col-xs-6 slide-top" 
+                    ng-class="{'pull-right': $index % 2 != 0,'pull-left':$index % 2 == 0 }" 
+                    ng-repeat="teacher in organization.teachers.result">
+                  <div class="media">
+                    <div class="media-left">
+                      <a ng-href="/organization/{{ organization_id }}/teacher/{{ teacher.user_id }}" target="_blank">
+                        <img  width="80"
+                              class="media-object img-circle"
+                              ng-src="{{ getThumbnail(teacher.user.gravatar, 'gravatar', { width: 80, height: 80 }) }}">
+                      </a>
+                    </div>
+                    <div class="media-body">
+                      <h4 class="clearfix">
+                        <a ng-href="/organization/{{ organization_id }}/teacher/{{ teacher.user.id }}" target="_blank">
+                          <sapn>{{ teacher.user.profile.rel_name }}</sapn>
+                        </a>
+                        <span class="pull-right small">
+                          <a ng-href="/organization/{{ organization_id }}/teacher/{{ teacher.user_id }}" target="_blank">{{ teacher.course_count || 0 }}门课程</a>
+                        </span>
+                      </h4>
+                      <p class="small" ng-if="!!teacher.title">{{ teacher.title }}</p>
+                      <p class="small text-muted" ng-if="!teacher.title">暂无职称</p>
+                      <p class="text-height" 
+                         ng-if="!!teacher.introduction"
+                         ng-bind-html="teacher.introduction || '' | readMore : 110 | toHtml" 
+                         ng-click="teacherDetail(teacher, 110)">
+                      </p>
+                      <p class="text-height text-muted" ng-if="!teacher.introduction">暂无简介</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+
+              <!-- 翻页模块 -->
+              <div class="page-wrap col-xs-12" ng-if="!!organization.teachers.pagination.total">
+                <div pagination 
+                     total-items="organization.teachers.pagination.total" 
+                     items-per-page="organization.teachers.pagination.per_page" 
+                     ng-model="organization.teachers.pagination.current_page" 
+                     ng-change="getTeacherLists({ page: organization.teachers.pagination.current_page })" 
+                     sortCourseLists="pagination" 
+                     boundary-links="true" 
+                     rotate="false">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 认证资料 -->
+        <div tab heading="认证资料" icon="icon-v"
+             ng-if="organization.info.type == 2 && organization.info.audit_info && organization.info.audit_info.status == 1">
+          <div class="container">
+            <div class="school-sign">
+              <div class="col-xs-3">
+                <div class="sidebar">
+                  <div class="score-info">
+                    <h4 class="title">学校评分</h4>
+                    <h3 class="title name">
+                      {{ organization.info.name }}
+                      <span class="text-primary">
+                        <i class="icon icon-audit h1"></i>
+                        <i class="icon icon-auth h2"></i>
+                      </span>
+                    </h3>
+                    <p>课程内容评分：<span class="text-danger">{{ organization.info.avg_description }}</span></p>
+                    <p>授课服务评分：<span class="text-danger">{{ organization.info.avg_quality }}</span></p>
+                    <p>学生满意评分：<span class="text-danger">{{ organization.info.avg_satisfaction }}</span></p>
+                  </div>
+                  
+                </div>
+                <div class="sidebar">
+                  <div class="other-course">
+                    <h4 class="title">该学校其它课程</h4>
+                    <p class="text-muted" ng-if="!organization.info.courses.length">暂无课程</p>
+                    <ul class="course-list-grid">
+                      <li class="media" ng-repeat="course in organization.info.courses | limitTo : 5">
+                        <div class="media-left">
+                          <a ng-href="/course/{{ course.id }}" target="_blank">
+                            <img class="media-object" ng-src="{{ getThumbnail(course.thumb, 'course', { width: 100, height: 60 }) }}" width="100" >
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <h5 class="media-heading">
+                            <a ng-href="/course/{{ course.id }}" target="_blank">{{ course.name }}</a>
+                          </h5>
+                          <p class="price">
+                            <strong class="text-danger"  ng-if="course.rel_price > 0">￥{{ course.rel_price }}</strong>
+                            <strong class="text-primary" ng-if="course.rel_price <= 0">免费</strong>
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- 认证资料 -->
+              <div class="col-xs-9">
+                <div class="content">
+                  <h4 class="title">认证资料</h4>
+                  <ul class="item-list">
+                    <li class="col-xs-12">
+                      <div class="col-xs-4 title">学校名称：</div>
+                      <div class="col-xs-7">{{ organization.info.audit_info.name }}</div>
+                    </li>
+                    <li class="col-xs-12">
+                      <div class="col-xs-4 title">组织学校代码证：</div>
+                      <div class="col-xs-7">
+                        <img class="papers" ng-src="{{ getThumbnail(organization.info.audit_info.education_qualification, 'education_qualification', { width: 100, height: 60 }) }}">
+                        <a href="" ng-click="modal.imagePreview(organization.info.audit_info.education_qualification)">点击查看大图</a>
+                      </div>
+                    </li>
+                    <li class="col-xs-12">
+                      <div class="col-xs-4 title">企业法人营业执照：</div>
+                      <div class="col-xs-7">
+                        <img class="papers" ng-src="{{ getThumbnail(organization.info.audit_info.business_license, 'business_license', { width: 100, height: 60 }) }}">
+                        <a href="" ng-click="modal.imagePreview(organization.info.audit_info.business_license)">点击查看大图</a>
+                      </div>
+                    </li>
+                    <li class="col-xs-12">
+                      <div class="col-xs-4 title">申请人：</div>
+                      <div class="col-xs-7">{{ organization.info.audit_info.user_name }}</div>
+                    </li>
+                    <li class="col-xs-12">
+                      <div class="col-xs-4 title">联系方式：</div>
+                      <div class="col-xs-7">
+                        <p ng-if="organization.info.audit_info.phone">电话：{{ organization.info.audit_info.phone }}</p>
+                        <p ng-if="organization.info.audit_info.email">邮件：{{ organization.info.audit_info.email }}</p>
+                      </div>
+                    </li>
+                    <li class="col-xs-12">
+                      <div class="col-xs-4 title">学校简介：</div>
+                      <div class="col-xs-7">
+                        <p ng-bind-html="organization.info.introduction || '' | toHtml"></p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

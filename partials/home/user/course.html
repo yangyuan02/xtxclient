@@ -1,0 +1,128 @@
+<div class="box course" ng-init="courseInit()">
+  <div tabset justified="false" largesize="false">
+
+    <!-- 所有课程 -->
+    <div tab 
+         heading="{{ type.name }}（{{ type.courses.pagination.total || 0 }}）" 
+         ng-repeat="type in all_courses | orderBy: courses.sort"
+         ng-init="getCourses({ status: type.status })">
+      <p class="text-center text-info no-animation" 
+         ng-show="!type.courses.pagination.total">
+        <br>暂无课程，<a href="/course" class="text-primary">去选课</a>
+      </p>
+
+      <!-- 列表标题 -->
+      <div class="table-title no-animation" ng-show="!!type.courses.pagination.total">
+        <span class="batch">
+          <div ng-if="type.status == '1' || type.status == 'all'">
+            <label>
+              <input type="checkbox" 
+                     ng-model="check_all"
+                     ng-change="batchCheck({ check_all: check_all, status: type.status })">
+                <span>{{ check_all ? '反选' : '全选' }}</span>
+              </label>
+            <a href="" ng-click="batchPayment(type.status)">批量付款</a>
+          </div>
+        </span>
+        <span class="name">课程</span>
+        <span class="price">价格（元）</span>
+        <span class="money">实付款（元）</span>
+        <span class="state">订单状态</span>
+        <span class="active">操作</span>
+      </div>
+
+      <!-- 课程列表 -->
+      <ul class="item-list">
+        <li class="item slide-top" ng-repeat="course in type.courses.result">
+          <div class="course-info">
+            <span class="date">
+              <label>
+                <input type="checkbox" 
+                       ng-model="course.checked"  
+                       ng-disabled="course.trade_status != 1" 
+                       ng-if="course.trade_status == 1">
+                <strong>{{ course.created_at }}</strong>
+              </label>
+            </span>
+            <span class="order">订单号：{{ course.num || '暂无' }}</span>
+            <span class="organization">
+              <a href="/organization/{{ course.organization_id }}" target="_blank">{{ course.organization_name }}</a>
+            </span>
+          </div>
+          <!-- 课程主体内容信息 -->
+          <div class="course-content">
+            <!-- 课程缩略图 -->
+            <div class="course-thumb">
+              <a ng-href="/course/{{ course.course_id }}">
+                <img class="media-object thumbnail" 
+                     ng-src="{{ getThumbnail(course.thumb, 'order_course', { width: 180, height: 100 }) }}" >
+              </a>
+              <span class="live live-xs" ng-if="!!course.course.is_live">直播</span>
+            </div>
+            <!-- 课程标题描述等信息 -->
+            <div class="course-title">
+              <h4 class="title">
+                <a ng-href="/course/{{ course.course_id }}">{{ course.course_name }}</a>
+              </h4>
+              <p class="describe">
+                <span>主讲老师：</span>
+                <a target="_blank"
+                   ng-href="/organization/{{ course.organization_id }}/teacher/{{ course.teacher_id }}">{{ course.teacher_name }}</a>
+              </p>
+              <p class="period">共{{ course.section_count }}节</p>
+            </div>
+            <!-- 订单价格 -->
+            <div class="order-price">
+              <p class="price">&yen;{{ course.rel_price | priceFormat }}</p>
+            </div>
+            <!-- 实付款 -->
+            <div class="real-payment">
+              <p>&yen;{{ course.rel_price | priceFormat }}</p>
+              <span class="discount" ng-show="course.rel_price < course.price">
+                (优惠{{ course.price - course.rel_price | priceFormat }}元)
+              </span>
+            </div>
+            <!-- 订单状态 -->
+            <div class="order-state">
+              <span class="text-primary" ng-if="course.trade_status == 0">试听课</span>
+              <span class="text-danger"  ng-if="course.trade_status == 1">待付款</span>
+              <span class="text-primary" ng-if="course.trade_status == 2">待评价</span>
+              <span class="text-primary" ng-if="course.trade_status == 3">交易成功</span>
+              <span class="text-muted" ng-if="course.trade_status == -1">订单已关闭</span>
+            </div>
+            <!-- 操作按钮 -->
+            <div class="active-btn">
+              <a ng-click="buy(course)" 
+                 class="btn btn-warning" 
+                 ng-if="course.trade_status == 0">立即购买</a>
+              <a ng-href="/payment/{{ course.course_id }}" 
+                 class="btn btn-danger" 
+                 ng-if="course.trade_status == 1">立即付款</a>
+              <a ng-href="/course/{{ course.course_id }}?tab=3#detailTab" 
+                 class="btn btn-default" 
+                 ng-if="course.trade_status == 2">立即评价</a>
+              <span class="cancel">
+                <a ng-href="/course/{{ course.course_id }}/learn/{{ course.last_study_section_id }}" 
+                   ng-if="course.last_study_section_id != null && course.trade_status == 2">继续学习</a>
+                <a href="" 
+                   ng-click="delCourseTrade({ trade_id: course.trade_id, status: type.status })" 
+                   ng-if="course.trade_status == 1 || course.trade_status == 0">取消订单</a>
+              </span>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="page-wrap" ng-if="!!type.courses.pagination.total">
+        <div pagination 
+             total-items="type.courses.pagination.total" 
+             items-per-page="type.courses.pagination.per_page" 
+             ng-model="type.courses.pagination.current_page" 
+             ng-change="getCourses({ status: type.status, page: type.courses.pagination.current_page })" 
+             class="pagination-sm" 
+             boundary-links="true" 
+             rotate="false">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

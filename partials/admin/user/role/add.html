@@ -1,0 +1,61 @@
+<div class="row" ng-controller="UserController">
+  <div class="col-xs-7 col-xs-offset-2">
+    <div class="register-form">
+      <form class="form-horizontal" name="addRoleForm" role="form" method="POST">
+        <div class="form-group">
+          <label for="role_name" class="col-xs-3 control-label">名称</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="role_name" 
+                   name="role_name" 
+                   class="form-control" 
+                   maxlength="12" 
+                   placeholder="请输入角色名称" 
+                   ng-model="role.name"
+                   validator="required"  
+                   required-error-message="请输入角色名称">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="role_description" class="col-xs-3 control-label">描述</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="role_description" 
+                   name="role_description" 
+                   class="form-control" 
+                   maxlength="30" 
+                   placeholder="请输入角色描述" 
+                   ng-model="role.description"
+                   validator="required"  
+                   required-error-message="请输入角色描述">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="role_type" class="col-xs-3 control-label">类型</label>
+          <div class="col-xs-9">
+            <select type="text" 
+                    id="role_type" 
+                    name="role_type" 
+                    class="form-control" 
+                    ng-init="role.type = undefined"
+                    ng-model="role.type"
+                    validator="required"  
+                    required-error-message="请选择角色类型">
+              <option value disabled>选择角色类型</option>
+              <option value="1">管理员用户</option>
+              <option value="2">普通用户</option>
+              <option></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-9 col-xs-offset-3">
+            <button class="btn btn-primary"
+                    validation-submit="addRoleForm" 
+                    ng-click="roleAction.add({ modal: false })">确认添加</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

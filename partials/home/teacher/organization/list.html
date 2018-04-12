@@ -1,0 +1,173 @@
+<div tabset justified="false" largesize="false" ng-init="schoolInit()" id="J_school_list">
+  <!-- 我创建的 -->
+  <div tab 
+       heading="{{ item.name }}（{{ item.relations.pagination.total || 0 }}）" 
+       ng-repeat="item in all_schools"
+       ng-init="getOrganizationList({ status: item.status, from: item.from })">
+    <div class="organization-list">
+      <!-- 列表标题 -->
+      <div class="list-title clearfix">
+        <span class="col-xs-5 text-center">机构</span>
+        <span class="col-xs-3 text-center" ng-if="item.type == 'creator'">创建时间</span>
+        <span class="col-xs-3 text-center" ng-if="item.type == 'manage'">加入时间</span>
+        <span class="col-xs-3 text-center" ng-if="item.type == 'apply'">申请时间</span>
+        <span class="col-xs-3 text-center" ng-if="item.type == 'invite'">邀请时间</span>
+        <span class="col-xs-2 text-center">{{ ( item.type == 'creator' ? '机构' : '关系' ) + '状态' }}</span>
+        <span class="col-xs-2 text-center">操作</span>
+      </div>
+      <!-- 列表内容 -->
+      <ul class="item-list">
+        <!-- 无数据 -->
+        <h5 class="text-center no-animation" ng-if="item.relations.pagination.total == 0">
+          <span>
+            <i class="icon icon-warning h4"></i>
+            <span>暂无有效数据</span>
+          </span>
+          <a href="/teacher/organization/add" 
+             class="text-primary"
+             ng-if="item.type == 'creator' || item.type == 'manage'">去创建</a>
+          <a href="/teacher/organization/search"  
+             class="text-primary"
+             ng-if="item.type == 'apply' || item.type == 'invite'">去申请</a>
+        </h5>
+        <h5 class="text-center no-animation" ng-if="item.relations.pagination.total == undefined && item.relations.code != 0">
+          <span>
+            <i class="icon icon-playing h4"></i>
+            <span>数据加载中</span>
+          </span>
+        </h5>
+        <h5 class="text-center no-animation" ng-if="item.relations.code == 0">
+          <span>
+            <i class="icon icon-warning h4"></i>
+            <span>{{ item.relations.message }}</span>
+          </span>
+        </h5>
+        <!-- 列表 -->
+        <li class="item text-center slide-top" ng-repeat="relation in item.relations.result">
+          <div class="col-xs-5">
+            <a target="_blank" class="col-xs-5 logo" ng-href="/organization/{{ relation.organization.id }}">
+              <img class="media-object img-circle" 
+                   ng-src="{{ getThumbnail(relation.organization.logo, 'organization', { width: 80, height: 80 }) }}">
+              <span class="audit" 
+                    ng-if="relation.organization.type == 2 && !!relation.audit_info && relation.audit_info.status == 1">
+                <i class="icon icon-rank"></i>
+              </span>
+            </a>
+            <a target="_blank" class="pull-left" title="{{ relation.organization.name }}"
+               ng-href="/organization/{{ relation.organization.id }}">
+               <span>{{ relation.organization.name }}</span>
+            </a>
+          </div>
+          <div class="col-xs-3 text-info text-center" ng-if="item.type == 'creator'">{{ relation.created_at || '未知' }}</div>
+          <div class="col-xs-3 text-info text-center" ng-if="item.type != 'creator'">{{ relation.updated_at || '未知' }}</div>
+          <div class="col-xs-2">
+            <div class="refuse-msg" ng-if="relation.status == -2">
+              <span class="msg text-danger">被对方拒绝</span>
+              <span class="cause small">(原因 : {{ relation.memo || '无' }})</span>
+            </div>
+            <span class="text-danger  no-animation" ng-if="relation.status == -1">已拒绝对方</span>
+            <span class="text-danger  no-animation" ng-if="relation.status == 0">等待我同意</span>
+            <span class="text-primary no-animation" ng-if="relation.status == 1">等待对方审核</span>
+            <span class="text-primary no-animation" ng-if="relation.status == 2">已加入</span>
+            <span class="text-primary no-animation" ng-if="relation.status == 4">管理员</span>
+            <!-- 创始人 -->
+            <span class="no-animation"   ng-if="relation.status == 5">
+              <!-- 非可认证机构 -->
+              <span class="no-animation" ng-if="relation.organization.type == 1">
+                <span class="text-muted"   ng-if="relation.organization.status == 0">机构审核中</span>
+                <span class="text-danger"  ng-if="relation.organization.status == -1">审核失败</span>
+                <span class="text-primary" ng-if="relation.organization.status == 1">审核成功</span>
+              </span>
+              <!-- 可认证机构 -->
+              <span class="no-animation" ng-if="relation.organization.type == 2">
+                <!-- 已申请认证 -->
+                <span class="no-animation" ng-if="!!relation.audit_info">
+                  <span class="text-muted"   ng-if="relation.audit_info.status == 0">认证申请中</span>
+                  <span class="text-danger"  ng-if="relation.audit_info.status == -1">认证失败</span>
+                  <a href=""
+                     class="cause small hint--error hint--top hint--rounded" 
+                     ng-if="relation.audit_info.status == -1 && !!relation.audit_info.memo"
+                     aria-label="{{ relation.audit_info.memo }}">[ 原因 ]</a>
+                  <span class="text-warning" ng-if="relation.audit_info.status == 1">认证成功</span>
+                </span>
+                <!-- 未申请认证 -->
+                <span class="no-animation" ng-if="!relation.audit_info">
+                  <span class="text-muted"   ng-if="relation.organization.status == 0">机构审核中</span>
+                  <span class="text-danger"  ng-if="relation.organization.status == -1">审核失败</span>
+                  <span class="cause small"  ng-if="relation.organization.status == -1">(原因 : {{ relation.memo || '无' }})</span>
+                  <span class="text-primary" ng-if="relation.organization.status == 1">审核成功</span>
+                </span>
+              </span>
+            </span>
+          </div>
+          <div class="col-xs-2">
+
+            <!-- 管理员/创始人（机构有效） -->
+            <span ng-if="relation.status == 4 ||
+                        (relation.status == 5 && ( relation.organization.status > 0 || relation.organization.status ==  -2 ))">
+              <a ng-href="/teacher/organization/manage/{{ relation.organization.id }}">管理</a>&nbsp;&nbsp;
+              <a ng-href="/teacher/organization/manage/{{ relation.organization.id }}?tab=2">邀请老师</a>
+            </span>
+
+            <!-- 创始人 / 机构审核中 -->
+            <span ng-if="relation.status == 5 && (relation.organization.status == 0 || relation.organization.status == -1)">
+              <a ng-href="/teacher/organization/manage/{{ relation.organization.id }}">
+                <span>{{ relation.organization.status == 0 ? '修改资料' : '重新提交'}}</span>
+              </a>
+            </span>
+
+            <!-- 我申请的 / 已加入 / 对方拒绝 -->
+            <span ng-if="relation.from == 2 && ( relation.status == -2 || relation.status > 0 )">
+              <button class="btn btn-sm btn-danger no-animation" 
+                      ng-if="relation.status != -2"
+                      ng-click="quitOrganization({ relation: relation, type: item.type })" 
+                      ng-disabled="relation.status < 2">退出</button>
+              <a class="btn btn-sm btn-warning no-animation" 
+                      ng-if="relation.status == -2"
+                      ng-href="/teacher/organization/join/{{ relation.organization.id }}">重新申请</a>
+            </span>
+
+            <!-- 邀请我的 / 等待我同意 / 已加入 / 我已拒绝 -->
+            <span ng-if="relation.from == 1">
+
+              <!-- 未拒绝状态 -->
+              <button class="btn btn-sm btn-primary" 
+                      ng-if="relation.status > -1" 
+                      ng-click="agreeInviteJoin({ relation: relation, type: item.type })" 
+                      ng-disabled="relation.status > 0">{{ relation.status == 0 ? '我同意' : '已加入' }}</button>
+              <button class="btn btn-sm btn-danger" 
+                      ng-click="refuseInviteJoin({ relation: relation, type: item.type })" 
+                      ng-if="relation.status == 0">拒绝</button>
+              <button class="btn btn-sm btn-danger" 
+                      ng-click="quitOrganization({ relation: relation, type: item.type })" 
+                      ng-if="relation.status > 1">退出</button>
+
+              <!-- 已拒绝状态 -->
+              <a class="btn btn-sm btn-warning" 
+                 ng-if="relation.status == -1" 
+                 ng-href="/teacher/organization/join/{{ relation.organization.id }}">重新加入</a>
+            </span>
+          </div>
+        </li>
+        <div class="page-wrap" ng-if="!!item.relations.pagination.total">
+          <div pagination 
+               total-items="item.relations.pagination.total" 
+               items-per-page="item.relations.pagination.per_page" 
+               ng-model="item.relations.pagination.current_page" 
+               ng-change="getOrganizationList({ 
+                status: item.status, from: item.from, 
+                page: item.relations.pagination.current_page 
+               })" 
+               max-size="8" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+        </div>
+      </ul>
+    </div>
+  </div>
+  <div class="action-btn">
+    <a ng-href="/teacher/organization/search" class="btn btn-sm btn-primary pull-left">创建 / 加入学校</a>
+  </div>
+</div>

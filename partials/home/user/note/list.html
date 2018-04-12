@@ -1,0 +1,127 @@
+<div class="box note">
+  <div tabset justified="false" largesize="false">
+
+    <!-- 原创笔记 -->
+    <div tab heading="原创（{{ notes.pagination.total || 0 }}）" ng-init="getNote()" >
+      <p class="text-center text-info no-animation" ng-if="!notes.pagination.total" >
+        <span>暂无原创的笔记，快去<a href="/course" class="text-primary">选课</a>并添加笔记吧</span>
+      </p>
+
+      <!-- 笔记列表 -->
+      <ul class="note-lists">
+        <li class="media item slide-top" ng-repeat="note in notes.result">
+          <div class="media-left">
+            <a ng-href="/space/student/{{ note.user.id }}" target="_blank">
+              <img class="img-circle media-object"  width="48"
+                   ng-src="{{ getThumbnail(note.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+              <h5 class="text-center">{{ note.user.name | limitTo: 4 }}</h5>
+            </a>
+          </div>
+          <div class="media-body">
+            <div class="content">
+              <p class="title">{{ note.content }}</p>
+              <div class="capture" ng-if="note.capture_url">
+                <div class="content">
+                  <img class="capture-img" 
+                       ng-src="{{ getThumbnail(note.capture_url, 'note', { width: 160, height: 100 }) }}">
+                  <span class="capture-time">{{ note.record_time | toHHMMSS : 'MMSS' }}</span>
+                  <a class="capture-pic" href="" ng-click="modal.imagePreview(note.capture_url)">看截图</a>
+                  <a class="capture-video" 
+                     target="_blank"
+                     ng-href="/course/{{ note.section.course_id }}/learn/{{ note.section.id }}/{{ note.record_time }}">看视频</a>
+                </div>
+              </div>
+              <p class="created small text-info">
+                <span class="created-in">课程：<a href="/course/{{ note.section.course_id }}/learn/{{ note.section.id }}" title="{{ note.course_name}}{{ note.section.name }}" class="text-primary" target="_blank">《{{ note.section.name}}》</a>
+                </span>
+                <span class="created-at">添加时间：{{ note.created_at | relativeTime }}</span>
+              </p>
+            </div>
+            <p class="active small">
+              <a href="" ng-click="editNote(this)" class="note-edit">
+                <i class="icon icon-edit"></i>编辑
+              </a>
+              <a href="" ng-click="delNote(note)" class="note-del">
+                <i class="icon icon-remove"></i>删除
+              </a>
+            </p>
+          </div>
+        </li>
+      </ul>
+
+      <!-- 翻页 -->
+      <p class="text-center" ng-if="!!notes.pagination.total">
+        <button ng-click="getNote({ page: notes.pagination.current_page + 1 })" 
+                class="btn btn-default btn-more" 
+                ng-disabled="notes.pagination.current_page >= notes.pagination.total_page">
+                {{ notes.pagination.current_page >= notes.pagination.total_page ? '没有更多' : '加载更多' }}
+        </button>
+      </p>
+    </div>
+
+    <!-- 收藏笔记 -->
+    <div tab heading="收藏（{{ fav_notes.pagination.total || 0 }}）" ng-init="getFavoriteNote()">
+      <p class="text-center text-info no-animation" ng-if="!fav_notes.pagination.total" >
+        <span>暂无原创的笔记，快去<a href="/course" class="text-primary">选课</a>并添加笔记吧</span>
+      </p>
+
+      <!-- 收藏笔记列表 -->
+      <ul class="note-lists">
+        <li class="media item slide-top" ng-repeat="note in fav_notes.result">
+          <div class="media-left">
+            <a ng-href="/space/student/{{ $root.user.id }}" target="_blank">
+              <img class="img-circle media-object" width="48" 
+                   ng-src="{{ getThumbnail($root.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+              <h5 class="text-center">{{ $root.user.name | limitTo: 4 }}</h5>
+            </a>
+          </div>
+          <div class="media-body">
+            <div class="content">
+              <p class="small">
+                <span>收藏来自</span>
+                <a ng-href="/space/student/{{ note.author_id }}" target="_blank">
+                  <img class="img-circle"  width="18"
+                       ng-src="{{ getThumbnail(note.author_gravatar, 'small_gravatar', { width: 18, height: 18 }) }}"/>
+                  <span>{{ note.author_name }}</span>
+                </a>
+                <span>的笔记</span>
+              </p>
+              <p class="title">{{ note.content }}</p>
+              <div class="capture" ng-if="note.capture_url">
+                <div class="content">
+                  <img class="capture-img" 
+                       ng-src="{{ getThumbnail(note.capture_url, 'note', { width: 160, height: 100 }) }}">
+                  <span class="capture-time">{{ note.record_time | toHHMMSS : 'MMSS' }}</span>
+                  <a class="capture-pic" href="" ng-click="modal.imagePreview(note.capture_url)">看截图</a>
+                  <a class="capture-video"  target="_blank"
+                     ng-href="/course/{{ note.course_id }}/learn/{{ note.section_id }}/{{ note.record_time }}">看视频</a>
+                </div>
+              </div>
+              <p class="created">
+                <span class="small created-in">
+                  <span>课程：</span>
+                  <a ng-href="/course/{{ note.course_id }}/learn/{{ note.section_id }}" class="text-primary">
+                    <span>《{{ note.course_name }}》</span>
+                  </a>
+                </span>
+                <span class="small created-at">添加时间：{{ note.created_at | relativeTime }}</span>
+              </p>
+            </div>
+            <p class="active small" ng-click="delFavNote(note);">
+              <a href="" class="note-del"><i class="icon icon-remove"></i>删除</a>
+            </p>
+          </div>
+        </li>
+      </ul>
+
+      <!-- 翻页 -->
+      <p class="text-center" ng-if="!!fav_notes.pagination.total">
+        <button ng-click="getFavoriteNote({ page: fav_notes.pagination.current_page + 1 })" 
+                class="btn btn-default btn-more" 
+                ng-disabled="fav_notes.pagination.current_page >= fav_notes.pagination.total_page">
+                {{ fav_notes.pagination.current_page >= fav_notes.pagination.total_page ? '没有更多' : '加载更多' }}
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

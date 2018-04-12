@@ -1,0 +1,67 @@
+// 文章页
+.article {
+  margin-bottom: $gauge;
+
+  // 无内容
+  .error {
+    border: 1px solid $gray-xlightest;
+  }
+  
+  // 侧边导航
+  .sidebar {
+
+    > .box {
+      border: 1px solid $gray-xlightest;
+
+      > h4 {
+        margin: 0;
+        padding: $padding-base-horizontal ($padding-base-horizontal * 2);
+        border-bottom: 1px solid $gray-xlightest;
+        background-color: lighten($gray-lightest, 2%);
+      }
+
+      > ul {
+
+        > li {
+          text-align: center;
+
+          > a {
+            padding: $padding-base-horizontal;
+            display: block;
+          }
+
+          &.active {
+            background-color: lighten($gray-lightest, 4%);
+
+            > a {
+              color: $brand-primary;
+            }
+          }
+        }
+      }
+
+      &.organization {
+        border-top: none;
+      }
+
+      &.setting {
+        margin-top: $grid-gutter-width;
+      }
+    }
+  }
+
+  // 内容区
+  .main {
+    overflow: hidden;
+    border: 1px solid $gray-xlightest;
+    padding: 0 $gauge;
+
+    > .content {
+      text-indent: 2em;
+
+      p {
+        text-indent: 2em;
+      }
+    }
+  }
+}

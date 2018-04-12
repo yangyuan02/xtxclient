@@ -1,0 +1,55 @@
+<div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="footer-content">
+          <div class="col-xs-offset-1 col-xs-2">
+            <div class="footer-support">
+              <h4 class="title">
+                <span>关于我们</span>
+              </h4>
+              <ul class="clearfix support-lists" ng-init="getArticleCates()">
+                <li ng-repeat="cate in articleCates">
+                  <a ng-href="/article/list/{{ cate.id }}">{{ cate.name }}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="footer-link">
+              <h4 class="title">
+                <span>友情链接</span>
+              </h4>
+              <ul class="clearfix link-lists" ng-init="getFriendLinks()">
+                <li ng-repeat="link in friendLinks">
+                  <a ng-href="{{ link.url }}" target="_blank" rel="nofollow">{{ link.name }}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-3">
+            <div class="footer-qrcode">
+              <div class="qrcode">
+                <img ng-src="/images/qrcode.png" width="120">
+              </div>
+              <h5 class="download">
+                <a href="/mobile">下载学天下app</a>
+              </h5>
+            </div>
+          </div>
+          <div class="footer-tool">
+            <a href="" class="feedback" ng-click="modal.feedback()">
+              <i class="icon icon-feedback"></i>
+            </a>
+            <a href="" go-to-top><i class="icon icon-top"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <p class="text-center">Copyright &copy; 2016 xuetianxia.cn All Rights Reserved.</p>
+    <p class="text-center">{{ $root.site_config.base.WEB_SITE_COMPANY }}&nbsp;&nbsp;版权所有</p>
+    <p class="text-center"><a href="http://www.miibeian.gov.cn" target="_blank">{{ $root.site_config.base.ICP_ID }}</a></p>
+  </div>
+</div>

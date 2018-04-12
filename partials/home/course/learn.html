@@ -1,0 +1,647 @@
+<div class="container-fluid" ng-init="initLearn()">
+  <div class="row">
+    <div class="course-player-navbar clearfix">
+      <a ng-href="/course/{{ course.info.id }}" class="pull-left text-center back"><i class="icon icon-arrow-left"></i></a>
+      <!-- 课程名称 -->
+      <div class="pull-left course">
+        <h4 class="title toggle" ng-if="!!course.info">{{ course.info.name }} - {{ section.info.name }}</h4>
+        <h4 class="title toggle text-muted" ng-if="!course.info">课程加载中...</h4>
+      </div>
+      <!-- 课程收藏 & 分享 -->
+      <div class="pull-right clearfix action">
+        <a href="" 
+           class="pull-left favorite" 
+           ng-class="{ true: 'favorited' }[!!course.relation.follow]" 
+           ng-click="addFav(course.info.id)">
+          <i class="icon icon-like"></i>
+          <span ng-show="!!course.relation.follow">已</span>收藏({{ course.info.follow_count }})
+        </a>
+        <div class="pull-left share">
+          <span class="pull-left title"><i class="icon icon-share"></i>&nbsp;分享到：</span>
+          <a href="" class="icon icon-weibo" ng-click="share('weibo')"></a>
+          <a href="" class="icon icon-wechat" ng-click="share('qrcode')"></a>
+          <a href="" class="icon icon-qq" ng-click="share('qq')"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid course-player-box">
+  <div class="row">
+
+    <!-- 播放器 -->
+    <div class="course-video" ng-init="sidebar_show = !!player.is_live">
+
+      <!-- 视频区域 -->
+      <div class="course-video-box-left" ng-class="{ 'active': !!sidebar_show }">
+        
+        <!-- 隐藏内容 -->
+        <div class="action-box no-animation" ng-if="section.player.mask.show">
+          <h3 class="title">
+            <span>😳</span>
+            <span>{{ section.player.mask.title }}</span>
+          </h3>
+          <p class="next no-animation" ng-if="section.player.mask.btn.show">
+            <button class="btn btn-lg btn-more" 
+                    ng-class="{ 
+                      'btn-primary': section.player.mask.btn.style == 1, 
+                      'btn-warning': section.player.mask.btn.style == 2,
+                      'btn-danger': section.player.mask.btn.style == 3,
+                    }" 
+                    ng-click="section.player.mask.btn.click()">{{ section.player.mask.btn.text }}</button>
+          </p>
+          <p class="refresh" ng-if="section.player.mask.refresh">
+            <a href="" ng-click="playerRefreshPlay()">
+              <i class="icon icon-refresh"></i>
+              <span>重新观看</span>
+            </a>
+          </p>
+        </div>
+        
+        <!-- 播放器核心 -->
+        <div video-player data="player"></div>
+      </div>
+
+      <!-- 聊天室及其他 -->
+      <div class="course-video-box-right" 
+           ng-class="{ 'active': !!sidebar_show }" 
+           ng-init="sidebar_show = true">
+
+        <!-- 折叠按钮 -->
+        <a class="switch-btn" ng-click="sidebar_show = !sidebar_show">
+          <i class="icon" ng-class="{ true: 'icon-arrow-right', false: 'icon-arrow-left' }[sidebar_show]"></i>
+        </a>
+        
+        <!-- Tab区域 -->
+        <div tabset justified="true" largesize="false">
+
+          <!-- 目录 -->
+          <div tab heading="目录" class="directory-tab">
+            <div class="directory-box">
+              <div class="directory-lists">
+                <h4>{{ course.info.name }}</h4>
+                <ul class="list-group directory-list-container toggle">
+                  <li class="list-group-item" ng-repeat="chapter in course.chapters" >
+                    <a  href=""
+                        class="chapter" 
+                        ng-class="{true: 'open'}[section_show]"
+                        ng-click="section_show = !section_show" >
+                        <span>{{ chapter.name }}</span>
+                    </a>
+                    <div class="section slide-down" ng-show="section_show">
+                      <a  ng-href="/course/{{ course_id }}/learn/{{ section.id }}" 
+                          ng-repeat="section in chapter.children" 
+                          ng-class="{ 'active': section_id == section.id }"
+                          ng-init="$parent.section_show = section_id == section.id ? true : $parent.section_show;pushSections(section);section.live_status = (section.live_status > 10) ? (section.live_status / 10) : ((section.live_status == 10) ? 1.05 : section.live_status)"
+                          class="no-animation">
+                        <i class="icon icon-play"></i>
+                        <span title="{{ section.name }}">{{ section.name | textOverflow: 10 }}</span>
+                        <span class="pull-right">
+                          <span>
+                            <i class="icon icon-playing" 
+                               title="正在学习" 
+                               ng-if="section_id == section.id"></i>
+                            <i class="icon icon-play-over" 
+                               title="已学习过" 
+                               ng-if="section_id != section.id && course.relation.study_records.finished.contain(section.id)"></i>
+                            <span>&nbsp;</span>
+                          </span>
+                          <span ng-if="section.is_live" class="no-animation">
+                            <span>直播</span>
+                            <span>/</span>
+                            <span ng-if="section.live_status < 2">未开始</span>
+                            <span ng-if="section.live_status == 2">直播中</span>
+                            <span ng-if="section.live_status == 3 || section.live_status == 4">已结束</span>
+                            <span ng-if="section.live_status == 5">可回放</span>
+                          </span>
+                          <span ng-if="!section.is_live" class="no-animation">录播 / 可播放</span>
+                          <span>/</span>
+                          <span>{{ section.duration | toHHMMSS : 'HHMMSS' : ':' : ':' : '' }}</span>
+                        </span>
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 讨论 -->
+          <div tab 
+               heading="讨论" 
+               active="true"
+               class="chatroom-tab" 
+               ng-if="!!player.is_live && (player.live_status == 2 || player.live_status == 5) && $root.user">
+            <div class="chatroom-box">
+              <div chat-box 
+                   room-id="player.room_id" 
+                   is-playback="player.live_status == 5"></div>
+            </div>
+          </div>
+
+          <!-- 同学 -->
+          <div tab heading="同学" class="classmate-tab" ng-init="initLiveRoomUsers()">
+            <div class="classmate-box">
+              <ul class="classmate-lists">
+                <li class="item">
+                  <a ng-href="/organization/{{ course.info.organization.id }}/teacher/{{ course.info.teacher.id }}" target="_blank">
+                    <img class="img-circle" 
+                         width="28"
+                         ng-src="{{ getThumbnail(course.info.teacher.gravatar, 'gravatar', { width: 48, height: 48 }) }}">
+                    <span class="name">{{ course.info.teacher.profile.rel_name }}</span>
+                    <span class="medal" >
+                      <i class="icon icon-teacher"></i>
+                      <span>授课老师</span>
+                    </span>
+                    <span class="enter">
+                      <span>进入主页</span>
+                      <i class="icon icon-arrow-right"></i>
+                    </span>
+                  </a>
+                </li>
+                <li class="item no-animation" 
+                    ng-repeat="classmate in course.live_users | orderBy: level_id">
+                  <a ng-href="/space/student/{{ classmate.id }}" target="_blank">
+                    <img class="img-circle" 
+                         width="28"
+                         ng-src="{{ getThumbnail(classmate.gravatar, 'sm_gravatar', { width: 48, height: 48 }) }}">
+                    <span class="name">{{ classmate.name || '匿名用户' }}</span>
+                    <span class="medal">
+                      <i class="icon icon-level"></i>
+                      <span>{{ classmate.level_id || '...' }}</span>
+                    </span>
+                    <span class="enter">
+                      <span>进入主页</span>
+                      <i class="icon icon-arrow-right"></i>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+              <p class="text-center text-muted" 
+                 ng-if="!player.is_live || (player.is_live && player.live_status != 2 && player.live_status != 5)"><br>没有获取到更多同学~ 😝</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="course-learn">
+
+        <!-- 问答、笔记、评价 -->
+        <div class="col-xs-8" id="player-container">
+          <div class="main">
+            <div tabset justified="true" largesize="false" id="J_learn_tab">
+
+              <!-- 问答 -->
+              <div tab heading="问答" icon="icon-question">
+                <div class="box box-question">
+
+                  <!-- 发布问答 -->
+                  <div class="post-box">
+                    <h5 ng-if="course.relation.trade_status == undefined" 
+                        class="text-center text-info post-desable no-animation">
+                        <span>登录之后才能发布问题~</span>
+                        <a class="text-primary" href="" ng-click="loginGetRelation()">点此登录</a>
+                    </h5>
+                    <form name="newQuestion" 
+                          class="no-animation"
+                          ng-submit="postQuestion(question)" 
+                          ng-if="course.relation.trade_status != undefined">
+                      <div class="form-group">
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="请用10个字以上来描述你的问题" 
+                               name="new_question"
+                               ng-model="question.content"
+                               required 
+                               ng-pattern="/.{10,}/" 
+                               ng-focus="postDataFocus()">
+                      </div>
+                      <div class="form-group">
+                        <button class="btn btn-primary pull-right" ng-disabled="newQuestion.$invalid">提问</button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- 问答发布 -->
+                  <div class="content-box">
+                    <h5 ng-show="!section.questions.pagination.total" 
+                        class="text-center text-info no-animation">暂时没有人提问，你可以提出第一个问题</h5>
+
+                    <!-- 问答列表 -->
+                    <ul class="question-list no-animation" ng-show="!!section.questions.pagination.total">
+                      <li class="media slide-top" ng-repeat="question in section.questions.result">
+                        <i class="tag"></i>
+                        <div class="media-left">
+                          <a ng-href="/space/student/{{ question.user.id }}" target="_blank">
+                            <img class="img-circle media-object center" 
+                                 width="48"
+                                 ng-src="{{ getThumbnail(question.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                            <h5 class="text-center">{{ question.user.name | limitTo: 4 }}</h5>
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <div class="content">
+                            <p class="comment-content">
+                              <span>{{ question.content }} - </span>
+                              <a ng-href="/user/question/{{ question.id }}" 
+                                 target="_blank" 
+                                 title="进入问答详情" 
+                                 class="text-primary">[ 查看详细 ]</a>
+                            </p>
+                            <p class="comment-reply" 
+                               ng-repeat="answer in question.children | limitTo: 3" 
+                               ng-show="question.children.length > 0">
+                              <a ng-href="/space/student/{{ answer.user.id }}" target="_blank">
+                                <img class="img-circle"  width="24"
+                                     ng-src="{{ getThumbnail(answer.user.gravatar, 'small_gravatar', { width: 24, height: 24 }) }}">
+                                <span class="user-name">{{ answer.user.name }}：</span>
+                              </a>{{ answer.content }}
+                            </p>
+                            <div>
+                              <span class="created-at small">提问于：{{ question.created_at | date : 'yyyy-MM-dd hh:mm:ss' | relativeTime}}</span>
+                              <span class="small pull-right" ng-if="question.user.id != $root.user.id">
+                                <a href="" ng-click="replyQuestion({ modal:true, question: question })">
+                                  <i class="icon icon-reply"></i>
+                                  <span>回复问题</span>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+
+                    <!-- 翻页 -->
+                    <div class="pagenavi" ng-if="!!section.questions.pagination.total">
+                      <hr>
+                      <div class="page-wrap">
+                        <div pagination 
+                             total-items="section.questions.pagination.total" 
+                             items-per-page="section.questions.pagination.per_page" 
+                             ng-model="section.questions.pagination.current_page" 
+                             max-size="maxSize" 
+                             class="pagination-sm" 
+                             boundary-links="true" 
+                             rotate="false" 
+                             ng-change="getSectionQuestions({ page: section.questions.pagination.current_page })">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 笔记 -->
+              <div tab heading="笔记" icon="icon-list">
+                <div class="box box-note">
+                  <div class="post-box">
+
+                   <!-- 未登录提示 -->
+                    <h5 ng-if="course.relation.trade_status == undefined" 
+                        class="text-center text-info post-disable no-animation">
+                      <span>登录之后才能记录笔记，</span>
+                      <a class="text-primary" href="" ng-click="loginGetRelation()">点此登录</a>
+                    </h5>
+
+                    <!-- 笔记表单 -->
+                    <form name="newNote" 
+                          class="no-animation"
+                          ng-if="course.relation.trade_status != undefined"
+                          ng-submit="postNote(note)">
+                      <div class="form-group">
+                        <textarea class="form-control textarea" 
+                                  placeholder="在这里输入笔记内容" 
+                                  name="new_note_content" 
+                                  rows="3" 
+                                  required 
+                                  ng-pattern="/.{3,}/" 
+                                  ng-model="note.content"
+                                  ng-focus="postDataFocus()">
+                        </textarea>
+                      </div>
+                      <div class="form-group">
+
+                        <!-- 是否截屏 -->
+                        <input type="checkbox" 
+                               name="new_note_capture" 
+                               class="ng-hide" 
+                               id="J_new_note_capture" 
+                               ng-init="note.capture = true"
+                               ng-model="note.capture">
+
+                        <!-- 是否公开 -->
+                        <input type="checkbox" 
+                               name="new_note_publish" 
+                               class="ng-hide" 
+                               id="J_new_note_publish" 
+                               ng-init="note.publish = true"
+                               ng-model="note.publish">
+
+                        <!-- 保存按钮 -->
+                        <button class="btn btn-primary pull-right" 
+                                ng-disabled="newNote.$invalid" >保存笔记</button>
+
+                        <!-- 截屏按钮 -->
+                        <label class="pull-right switch-btn" 
+                               ng-class="{ true:'text-primary', false:'text-default' }[note.capture]" 
+                               for="J_new_note_capture">
+                          <span class="icon switch h5" 
+                                ng-class="{ true:'icon-check-fill text-primary', false:'icon-check' }[note.capture]"></span>
+                          <span class="explain">截取视频</span>
+                        </label>
+
+                        <!-- 公开按钮 -->
+                        <label class="pull-right switch-btn" 
+                               ng-class="{ true:'text-primary', false:'text-default' }[note.publish]" 
+                               for="J_new_note_publish">
+                          <span class="icon switch h5" 
+                                ng-class="{ true:'icon-check-fill text-primary', false:'icon-check' }[note.publish]">
+                          </span>
+                          <span class="explain">设为公开</span>
+                        </label>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- 笔记列表 -->
+                  <div class="content-box">
+
+                    <h5 ng-show="!section.notes.pagination.total" class="text-center text-info no-animation"> 
+                      <span>暂时没有人作出笔记，你可以在这里记录第一个笔记</span>
+                    </h5>
+
+                    <!-- 列表 -->
+                    <ul class="note-list no-animation" ng-show="!!section.notes.pagination.total">
+                      <!-- 子列表 -->
+                      <li class="media slide-top" ng-repeat="note in section.notes.result">
+                        <div class="media-left">
+                          <a ng-href="/space/student/{{ note.user.id }}" target="_blank">
+                            <img class="img-circle media-object center"  width="48"
+                                 ng-src="{{ getThumbnail(note.user.gravatar, '', { width: 48, height: 48 }) }}">
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <div class="content">
+                            <h5>
+                              <a ng-href="/space/student/{{ note.user.id }}" target="_blank">{{ note.user.name }}</a>
+                            </h5>
+                            <p class="text-height text-dark">{{ note.content }}</p>
+                            <div class="capture" ng-if="note.capture_url || note.tmp_capture_url">
+                              <a href="" ng-click="modal.imagePreview(note.capture_url || note.tmp_capture_url)">
+                                <img class="capture-img" 
+                                     ng-if="note.capture_url" 
+                                     ng-src="{{ getThumbnail(note.capture_url, 'note', { width: 220, height: 120 }) }}">
+                                <img class="capture-img" 
+                                     ng-if="note.tmp_capture_url" 
+                                     ng-src="{{ note.tmp_capture_url }}">
+                                <span class="capture-time">{{ note.record_time | toHHMMSS : 'MMSS' }}</span>
+                                <span class="capture-title">查看原图</span>
+                              </a>
+                            </div>
+                            <p class="clearfix">
+                              <span class="small pull-left">创建于：{{ note.created_at | relativeTime }}</span>
+                              <span class="small col-xs-6 col-xs-offset-1">来自：{{ note.section.name }}</span>
+                              <span class="pull-right" ng-if="note.user.id != $root.user.id">
+                                <a href="" 
+                                   class="no-animation" 
+                                   ng-if="!note.followed" 
+                                   ng-click="addFavNote(note)">
+                                   <i class="icon icon-like"></i>
+                                   <span>&nbsp;收藏笔记</span>
+                                </a>
+                                <a href="" 
+                                   class="text-primary no-animation"
+                                   ng-if="!!note.followed">
+                                   <i class="icon icon-like text-primary"></i>
+                                   <sapn>&nbsp;已收藏</sapn>
+                                </a>
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+
+                    <!-- 翻页 -->
+                    <div class="pagenavi" ng-if="!!section.notes.pagination.total">
+                      <hr>
+                      <div class="page-wrap">
+                        <div pagination 
+                             total-items="section.notes.pagination.total" 
+                             items-per-page="section.notes.pagination.per_page" 
+                             ng-model="section.notes.pagination.current_page" 
+                             max-size="maxSize" 
+                             class="pagination-sm" 
+                             boundary-links="true" 
+                             rotate="false" 
+                             ng-change="getSectionNotes({ page: section.notes.pagination.current_page })">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 评价 -->
+              <div tab heading="评价" icon="icon-comment">
+                <div class="box box-comment">
+                  <div class="post-box">
+
+                    <!-- 未登录 -->
+                    <h5 ng-if="course.relation.trade_status == undefined" class="text-center text-info no-animation">
+                        <span>购买本课程之后才可以作出评价，</span>
+                        <a class="text-primary" href="" ng-click="loginGetRelation()">点此登录购买完整课程</a>
+                    </h5>
+
+                    <!-- 发布者 -->
+                    <h5 ng-if="!!course.relation.author" 
+                        class="text-center text-info no-animation">您是课程的发布者，不能评价自己的课程
+                    </h5>
+
+                    <!-- 未购买 -->
+                    <h5 ng-if="(course.relation.trade_status < 1) && !course.relation.author" 
+                        class="text-center text-info no-animation">
+                        <span>购买本课程之后才能作出评价，</span>
+                        <a class="text-primary" href="" ng-click="buy(course.info.id)">点此购买完整课程</a>
+                    </h5>
+
+                    <!-- 未付款 -->
+                    <h5 ng-if="course.relation.trade_status == 1 && !course.relation.author" 
+                        class="text-center text-info no-animation">
+                        <span>付款之后才能做出评价~</span>
+                        <a class="text-primary" ng-href="/payment/{{ course.id }}" >点此前去付款</a>
+                    </h5>
+
+                    <!-- 已评价 -->
+                    <h5 ng-show="course.relation.trade_status == 3 && !course.relation.author" 
+                        class="text-center text-info no-animation">
+                        <span>您已对本课程做出过评价，感谢您的支持，祝学习顺利</span>
+                    </h5>
+
+                    <!-- 评价表单 -->
+                    <form name="newComment" 
+                          class="no-animation"
+                          ng-if="course.relation.trade_status == 2 && !course.relation.author"
+                          ng-submit="postComment(comment)">
+                      <div class="form-group comment-form">
+                        <div class="col-xs-12 clearfix">
+                          <p class="col-xs-12"></p>
+                          <div comment-rating 
+                               ng-init="comment.score.satisfaction = 5"
+                               ng-model="comment.score.satisfaction" 
+                               type="A" 
+                               aria-labelledby="default-rating"></div>
+                          <div comment-rating 
+                               ng-init="comment.score.description = 5"
+                               ng-model="comment.score.description" 
+                               type="B" 
+                               aria-labelledby="default-rating"></div>
+                          <div comment-rating 
+                               ng-init="comment.score.quality = 5"
+                               ng-model="comment.score.quality" 
+                               type="C" 
+                               aria-labelledby="default-rating"></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <textarea class="form-control textarea" 
+                                  placeholder="您还没有对本课程作出评价，请用10个字以上来发表你对本课程的评价" 
+                                  name="new_comment_content" 
+                                  rows="3" 
+                                  required  ng-pattern="/.{10,}/" 
+                                  ng-model="comment.content" 
+                                  ng-focus="postDataFocus()"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <button class="btn btn-primary pull-right" 
+                                ng-disabled="newComment.$invalid">评价</button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- 评价内容列表 -->
+                  <div class="content-box">
+
+                  <!-- 空提示 -->
+                  <h5 ng-if="!course.comments.pagination.total" class="text-center text-info">暂无评价</h5>
+
+                    <!-- 列表 -->
+                    <ul class="comment-list" ng-show="!!course.comments.pagination.total">
+                      <li class="media" ng-repeat="comment in course.comments.result">
+                        <div class="media-left">
+                          <a ng-href="/space/student/{{ comment.user.id }}" target="_blank">
+                            <img class="img-circle media-object center" width="48"
+                                 ng-src="{{ getThumbnail(comment.user.gravatar, '', { width: 48, height: 48 }) }}">
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <div class="content">
+                            <h5>
+                              <a ng-href="/space/student/{{ comment.user.id }}" target="_blank">{{ comment.user.name }}</a>
+                            </h5>
+                            <p class="text-height">{{ comment.content }}</p>
+                            <p ng-if="comment.description_score || comment.quality_score || comment.satisfaction_score" 
+                               class="comment-score">
+                              <span class="score-content" ng-if="!!comment.description_score">
+                                <span class="score-title">课程内容：</span>
+                                <span uib-rating 
+                                      ng-model="comment.description_score" 
+                                      readonly="true" 
+                                      aria-labelledby="default-rating" 
+                                      class="score-star">
+                                </span>
+                              </span>
+                              <span class="score-content" ng-if="!!comment.quality_score">
+                                <span class="score-title">授课服务：</span>
+                                <span uib-rating 
+                                      ng-model="comment.quality_score" 
+                                      readonly="true" 
+                                      aria-labelledby="default-rating" 
+                                      class="score-star">
+                                </span>
+                              </span>
+                              <span class="score-content" ng-if="!!comment.satisfaction_score">
+                                <span class="score-title">满意程度：</span>
+                                <span uib-rating 
+                                      ng-model="comment.satisfaction_score" 
+                                      readonly="true" 
+                                      aria-labelledby="default-rating" class="score-star">
+                                </span>
+                              </span>
+                            </p>
+                            <!-- 嵌套回复 -->
+                            <ul class="comment-reply" ng-if="!!comment.reply.length">
+                              <li class="media" ng-repeat="reply in comment.reply">
+                                <div class="media-left">
+                                  <img class="img-circle media-object center" width="48"
+                                       ng-src="{{ getThumbnail(reply.gravatar, 'smgravatar', { width: 48, height: 48 }) }}">
+                                </div>
+                                <div class="media-body">
+                                  <div class="content">
+                                    <p class="title">老师回复：</p>
+                                    <p>{{ reply.content }}</p>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                            <p class="created-at small text-muted">评价于：{{ comment.created_at | relativeTime }}</p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+
+                    <!-- 翻页 -->
+                    <div class="pagenavi" ng-if="!!course.comments.pagination.total">
+                      <hr>
+                      <div class="page-wrap">
+                        <div pagination 
+                             total-items="course.comments.pagination.total" 
+                             items-per-page="course.comments.pagination.per_page" 
+                             ng-model="course.comments.pagination.current_page" 
+                             max-size="maxSize" 
+                             class="pagination-sm" 
+                             boundary-links="true" 
+                             rotate="false" 
+                             ng-change="getComments({ page: course.comments.pagination.current_page })">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 同学相关 -->
+        <div class="col-xs-4">
+          <div class="classmates">
+            <h4 class="head-title">
+              <span class="title">我的同学</span>
+              <a href="" class="refresh" ng-click="refreshClassmates()">
+                <i class="icon icon-refresh"></i>
+              </a>
+            </h4>
+            <p ng-if="!course.classmates.pagination.total" class="text-info">暂无同学</p>
+            <ul class="classmate-lists" ng-if="!!course.classmates.pagination.total">
+              <li class="item col-xs-3 toggle" ng-repeat="classmate in course.classmates.result">
+                <a ng-href="/space/student/{{ classmate.id }}" target="_blank">
+                  <img class="img-circle" width="48"
+                       ng-src="{{ getThumbnail(classmate.gravatar, 'sm_gravatar', { width: 48, height: 48 }) }}">
+                  <h5 class="name" title="{{ classmate.name }}">{{ classmate.name ? (classmate.name | textOverflow: 4) : '匿名用户' }}</h5>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

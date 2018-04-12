@@ -1,0 +1,52 @@
+//
+// Tooltips
+// --------------------------------------------------
+
+// 全局Tooltip
+.tooltip {
+  display: block;
+  position: fixed;
+  
+  &.tooltip-display {
+    transform: scale(1);
+    visibility: visible;
+    opacity: 1;
+    @include transition(all .1s);
+  }
+
+  &.tooltip-hidden {
+    transform: scale(.7);
+    visibility: hidden;
+    opacity: 0;
+    @include transition(all .1s);
+  }
+
+  > .tooltip-inner {
+    position: relative;
+    border-radius: $radius;
+    padding: $gauge / 4 $gauge / 2;
+    background-color: rgba(85,85,85,0.8);
+    text-align: center;
+    color: $body-bg;
+
+    > .tooltip-text {
+      display: block;
+    }
+
+    > .tooltip-sulg {
+      position: absolute;
+      bottom: -8px;
+      left: 45%;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid rgba(85, 85, 85, 0.8);
+    }
+  }
+}
+
+.tooltip-active {
+  background-color: $brand-color-light;
+  @include transition(all .25s);
+}

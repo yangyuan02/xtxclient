@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>第三方登录成功，等待页面跳转...</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico" />
+  <style>
+    #success {
+      text-align: center;
+      margin-top: 22%;
+    }
+  </style>
+</head>
+<body>
+  <div id="success">验证成功，跳转中...</div>
+</body>
+<script>
+  window.onload = function () {
+
+    // 获取参数
+    function GetQueryString (name) {
+      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+      var r = window.location.search.substr(1).match(reg);
+      if(r!=null)return  unescape(r[2]); return null;
+    }
+    var error = GetQueryString('error');
+    var state = GetQueryString('state');
+    var code = GetQueryString('code');
+    var success = document.getElementById('success');
+
+    // 如果用户取消登录，则修改提示，并关闭窗口
+    if (state && error) {
+      success.innerHTML = '您已取消登录';
+      window.close();
+    }
+
+    // 如果用户登录成功，则修改提示，存储code
+    if (state && code) {
+      success.innerHTML = '验证成功，跳转中...';
+      var third_login_local_code = {};
+      third_login_local_code[state] = code;
+      localStorage.setItem('ngStorage-thirdLoginCode', JSON.stringify(third_login_local_code));
+      window.close();
+    }
+  }
+</script>
+</html>

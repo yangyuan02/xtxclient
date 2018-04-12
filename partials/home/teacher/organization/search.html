@@ -1,0 +1,63 @@
+<div class="search" ng-init="searchBoxInit()">
+  <p class="prompt">
+    <span>请先搜索您要创建的学校，已存在的学校请直接加入即可，若学校不存在，您可以</span>
+    <a href="/teacher/organization/add" class="text-primary">创建学校</a>
+  </p>
+  <div class="content">
+    <!-- 搜索模块 -->
+    <form class="search-box">
+      <input type="text" 
+             ng-model="organization.keyword" 
+             ng-model-options="{ debounce: { default: 500, blur: 250 }, getterSetter: true }"
+             placeholder="请在这里输入要搜索的学校的名称" 
+             class="input form-control input-search"
+             typeahead="orgs.name as orgs for orgs in searchSuggest($viewValue)| limitTo: 7" 
+             typeahead-no-results="noResults"
+             typeahead-template-url="partials/template/typeahead/match-org-join.html">
+      <button class="btn btn-primary btn-search" ng-click="searchOrganiztion({})">搜索学校</button>
+      <div ng-if="noResults" class="no-animation">
+        <br><br>
+        <p class="text-center text-muted">
+          <i class="icon icon-warning"></i>
+          <span class="text-center">没有“{{ organization.keyword }}”有关的学校</span>
+        </p>
+      </div>
+    </form>
+    <!-- 搜索结果列表 -->
+    <div class="organization-list">
+      <div ng-if="organization.lists.pagination.total == 0" class="no-animation">
+        <br><br>
+        <h5 class="text-center">
+          <span>没有找到与</span>
+          <span class="text-primary">“{{ organization.keyword }}”</span>
+          <span>有关的学校</span>
+        </h5>
+      </div>
+      <li class="item slide-top" ng-repeat="organization in organization.lists.result">
+        <span class="h4">
+          <span>{{ organization.name }}</span> 
+          <a ng-href="/organization/{{ organization.id }}" target="_blank" class="small text-primary">进入主页</a>
+        </span>
+        <a ng-href="/teacher/organization/join/{{ organization.id }}" class="pull-right small btn btn-sm btn-default">加入该校</a>
+      </li>
+    </div>
+    <hr>
+    <p class="text-center">
+      <span>没有找到您的学校？</span>
+      <a href="/teacher/organization/add" class="btn btn-sm btn-primary">立即创建</a>
+    </p>
+    <div class="page-wrap" ng-if="!!organization.lists.pagination.total">
+      <hr>
+      <div pagination 
+           total-items="organization.lists.pagination.total" 
+           items-per-page="organization.lists.pagination.per_page" 
+           ng-model="organization.lists.pagination.current_page" 
+           ng-change="searchOrganiztion({ page: organization.lists.pagination.current_page })" 
+           class="pagination-sm" 
+           boundary-links="true" 
+           rotate="false"
+           max-size="5">
+      </div>
+    </div>
+  </div>
+</div>

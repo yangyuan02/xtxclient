@@ -1,0 +1,356 @@
+// 手机页
+.mobile {
+  color: #fff;
+
+  > .banner-1 {
+    // height: 1100px;
+    background: url(/images/app/banner.jpg) center fixed;
+    position: relative;
+
+    > .container {
+      
+      .phone {
+        // height: 800px;
+        // background: url(/images/app/phone-1.png) center right no-repeat;
+        @include transform(translateX(-100px));
+        @include transition-delay(.5s);
+        opacity: 0;
+        transition: all 1s;
+
+        > img {
+          max-height: 100%;
+          width: auto;
+        }
+      }
+
+      .description {
+        opacity: 0;
+        padding-top: $gauge;
+        transition: all 1s;
+        @include transition-delay(.5s);
+
+        h1,
+        h2 {
+          color: #fff;
+        }
+
+        h2 {
+          font-size: $font-size-h2 - 2;
+        }
+
+        > .title {
+          font-size: $font-size-h1 * 1.1;
+          margin-bottom: $gauge * 5;
+        }
+
+        > .content {
+          margin-bottom: $gauge * 1.5;
+        }
+
+        > .download {
+          // margin-top: $gauge * 9;
+          margin-top: 20%;
+
+          > a {
+            display: block;
+            float: left;
+            width: $gauge * 9;
+            height: $gauge * 2.4;
+            border: 1px solid #fff;
+            margin-right: $gauge * 2;
+            border-radius: $gauge / 2;
+            text-align: center;
+            line-height: $gauge * 2.3;
+            color: #fff;
+
+            > .icon {
+              color: #fff;
+              font-size: $font-size-h3;
+            }
+
+            > .name {
+              margin-left: $gauge / 4;
+              font-size: $font-size-h3;
+            }
+
+            &:hover {
+              color: $brand-primary;
+              border-color: $brand-primary;
+
+              > .icon {
+                color: $brand-primary;
+              }
+            }
+          }
+        }
+      }
+
+      > .next-mask {
+        position: absolute;
+        bottom: $gauge * 1.5;
+        left: 50%;
+
+        > .icon {
+          display: block;
+          font-size: 30px;
+        }
+      }
+    }
+
+    &.active {
+
+      > .container {
+
+        .phone {
+          transition: all 1s;
+          opacity: 1;
+          @include transform(translateX(0px));
+          @include transition-delay(.5s);
+        }
+
+        .description {
+          opacity: 1;
+          transition: all 1s;
+          @include transition-delay(.5s);
+        }
+      }
+    }
+  }
+
+  > .banner-2 {
+    position: relative;
+    background-color: #F7F8FA;
+    overflow: hidden;
+
+    > .phone {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      left: 0;
+      background: #F7F8FA url(/images/app/phone-2.png) center no-repeat;
+      transition: all 1s;
+      @include transition-delay(.3s);
+      @include transform(translateX(40%));
+    }
+
+    > .container {
+
+      .description {
+        padding-top: 5%;
+
+        > .title {
+          margin-bottom: $gauge * 6;
+          color: #222;
+          opacity: 0;
+          transition: all 1s;
+          @include transition-delay(.3s);
+        }
+
+        > .item {
+          display: block;
+          overflow: hidden;
+          margin-bottom: $gauge * 2;
+          opacity: 0;
+          transition: all 1s;
+          @include transition-delay(.7s);
+
+          > .iconfont {
+            display: block;
+            width: $gauge * 2.5;
+            height: $gauge * 2.5;
+            margin-right: $gauge * 2;
+            float: left;
+            // background-color: black;
+            margin-top: $gauge;
+
+            .icon {
+              display: block;
+              text-align: center;
+              line-height: $gauge * 2.5;
+              font-size: $font-size-h2;
+              color: $brand-primary;
+            }
+          }
+
+          > .content {
+            display: block;
+            float: left;
+
+            > .title {
+              color: #333;
+            }
+
+            > .subtitle {
+
+            }
+          }
+        }
+      }
+    }
+
+    &.active {
+
+      > .phone {
+        @include transform(translateX(0));
+        transition: all 1s;
+        @include transition-delay(.3s);
+      }
+      
+      > .container {
+
+        .description {
+
+          > .title {
+            opacity: 1;
+            transition: all 1s;
+            @include transition-delay(.3s);
+          }
+
+          > .item {
+            opacity: 1;
+            transition: all 1s;
+            @include transition-delay(.7s);
+          }
+        }
+      }
+    }
+  }
+
+  > .banner-3 {
+    position: relative;
+    overflow: hidden;
+
+    > .phone {
+      z-index: -1;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      left: 0;
+      background: url(/images/app/phone-3.jpg) no-repeat;
+      background-position: 0 bottom;
+      background-size: 80%;
+      @include transform(translateX(-25%));
+      transition: all 1s;
+      @include transition-delay(.3s);
+    }
+
+     > .container {
+
+      > .title {
+        color: #222;
+        opacity: 0;
+        margin: $gauge * 3 0;
+        transition: all 1s;
+        @include transition-delay(.3s);
+      }
+
+      .icon-lists {
+        display: block;
+        float: left;
+        width: 25%;
+        height: auto;
+        overflow: hidden;
+
+        > .item {
+          display: block;
+          margin-bottom: $gauge * 3.2;
+          position: relative;
+          opacity: 0;
+          transition: all 1s;
+          @include transition-delay(.3s);
+
+          &:after {
+            content: "";
+            display: block;
+            height: $gauge * 5;
+            position: absolute;
+            top: $gauge * 5;
+            left: $gauge * 2.5;
+            width: 0;
+            border-left: 2px dashed $brand-primary;
+          }
+
+          &:last-child {
+
+            &:after {
+              content: "";
+              display: none;
+            }
+          }
+
+          > .icon {
+            display: block;
+            width: $gauge * 5;
+            height: $gauge * 5;
+            line-height: $gauge * 5;
+            border-radius: 100%;
+            text-align: center;
+            background-color: $gray-lightsuper;
+            font-size: $font-size-h2;
+            color: $brand-primary;
+
+            &:hover {
+              color: #fff;
+              background-color: $brand-primary;
+            }
+          }
+        }
+      }
+
+      .description {
+        display: block;
+        float: right;
+        width: 70%;
+        height: auto;
+        overflow: hidden;
+
+        > .item {
+          display: block;
+          overflow: hidden;
+          margin-bottom: $gauge * 2;
+          opacity: 0;
+          transition: all 1s;
+          @include transition-delay(.3s);
+
+          > .content {
+            display: block;
+            float: left;
+
+            > .title {
+              margin-bottom: $gauge;
+              font-size: $font-size-h3 + 2;
+              color: #333;
+            }
+
+            > .subtitle {
+              line-height: $font-size-h3 + 7;
+            }
+          }
+        }
+      }
+    }
+
+    &.active {
+      
+
+      > .phone {
+        @include transform(translateX(0));
+        transition: all 1s;
+        @include transition-delay(.3s);
+      }
+
+      > .container {
+
+        > .title,
+        .icon-lists > .item,
+        .description > .item {
+          opacity: 1;
+          transition: all 1s;
+          @include transition-delay(.3s);
+        }
+      }
+    }
+  }
+}

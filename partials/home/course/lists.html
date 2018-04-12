@@ -1,0 +1,130 @@
+<div class="container" ng-init="getListInit()">
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- 面包屑导航 -->
+      <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li><a href="/course">全部课程</a></li>
+        <li ng-repeat="crumb in categories.crumbs" class="no-animation">
+          <a ng-href="/course/list/{{ crumb.id }}">{{ crumb.name }}</a>
+        </li>
+        <li class="active">
+          <span>共 <span class="text-primary"> {{ courses.pagination.total || 0 }} </span> 门</span>
+          <span><span class="text-primary">{{ keyword ? (' "' + keyword + '" ') : ''}}</span> 相关课程</span>
+        </li>
+      </ol>
+
+      <!-- 课程筛选 -->
+      <div class="course-filter">
+
+        <!-- 子分类 -->
+        <dl class="dl-horizontal category">
+          <dt>分类：</dt>
+          <dd>
+            <ul class="filter-list">
+              <li class="no-animation"
+                  ng-class="{ active: category.id == category_id }" 
+                  ng-repeat="category in categories.children">
+                <a ng-href="/course/list/{{ category.id }}">{{ category.name }}</a>
+              </li>
+            </ul>
+          </dd>
+        </dl>
+
+        <!-- 所选分类绑定的label组 -->
+        <dl class="dl-horizontal labels" ng-repeat="(index, label) in categories.labels">
+          <dt>{{ all_labels[index] }}：</dt>
+          <dd>
+            <ul class="filter-list">
+              <li ng-repeat="(index, item) in label" 
+                  ng-click="labelChanged(item)" 
+                  ng-class="{active:label_active[item]}">
+                <a href="">{{ all_labels[item] }}</a>
+              </li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <!-- 课程排序 -->
+      <div class="course-order">
+        <ul class="sort">
+          <li ng-class="{ active: !filter.sort_id }" ng-click="sortChanged(0)">
+            <a href="">综合排序<i class="icon icon-sort-down-height"></i></a>
+          </li>
+          <li ng-class="{ active: filter.sort_id == 1 }" ng-click="sortChanged(1)">
+            <a href="">最新发布<i class="icon icon-sort-down-height"></i></a>
+          </li>
+          <li ng-class="{ active: filter.sort_id == 2 }" ng-click="sortChanged(2)">
+            <a href="">价格由低到高</a>
+          </li>
+          <li ng-class="{ active: filter.sort_id == 3 }" ng-click="sortChanged(3)">
+            <a href="">价格由高到低</a>
+          </li>
+        </ul>
+        <div pager 
+             total-items="courses.pagination.total" 
+             items-per-page="courses.pagination.per_page" 
+             ng-model="courses.pagination.current_page" 
+             ng-change="getCourseList(courses.pagination.current_page)" 
+             template-url="partials/template/pagination/pager_course.html">
+        </div>
+        <ul class="filter">
+          <li ng-class="{ active: filter.is_live == 1 }" ng-click="isLiveChanged(!filter.is_live)">
+            <a href="" class="btn btn-xs btn-danger">
+              <span>
+                <i class="icon" ng-class="{ 0: 'icon-check', 1: 'icon-check-fill' }[filter.is_live]"></i>
+              </span>
+              <span>直播</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="course-content">
+        <div class="err-msg no-animation" ng-if="!courses.pagination.total">
+          <div class="text-info no-animation" ng-if="courses.pagination.total == undefined">
+            <div class="loader">
+              <p><img src="images/loader.svg" width="48" height="48"></p>
+               课程正在努力加载中...
+            </div>
+          </div>
+          <div class="text-info no-animation" ng-if="courses.pagination.total == 0 && keyword">
+            <div class="empty">
+              <p><i class="icon icon-warning"></i></p>
+              抱歉，没有更多与“{{ keyword }}”相关的课程
+            </div>
+          </div>
+          <div class="text-info no-animation" ng-if="courses.pagination.total == 0 && !keyword">
+            <div class="empty">
+              <p><i class="icon icon-warning"></i></p>
+              抱歉，没有更多课程
+            </div>
+          </div>
+        </div>
+
+        <!-- 课程列表 -->
+        <div class="row">
+          <div class="course-lists clearfix">
+            <div class="slide-top col-xs-3" course-list="courses.result"></div>
+          </div>
+        </div>
+        
+        <!-- 课程列表分页 -->
+        <div class="page-wrap no-animation" ng-show="courses.pagination.total">
+          <div pagination 
+               total-items="courses.pagination.total" 
+               ng-model="courses.pagination.current_page" 
+               items-per-page="courses.pagination.per_page" 
+               max-size="6" 
+               class="pagination" 
+               boundary-links="true" 
+               rotate="false" 
+               ng-change="getCourseList(courses.pagination.current_page)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

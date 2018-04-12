@@ -1,0 +1,13 @@
+/vendor/*
+/node_modules/
+/composer.lock
+/**/*.bak
+/**/*.DS_Store
+/public/css/style.min.css
+/public/js/*
+/dump.rdb
+/nbproject/private/
+/nbproject/*
+/storage/*
+.env
+.sass-cache/

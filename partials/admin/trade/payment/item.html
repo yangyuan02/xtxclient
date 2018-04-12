@@ -1,0 +1,78 @@
+<div class="page-title">
+  <h3>收款单详情</h3>
+</div>
+<div class="row" ng-init="paymentAction.getItem()">
+  <div class="col-xs-12">
+    <div class="item-box">
+      <p>
+        <strong>支付状态：</strong>
+        <span class="no-animation" 
+              ng-switch="payment.pay_status">
+          <em class="text-danger"
+              ng-switch-when="0">未支付</em>
+          <em class="text-success"
+              ng-switch-when="1">已支付</em>
+        </span>
+      </p>
+      <p>
+        <strong>收款单编号：</strong>
+        <span>{{ payment.pay_num }}</span>
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>订单总额：</strong>
+        <span class="text-danger">{{ payment.total_amount }}</span>元
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>余额支付：</strong>
+        <span class="text-danger">{{ payment.used_remain }}</span>元
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>其他支付：</strong>
+        <span class="text-danger">{{ payment.pay_detail['第三方支付'] }}</span>元
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>付款用户：</strong>
+        <span><a ng-href="/user/manage/list/{{ payment.user_id }}">{{ payment.user.name }}</a></span>
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>支付账户：</strong>
+        <span>{{ payment.pay_account }}</span>
+        <span class="sep"></span>
+      </p>
+      <p>
+        <strong>付款时间：</strong>
+        <span>{{ payment.created_at }}</span>
+      </p>
+    </div>
+  </div>
+</div>
+<div class="page-title">
+  <h3>订单详情</h3>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="item-box">
+      <p>
+        <strong>课程数量：</strong>
+        <span class="text-danger">{{ payment.course_detail.length }}</span>
+      </p>
+      <p>
+        <strong>订单课程：</strong>
+        <p ng-repeat="course in payment.course_detail">
+        <span>课程：<a ng-href="/course/manage/list/{{ course.course_id }}" target="_blank">《{{ course.course_name }}》</a></span>
+          <span class="sep"></span>
+          <span>机构：<a ng-href="/organization/manage/list/{{ course.organization_id }}" target="_blank">{{ course.organization_name }}</a></span>
+          <span class="sep"></span>
+          <span>价格：<span class="text-danger">{{ course.rel_price }}</span>元</span>
+          <span class="sep"></span>
+        </p>
+      </p>
+    </div>
+    <a href="/trade/manage/payment/list" class="btn btn-default">返回</a>
+  </div>
+</div>

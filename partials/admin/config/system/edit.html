@@ -1,0 +1,137 @@
+<div class="row" ng-controller="ConfigController">
+  <div class="col-xs-8 col-xs-offset-1">
+    <form class="form-horizontal" 
+          name="configForm" 
+          role="form" 
+          method="POST"
+          ng-init="config = $root.config_edit">
+      <div class="form-group">
+        <label for="config_title" class="col-xs-3 control-label">名称</label>
+        <div class="col-xs-9">
+          <input type="text" 
+                 id="config_title" 
+                 name="config_title" 
+                 class="form-control" 
+                 maxlength="60" 
+                 placeholder="请输入配置项名称" 
+                 ng-model="config_edit.title"
+                 validator="required"  
+                 required-error-message="请输入配置项名称">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="config_name" class="col-xs-3 control-label">别名</label>
+        <div class="col-xs-9">
+          <input type="text" 
+                 id="config_name" 
+                 name="config_name" 
+                 class="form-control" 
+                 maxlength="60" 
+                 placeholder="请输入配置项别名" 
+                 ng-model="config_edit.name"
+                 validator="required"  
+                 required-error-message="请输入配置项别名">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="config_group" class="col-xs-3 control-label">分组</label>
+        <div class="col-xs-9">
+          <select class="form-control" 
+                  id="config_group" 
+                  name="config_group" 
+                  ng-init="config.group = config.group ? config.group.toString() : undefined" 
+                  ng-model="config.group" 
+                  validator="required"  
+                  required-error-message="请选择配置项分组">
+            <option value disabled>选择分组</option>
+            <option value="1">基本设置</option>
+            <option value="2">内容设置</option>
+            <option value="3">用户设置</option>
+            <option value="4">系统设置</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="config_remark" class="col-xs-3 control-label">描述</label>
+        <div class="col-xs-9">
+          <input type="text"
+                 id="config_remark" 
+                 name="config_remark" 
+                 class="form-control" 
+                 maxlength="80" 
+                 placeholder="请输入配置项描述" 
+                 ng-init="config.remark = (config.remark == '') ? undefined : config.remark"
+                 ng-model="config.remark"
+                 validator="required"  
+                 required-error-message="请输入配置项描述">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="config_type" class="col-xs-3 control-label">值类型</label>
+        <div class="col-xs-9">
+          <select class="form-control" 
+                  id="config_type" 
+                  name="config_type" 
+                  ng-init="config.type = config.type ? config.type.toString() : undefined"
+                  ng-model="config.type" 
+                  validator="required"  
+                  required-error-message="请选择配置项分组">
+            <option value disabled>选择类型</option>
+            <option value="1">字符串</option>
+            <option value="2">数字</option>
+            <option value="3">数组</option>
+            <option value="4">对象</option>
+            <option value="5">布尔</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group sm-margin">
+        <label for="config_value" class="col-xs-3 control-label">值</label>
+        <div class="col-xs-9 no-animation" ng-if="config.type != '5'">
+          <textarea  id="config_value" 
+                     name="config_value" 
+                     rows="3"
+                     class="form-control"
+                     placeholder="请输入配置项的值" 
+                     ng-model="$root.config.value">
+          </textarea>
+        </div>
+        <div class="col-xs-9 no-animation" ng-if="config.type == '5'">
+          <select  id="config_value" 
+                   name="config_value" 
+                   class="form-control" 
+                   ng-model="$root.config.value"
+                   validator="required" 
+                   required-error-message="请输入配置项的值">
+            <option value="1">True</option>
+            <option value="0">False</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="config_is_front" class="col-xs-3 control-label">是否公开</label>
+        <div class="col-xs-9">
+          <label class="radio-inline text-success" for="config_is_front_1">
+            <input type="radio" 
+                   name="is_front" 
+                   id="config_is_front_1" 
+                   value="1" 
+                   ng-model="config.is_front"> 公开
+          </label>
+          <label class="radio-inline text-warning" for="config_is_front_0">
+            <input type="radio" 
+                   name="is_front" 
+                   id="config_is_front_0" 
+                   value="0" 
+                   ng-model="config.is_front"> 不公开
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-9 col-xs-offset-3">
+          <button class="btn btn-primary" validation-submit="configForm" ng-click="systemAction.edit({ modal: false })">提交更新</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="income-index" ng-init="getIncomeLists({})">
+  <div class="col-xs-12 text-center income-info">
+    <div class="row title">
+      <span class="col-xs-4">昨日收入（元）</span>
+      <span class="col-xs-4">累计收入（元）</span>
+      <span class="col-xs-4">收入余额（元）</span>
+    </div>
+    <div class="row">
+      <div class="content">
+        <div class="col-xs-4">
+        <p class="sum">
+          <span class="sign">￥</span>{{ user.profile.income_yesterday || 0 }}</p>
+          <a href="/teacher/income/details" class="btn btn-primary">查看收入明细</a>
+        </div>
+        <div class="col-xs-4">
+        <p class="sum">
+          <span class="sign">￥</span>{{ user.profile.income_total || 0 }}</p>
+          <a href="/teacher/income/details" class="btn btn-default">累计收入明细</a>
+        </div>
+        <div class="col-xs-4">
+        <p class="sum">
+          <span class="sign">￥</span>{{ user.profile.income_remain || 0 }}</p>
+          <a href="/teacher/income/apply" class="btn btn-primary">申请提现</a>
+          <a href="/teacher/income/record" class="btn btn-default">提现记录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="clearfix"></p>
+  <table class="table table-striped details-table">
+    <thead>
+      <tr>
+        <th>时间</th>
+        <th>课程</th>
+        <th>金额（元）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in income.lists.result | limitTo: 6">
+        <td>{{ item.updated_at }}</td>
+        <td>《{{ item.course_name }}》</td>
+        <td><span class="sum">+{{ item.rel_price }}</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="text-center">
+    <a href="/teacher/income/details" class="btn btn-default btn-more">查看更多</a>
+  </p>
+</div>

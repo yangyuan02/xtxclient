@@ -1,0 +1,23 @@
+<div class="section-live-info" ng-controller="CourseController">
+  <div class="form-horizontal">
+    <div class="form-group">
+      <div class="col-xs-12"><br></div>
+    </div>
+    <div class="form-group" ng-init="remark = $root.section_edit.remark">
+      <div class="col-xs-offset-3 col-xs-6">
+        <input type="text"
+               ng-model="remark" 
+               placeholder="拒绝原因" 
+               class="form-control">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-12"><br></div>
+      <div class="col-xs-offset-3 col-xs-6 text-center">
+        <button class="btn btn-block btn-danger" 
+                ng-disabled="!remark"
+                ng-click="courseAction.auditRefuse({ ismodel: false, remark: remark })">拒绝申请</button>
+      </div>
+    </div>
+  </div>
+</div>

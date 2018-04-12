@@ -1,0 +1,59 @@
+/*课程章节目录*/
+.contents-list {
+  
+  .contents-item {
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+    counter-increment: chapter;
+    counter-reset: section;
+
+    > .section-title {
+      padding: 10px;
+      background-color: #eee;
+
+      &:before {
+        margin-right: 20px;
+        content: "第" counter(chapter) "章  ";
+      }
+    }
+
+    > .section-list {
+
+      > li {
+        position: relative;
+        padding: 10px;
+        padding-left: 40px;
+        border-bottom: 1px solid #eee;
+        counter-increment: section;
+        counter-reset: section;
+        overflow: hidden;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:before {
+          float: left;
+          margin-right: 20px;
+          content: "第" counter(chapter) "." counter(section) "节";
+        }
+
+        &:hover {
+          background-color: lighten(@gray, 35.5%);
+        }
+
+        .status {
+          margin-right: @grid-gutter-width;
+
+          > .info {
+            margin-right: @grid-gutter-width / 2;
+          }
+        }
+      }
+    }
+  }
+}
+
+.section-preview {
+  background-color: #000;
+}

@@ -1,0 +1,33 @@
+<div class="header" ng-controller="HeaderController">
+  <div class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/index">学天下</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="slide-down"
+              ng-repeat="menu in menus" 
+              ng-class="{ active: menu.slug == current_slug }" 
+              ng-if="menu.type == 1">
+              <a ng-href="{{ menu.url }}">{{ menu.display_name }}</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" 
+               ng-click="$root.admin_menu_show = !$root.admin_menu_show">Admin <span class="caret"></span></a>
+            <ul class="dropdown-menu toggle" ng-if="$root.admin_menu_show" ng-controller="AuthController">
+              <li><a href="">个人资料</a></li>
+              <li><a href="">系统设置</a></li>
+              <li class="divider"></li>
+              <li><a href="http://www.xuetianxia.cn" target="_blank">访问前台</a></li>
+              <li class="divider"></li>
+              <li><a href="" ng-click="logout()">退出登录</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

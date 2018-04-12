@@ -1,0 +1,585 @@
+<div class="manage" ng-init="schoolManageInit()">
+  <div tabset justified="false" largesize="false" >
+
+    <!-- 基本信息 -->
+    <div tab heading="基本信息" select="tab = 'info'">
+      <div class="content">
+        <form class="form-school-submit form-horizontal" 
+              name="updateOrganization" 
+              role="form" 
+              method="POST">
+          <div class="form-group">
+            <label for="organization_name" class="col-xs-3 control-label important">学校名称</label>
+            <div class="col-xs-6">
+               <input type="text" 
+                      id="organization_name" 
+                      name="organization_name" 
+                      ng-model="organization.info.name" 
+                      class="form-control" 
+                      placeholder="机构名称一旦确定，不可更改" 
+                      validator="required" 
+                      required-error-message="请输入学校名称" 
+                      disabled>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="organization_introduction" class="col-xs-3 control-label important">学校简介</label>
+            <div class="col-xs-6">
+             <textarea type="text" 
+                       rows="10" 
+                       class="form-control" 
+                       name="organization_introduction" 
+                       id="organization_introduction" 
+                       ng-model="organization.info.introduction" 
+                       placeholder="请输入学校简介（500字以内）" 
+                       validator="required, maxlength=500" 
+                       required-error-message="学校简介不能为空" 
+                       maxlength-error-message="学校简介不可以超过500字" 
+                       ng-disabled="!organization.info_can_edit">
+              </textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-xs-3 control-label important">学校LOGO</label>
+            <div class="col-xs-6">
+              <div class="organization_logo">
+                <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 180, min_height: 180 })" 
+                     default-file="getThumbnail(organization.info.logo, 'organization_logo', { width: 100, height: 100 })" 
+                     uploaded="getLogoUpload" 
+                     class="pull-left upload-xrectangle" 
+                     ng-disabled="!organization.info_can_edit">
+                </div>
+                <div class="pull-left text-info">
+                  <p></p>
+                  <p class="">纯白色背景学校LOGO</p>
+                  <p class="">文件小于2M，比例1:1，最小尺寸：180 x 180px</p>
+                  <p class="">支持JPG/PNG/BMP等格式图片</p>
+                </div>
+              </div>
+              <input type="hidden" 
+                     class="pull-right form-control" 
+                     ng-model="organization.info.logo" 
+                     name="organization_logo" 
+                     validator="required" 
+                     required-error-message="学校LOGO不能为空">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-xs-3 control-label">学校实景</label>
+            <div class="col-xs-6">
+              <div class="organization_logo">
+                <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 570, min_height: 500 })" 
+                     default-file="getThumbnail(organization.info.scenery, 'organization_scenery', { width: 100, height: 100 })" 
+                     uploaded="getSceneryUpload" 
+                     class="pull-left" 
+                     ng-disabled="!organization.info_can_edit"></div>
+                <div class="pull-left text-info">
+                  <p></p>
+                  <p class="">为学校实景照片</p>
+                  <p class="">文件小于2M，尺寸大于570 x 500像素</p>
+                  <p class="">支持JPG/PNG/BMP等格式图片</p>
+                </div>
+              </div>
+              <input type="text" 
+                     class="hidden pull-right form-control" 
+                     ng-model="organization.info.scenery" 
+                     name="organization_scenery">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="organization_url" class="col-xs-3 control-label">学校官网</label>
+            <div class="col-xs-6">
+             <input type="url" 
+                    class="form-control" 
+                    id="organization_url" 
+                    name="organization_url" 
+                    ng-model="organization.info.url" 
+                    placeholder="输入学校网址" 
+                    ng-disabled="!organization.info_can_edit">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="user-name" class="col-xs-3 control-label"></label>
+            <div class="col-xs-6">
+              <button class="btn btn-lg btn-default no-animation" 
+                      ng-if="!organization.info_can_edit"
+                      ng-click="organization.info_can_edit = !organization.info_can_edit">修改资料</button>
+              <button class="btn btn-lg btn-primary no-animation" 
+                      ng-if="organization.info_can_edit"
+                      validation-submit="updateOrganization"
+                      ng-click="updateOrganizationInfo()">提交保存</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 认证管理 -->
+    <div tab heading="认证管理" select="tab = 'audit'" ng-if="organization.info.type == 2">
+      <div class="content">
+        <form class="form-horizontal" name="organizationAudit">
+
+          <!-- 认证状态 -->
+          <div class="form-group">
+            <label class="col-xs-3 control-label">认证状态</label>
+            <div class="col-xs-6">
+              <p class="form-control-static">
+                <span ng-if="organization.audit.status == undefined">未申请认证</span>
+                <span class="text-primary no-animation" ng-if="organization.audit.status == 0">认证审核中</span>
+                <span class="text-primary no-animation" ng-if="organization.audit.status == 1">认证成功</span>
+                <span class="text-danger  no-animation" ng-if="organization.audit.status == -1">认证审核失败</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- 失败原因 -->
+          <div class="form-group" ng-show="organization.audit.status == -1 && !!organization.audit.memo">
+            <label class="col-xs-3 control-label"></label>
+            <div class="col-xs-6">
+              <div class="clearfix">
+                <p class="pull-left">失败原因：{{ organization.audit.memo }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 表单 -->
+          <div class="form-group">
+            <label for="organization_name" class="col-xs-3 control-label important">机构名称</label>
+            <div class="col-xs-6">
+               <input type="text" 
+                      class="form-control" 
+                      id="organization_name" 
+                      name="organization_name" 
+                      placeholder="输入机构名称（与证件名称一致）" 
+                      ng-model="organization.audit.name" 
+                      validator="required" 
+                      required-error-message="请输入机构简介" 
+                      ng-disabled="!organization.audit_can_edit">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="organization_user_name" class="col-xs-3 control-label important">申请人</label>
+            <div class="col-xs-6">
+               <input type="text" 
+                      required 
+                      class="form-control" 
+                      id="organization_user_name" 
+                      placeholder="输入申请人名称（与证件相关负责人名称一致）"
+                      ng-model="organization.audit.user_name" 
+                      name="organization_user_name" 
+                      validator="required" 
+                      required-error-message="请输入申请人姓名" 
+                      ng-disabled="!organization.audit_can_edit">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="organization_phone" class="col-xs-3 control-label important">手机</label>
+            <div class="col-xs-6">
+               <input type="text" 
+                      class="form-control" 
+                      id="organization_phone" 
+                      name="organization_phone" 
+                      placeholder="输入手机号码（有效手机号码）" 
+                      ng-model="organization.audit.phone" 
+                      validator="required, mobile" 
+                      required-error-message="请输入手机号码" 
+                      mobile-error-message="请输入有效的手机号码" 
+                      ng-disabled="!organization.audit_can_edit">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="organization_email" class="col-xs-3 control-label important">邮箱</label>
+            <div class="col-xs-6">
+               <input type="text" 
+                      class="form-control" 
+                      id="organization_email" 
+                      name="organization_email" 
+                      placeholder="输入有效邮箱地址" 
+                      ng-model="organization.audit.email" 
+                      validator="required, email" 
+                      required-error-message="请输入邮箱地址" 
+                      email-error-message="请输入有效的邮箱地址" 
+                      ng-disabled="!organization.audit_can_edit">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-3 control-label important">营业执照</label>
+            <div class="col-xs-6">
+              <div class="organization_business_license">
+                <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 5, min_width: 500, min_height: 500 })" 
+                     default-file="getThumbnail(organization.audit.business_license, 'organization_business_license', { width: 100, height: 100 })" 
+                     uploaded="getLicenseUpload" 
+                     class="pull-left"
+                     ng-disabled="!organization.audit_can_edit"></div>
+                <div class="pull-left text-info">
+                  <p></p>
+                  <p class="">请上传有年检章的企业营业执照副本扫描件</p>
+                  <p class="">文件小于5M，尺寸大于500 x 500像素</p>
+                  <p class="">支持JPG/PNG/BMP等格式图片</p>
+                </div>
+              </div>
+              <input type="hidden" 
+                     class="form-control" 
+                     ng-model="organization.audit.business_license" 
+                     name="organization_business_license" 
+                     validator="required" 
+                     required-error-message="请上传营业执照">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-3 control-label important">身份证</label>
+            <div class="col-xs-6">
+              <div class="organization_id_card">
+                <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 500, min_height: 500 })" 
+                     default-file="getThumbnail(organization.audit.id_card, 'organization_id_card', { width: 100, height: 100 })" 
+                     uploaded="getIdCardUpload" 
+                     class="pull-left"
+                     ng-disabled="!organization.audit_can_edit"></div>
+                <div class="pull-left text-info">
+                  <p></p>
+                  <p class="">请上传手持身份证的半身照</p>
+                  <p class="">文件小于2M，尺寸大于500 x 500像素</p>
+                  <p class="">支持JPG/PNG/BMP等格式图片</p>
+                </div>
+              </div>
+              <input type="hidden" 
+                     class="form-control" 
+                     ng-model="organization.audit.id_card" 
+                     name="organization_id_card" 
+                     validator="required" 
+                     required-error-message="请上传手持身份证半身照">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-3 control-label">教育资质</label>
+            <div class="col-xs-6">
+              <div class="organization_education_qualification">
+                <div ng-file-select="onFileSelect($files, 'image', '', { max_size: 5, min_width: 500, min_height: 300 })" 
+                     default-file="getThumbnail(organization.audit.education_qualification, 'organization_education_qualification', { width: 100, height: 100 })" 
+                     uploaded="getQualificationUpload" 
+                     class="pull-left"
+                     ng-disabled="!organization.audit_can_edit"></div>
+                <div class="pull-left text-info">
+                  <p></p>
+                  <p class="">如果有教育局开具的办学证明文件,请提供</p>
+                  <p class="">文件小于5M，尺寸大于500*300</p>
+                  <p class="">支持JPG/PNG/BMP等格式图片</p>
+                </div>
+              </div>
+              <input type="hidden" 
+                     class="form-control" 
+                     ng-model="organization.audit.education_qualification" 
+                     name="organization_education_qualification">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="user-name" class="col-xs-3 control-label"></label>
+            <div class="col-xs-6">
+                <button class="btn btn-lg btn-primary" 
+                        ng-if="(!organization.audit.status || organization.audit.status == -1 ) && organization.audit_can_edit"
+                        validation-submit="organizationAudit" 
+                        ng-click="updateOrganizationAudit()">{{ (!organization.audit || organization.audit.status == -1) ? '提交申请' : '提交修改' }}</button>
+                <a href="" 
+                   class="btn btn-lg btn-default no-animation" 
+                   ng-if="!organization.audit.status && !organization.audit_can_edit"
+                   ng-click="organization.audit_can_edit = true">{{ organization.audit == '' ? '申请认证' : '修改认证资料' }}</a>
+                <a href="" 
+                   class="btn btn-lg btn-default no-animation" 
+                   ng-if="organization.audit.status == -1 && !organization.audit_can_edit"
+                   ng-click="organization.audit_can_edit = true">重新申请</a>
+                <button disabled
+                        class="btn btn-lg btn-default no-animation" 
+                        ng-if="organization.audit.status == 1 && !organization.audit_can_edit">认证成功</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 老师管理 -->
+    <div tab heading="老师管理" select="tab = 'teacher'">
+      <div class="content">
+        <div class="search-box">
+          <!-- 老师过滤排序 -->
+          <div class="teacher-order">
+            <ul class="sort clearfix">
+              <li class="no-animation"
+                  ng-class="{ active: item.sort == organization.teacher.act_get.sort }" 
+                  ng-repeat="item in organization.teacher.types"
+                  ng-click="getOrganizationTeachers({ sort: item.sort, status: item.status, form: status.from })">
+                <a href="">{{ item.name }}</a>
+              </li>
+            </ul>
+            <div pager 
+                 total-items="organization.teacher.lists.pagination.total" 
+                 items-per-page="organization.teacher.lists.pagination.per_page" 
+                 ng-model="organization.teacher.lists.pagination.current_page" 
+                 ng-change="getOrganizationTeachers({ 
+                    sort: organization.teacher.act_get.sort,
+                    form: organization.teacher.act_get.form,
+                    status: organization.teacher.act_get.status,
+                    page: organization.teacher.lists.pagination.current_page
+                 })" 
+                 template-url="partials/template/pagination/pager_course.html"></div>
+          </div>
+        </div>
+        <br>
+        <ul class="teacher-list">
+          <h5 class="text-center text-primary no-animation" ng-if="!organization.teacher.lists.pagination.total">此项暂无教师数据</h5>
+          <li class="item slide-top" 
+              ng-if="organization.teacher.lists.result && organization.info.user.id && $root.user.id"
+              ng-repeat="teacher in organization.teacher.lists.result | orderBy: '-status'" 
+              ng-class="{'pull-right': $index % 2 != 0,'pull-left':$index % 2 == 0 }">
+            <div class="content">
+              <div class="gravatar">
+                <a ng-href="/organization/{{ organization_id }}/teacher/{{ teacher.user.id }}" target="_blank">
+                  <img width="80" class="media-object img-circle" 
+                       ng-src="{{ getThumbnail(teacher.user.gravatar, 'gravatar', { width: 80, height: 80 }) }}">
+                </a>
+                <span class="position no-animation bg-danger"  ng-if="teacher.status == 5">创始人</span>
+                <span class="position no-animation bg-warning" ng-if="teacher.status == 4">管理员</span>
+                <span class="position no-animation bg-primary" ng-if="teacher.status == 2">普通老师</span>
+                <span class="position no-animation bg-info"    ng-if="teacher.status == 1">等待审核</span>
+                <span class="position no-animation bg-info"    ng-if="teacher.status == 0">已邀请</span>
+                <span class="position no-animation bg-info"    ng-if="teacher.status == -1">对方拒绝</span>
+                <span class="position no-animation bg-info"    ng-if="teacher.status == -2">我已拒绝</span>
+              </div>
+              <div class="info">
+                <div class="teacher-name">
+                  <a target="_blank"
+                     ng-href="/organization/{{ organization_id }}/teacher/{{ teacher.user.id }}">{{ teacher.user.profile.rel_name }}</a>
+                  <div class="action small">
+                    <a class="action-btn" href="">
+                      <span>操作</span>
+                      <i class="icon icon-sort-down"></i>
+                    </a>
+                    <!-- 操作菜单 -->
+                    <ul class="menu-list">
+
+                      <!-- 查看资料 / 所有老师 -->
+                      <li class="item">
+                        <a href="" ng-click="checkTeacherInfo({ modal: true, teacher: this })">查看资料</a>
+                      </li>
+
+                      <!-- 编辑资料 / （创始人 && 操作管理员/入驻老师）|| (管理员 && 操作普通老师) -->
+                      <li class="item" ng-if="
+                        ((organization.info.user.id == $root.user.id) && teacher.status > 1) || 
+                        ((organization.info.user.id != $root.user.id) && teacher.status == 2)">
+                        <a href="" ng-click="editTeacherInfo({ modal: true, teacher: this })">编辑资料</a>
+                      </li>
+
+                      <!-- 设为管理员 / 创始人 && 操作普通老师 -->
+                      <li class="item" ng-if="((organization.info.user.id == $root.user.id) && teacher.status == 2)">
+                        <a href="" ng-click="addTeacherAdmin(teacher)">设为管理员</a>
+                      </li>
+
+                      <!-- 取消管理员 / 创始人 && 操作管理员 -->
+                      <li class="item" ng-if="((organization.info.user.id == $root.user.id) && teacher.status == 4)">
+                        <a href="" ng-click="delTeacherAdmin(teacher)">取消管理员</a>
+                      </li>
+
+                      <!-- 转让创始人 / 创始人 && 操作管理员 -->
+                      <li class="item" ng-if="((organization.info.user.id == $root.user.id) && teacher.status == 4)">
+                        <a href="" ng-click="attornFounder(teacher)">转让创始人</a>
+                      </li>
+
+                      <!-- 审核资料 / （管理员 || 创始人） && 操作待审核老师 -->
+                      <li class="item" ng-if="teachers.status == 1">
+                        <a href="" ng-click="checkTeacherInfo({ modal: true, teacher: this })">审核资料</a>
+                      </li>
+
+                      <!-- 再次邀请老师 / 管理员 || 创始人  && 操作已拒绝老师 -->
+                      <li class="item" ng-if="teacher.status == -1 || teacher.status == -2">
+                        <a href="" ng-click="againInviteTeacher(teacher)">再次邀请</a>
+                      </li>
+
+                      <!-- 删除老师关系 / 操作普通老师 || 创始人 && 操作所有有效人 -->
+                      <li class="item" ng-if="teacher.status < 4 || ((organization.info.user.id == $root.user.id) && teacher.status < 5)">
+                        <a href="" class="delete" ng-click="delTeacher(teacher)">删除</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="teacher-title">
+                  <span>{{ teacher.title || '暂无职称' }}</span>
+                  <span class="small text-danger" ng-if="teacher.status == -2">（拒绝原因 : {{ teacher.memo || '无' }}）</span>
+                </p>
+                <p class="teacher-introduction no-animation" ng-if="!!teacher.introduction">{{ teacher.introduction }}</p>
+                <p class="teacher-introduction no-animation text-muted" ng-if="!teacher.introduction">暂无介绍</p>
+                <p class="teacher-course">拥有{{ teacher.course_count || 0 }}门课程</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <hr>
+        <!-- 翻页模块 -->
+        <div class="page-wrap col-xs-12 no-animation" ng-if="!!organization.teacher.lists.pagination.total">
+          <div pagination 
+               total-items="organization.teacher.lists.pagination.total" 
+               items-per-page="organization.teacher.lists.pagination.per_page" 
+               ng-model="organization.teacher.lists.pagination.current_page" 
+               ng-change="getOrganizationTeachers({ 
+                  sort: organization.teacher.act_get.sort,
+                  form: organization.teacher.act_get.form,
+                  status: organization.teacher.act_get.status,
+                  page: organization.teacher.lists.pagination.current_page
+               })" 
+               sortCourseLists="pagination" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 公告管理 -->
+    <div tab heading="公告管理" select="tab = 'announcement'">
+      <div class="content">
+        <div ng-if="!organization.announcements.pagination.total" class="clearfix no-animation">
+          <h5 class="text-center text-muted">暂无公告</h5>
+        </div>
+        <div class="announcement-title clearfix no-animation" ng-if="!!organization.announcements.pagination.total">
+          <span class="col-xs-8 text-center">公告标题</span>
+          <span class="col-xs-1 pull-right text-center">操作</span>
+          <span class="col-xs-2 pull-right text-center">最后修改</span>
+          <span class="col-xs-1 pull-right text-center">发布者</span>
+        </div>
+        <ul class="announcement-list no-animation" ng-if="!!organization.announcements.pagination.total">
+          <li class="item slide-top" 
+              ng-class="{ 'active': content_show }" 
+              ng-repeat="announcement in organization.announcements.result">
+            <div class="title clearfix" >
+              <span class="col-xs-8 title-main" ng-click="content_show = !content_show">
+                <a href="">{{ announcement.title }}</a>
+              </span>
+              <span class="text-center pull-right">
+                <button class="btn btn-xs btn-warning" 
+                        ng-click="editAnnouncement({ modal: true, announcement: this })">修改</button>
+                <button class="btn btn-xs btn-danger" 
+                        ng-click="delAnnouncement(announcement)">删除</button>
+              </span>
+              <span class="col-xs-2 pull-right text-center small">{{ announcement.updated_at | relativeTime }}</span>
+              <span class="col-xs-1 pull-right text-center small">
+                <a ng-href="/organization/{{ organization_id }}/teacher/{{ announcement.user_id }}" target="_blank">
+                  <span>{{ announcement.user.profile.rel_name }}</span>
+                </a>
+              </span>
+            </div>
+            <div class="content text-height toggle" ng-if="content_show">
+            <div class="" ng-if="!!announcement.content" ng-bind-html="announcement.content || '' | toHtml"></div>
+              <div class="text-muted" ng-if="!announcement.content">无内容</div>
+            </div>
+          </li>
+        </ul>
+        <!-- 翻页模块 -->
+        <div class="page-wrap" ng-if="organization.announcements.pagination.total > 1">
+          <div pagination 
+               total-items="organization.announcements.pagination.total" 
+               items-per-page="organization.announcements.pagination.per_page" 
+               ng-model="organization.announcements.pagination.current_page" 
+               ng-change="getAnnouncement({ page: organization.announcements.pagination.current_page })" 
+               sortCourseLists="pagination" 
+               class="pagination-sm" 
+               boundary-links="true" 
+               rotate="false"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模板管理 -->
+    <div tab heading="模板管理" select="tab = 'theme'">
+      <div class="content">
+        <form class="organization-theme">
+          <ul class="theme-list">
+            <li class="item col-xs-4" 
+                ng-repeat="(key, name) in organization.theme.value" 
+                ng-mouseover="radio_hover = true" 
+                ng-mouseout="radio_hover = false"
+                ng-class="{
+                  'pink': key == 0, 
+                  'blue': key == 1, 
+                  'yellow': key == 2, 
+                  'gray': key == 3, 
+                  'green': key == 4, 
+                  'love': key == 5 
+                }">
+              <input class="hidden" 
+                     type="radio" 
+                     name="organization_template" 
+                     id="template_{{ key }}" 
+                     value="{{ key }}" 
+                     ng-model="organization.info.profile.index_template" >
+              <label for="template_{{ key }}" class="radio-box">
+                <img ng-src="{{ getThumbnail(organization.info.profile.big_banner, '', { width: 282, height: 180 }) }}" 
+                     ng-if="organization.info.profile.index_template == key && organization.info.profile.big_banner"
+                     class="no-animation">
+                <div class="name text-primary">{{ name }}</div>
+                <div class="status">
+                  <div class="success no-animation" ng-if="organization.info.profile.index_template == key">
+                    <span class="msg text-primary">
+                      <i class="icon icon-success h3 text-primary"></i>
+                      <i>当前使用</i>
+                    </span>
+                    <button href="" class="btn btn-primary">
+                      <span>{{ is_upload ? '图片上传中...' : ( $parent.organization.info.profile.big_banner ? '修改自定义背景' : '上传自定义背景' ) }}</span>
+                      <div ng-file-select="onFileSelect($files, 'image', '', {})" 
+                           default-file="getThumbnail(organization.info.profile.big_banner, '', { width: 282, height: 180 })" 
+                           uploaded="getBigBannerUpload"></div>
+                    </button>
+                  </div>
+                  <div class="hover no-animation" 
+                       ng-mouseover="radio_hover = true"
+                       ng-show="organization.info.profile.index_template != key && radio_hover">
+                    <i class="icon icon-success h3"></i>
+                    <span>使用此模板</span>
+                  </div>
+                </div>
+              </label>
+            </li>
+          </ul>
+          <hr>
+          <p class="text-center">
+            <input type="text" 
+                   class="hidden" 
+                   ng-model="organization.info.profile.big_banner" 
+                   name="organization_small_banner">
+            <label class="btn btn-link" 
+                   ng-disabled="!organization.info.profile.big_banner" 
+                   ng-if="organization.info.profile.is_blur != undefined">
+              <input type="checkbox" 
+                     class="" 
+                     ng-init="organization.info.profile.is_blur = (organization.info.profile.is_blur == '0' ? false : true)"
+                     ng-model="organization.info.profile.is_blur" 
+                     name="organization_big_banner_blur" 
+                     ng-disabled="!organization.info.profile.big_banner">
+              <span>开启背景虚化（仅支持自定义背景）</span>
+            </label>
+            <button class="btn btn-danger" 
+                    href="" 
+                    ng-click="organization.info.profile.big_banner = null;organization.info.profile.is_blur = 0" 
+                    ng-disabled="!organization.info.profile.big_banner">删除自定义背景</button>
+            <button class="btn btn-primary" ng-click="setThemeTemplate()">提交保存</button>
+            <a ng-href="/organization/{{ organization.info.id }}" target="_blank" class="btn btn-warning">进入主页</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- 活动按钮 -->
+    <div class="action-btn">
+      <button class="btn btn-sm btn-primary pull-left no-animation" 
+              ng-if="tab == 'teacher'" 
+              ng-click="inviteTeacher({ modal: true })">邀请老师</button>
+      <button class="btn btn-sm btn-primary pull-left no-animation" 
+              ng-if="tab == 'announcement'" 
+              ng-click="addAnnouncement({ modal: true })">添加公告</button>
+    </div>
+  </div>
+</div>

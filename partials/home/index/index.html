@@ -1,0 +1,217 @@
+<div class="" ng-init="initIndex()">
+
+  <!-- index head -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="index-head">
+
+        <!-- 首页Banners -->
+        <div ng-controller="CarouselController" class="carousel-box">
+          <ul carousel interval="4000">
+            <li slide ng-repeat="banner in banners" active="banner.active">
+              <a ng-href="{{ banner.link }}" 
+                 target="_blank" 
+                 title="{{ banner.title }}" 
+                 ng-style="{ 'background-image': 'url(' + getThumbnail(banner.image, 'index_banner', { width: 1920, height: 500 }) + ')' }"></a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 首页课程分类 -->
+        <div class="categories">
+          <div class="container">
+            <div class="categories-box">
+              <ul>
+                <li class="item no-animation" 
+                    ng-repeat="category in main_categories | limitTo:6"
+                    ng-mouseover="active = true"
+                    ng-mouseleave="active = false">
+                  <!-- inner -->
+                  <div class="inner">
+                    <div class="iconfont">
+                      <i class="icon icon-category-{{ category.id }}"></i>
+                    </div>
+                    <h3 class="name">
+                      <a ng-href="/course/list/{{ category.id }}">{{ category.name }}</a>
+                    </h3>
+                    <span class="sub-category">
+                      <a class="item"
+                         ng-href="/course/list/{{ sub.id }}" 
+                         ng-repeat="sub in category.children | limitTo: 4">{{ sub.name }}</a>
+                    </span>
+                  </div>
+
+                  <!-- children -->
+                  <div class="children toggle" ng-if="category.children.length > 0" ng-show="active">
+                    <dl class="dl-horizontal" ng-repeat="child in category.children">
+                      <dt>
+                        <i class="icon icon-target-right"></i>
+                        <a ng-href="/course/list/{{ child.id }}">{{ child.name }}</a>
+                      </dt>
+                      <dd>
+                        <a ng-href="/course/list/{{ sub_child.id }}" 
+                           ng-repeat="sub_child in child.children">{{ sub_child.name }}</a>
+                      </dd>
+                    </dl>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 首页分类学校课程 -->
+  <div class="container-fluid no-animation" 
+       ng-if="!!categories.length"
+       ng-repeat="category in categories">
+
+    <div class="container">
+      <div class="index-organization">
+
+        <!-- 推荐学校 -->
+        <div class="col-xs-5">
+          <ul class="school-lists">
+            <h3 class="title text-center">
+              <i class="icon icon-school-stroke text-warning"></i>
+              <a href="/organization" class="text-dark">推荐学校</a>
+            </h3>
+            <li class="item" ng-repeat="organization in category.organization | limitTo: 16">
+              <a ng-href="/organization/{{ organization.id }}" target="_blank">{{ organization.name }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-xs-2">
+          <div class="guideboard">
+            <h3 class="title">{{ category.main_category.name }}</h3>
+            <!-- <p class="text-muted">GREAT COURSES</p> -->
+            <div class="iconfont">
+              <i class="icon icon-category-{{ category.main_category.id }}"></i>
+            </div>
+            <div class="line" focus-add-class="active">
+              <span class="linec">
+                <span class="terminal"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 推荐课程分类 -->
+        <div class="col-xs-5">
+          <ul class="category-lists">
+            <h3 class="title text-center">
+              <i class="icon icon-course-stroke text-warning"></i>
+              <a href="/organization" class="text-dark">推荐课程</a>
+            </h3>
+            <li ng-repeat="sub in category.sub_category">
+              <a ng-href="/course/list/{{ sub.id }}">{{ sub.name }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 课程列表 -->
+    <div class="container">
+      <div class="index-box">
+        <div class="course-lists">
+          <!-- <div course-list="category.course"></div> -->
+          <div class="col-xs-3 slide-top" ng-repeat="course in category.course | limitTo : 12">
+            <div class="item">
+              <a ng-href="/course/{{ course.id }}" class="pic" target="_blank">
+                <!-- <div afkl-lazy-image="{{ getThumbnail(course.thumb, 'course', { width: 500, height: 300 }) }}"
+                     class="afkl-img-ratio-{{ course.thumb }}"></div> -->
+                  <img ng-src="{{ getThumbnail(course.thumb, 'course', { width: 500, height: 300 }) }}">
+                <div class="mask">
+                  <span class="play"><i class="icon icon-play"></i></span>
+                </div>
+              </a>
+              <div class="organization">
+                <a ng-href="/organization/{{ course.organization_id }}" target="_blank" class="logo">
+                  <!-- <div afkl-lazy-image="{{ getThumbnail(course.organization.logo, 'logo', { width: 45, height: 45 }) }}"
+                       class="afkl-img-ratio-{{ course.organization.logo }}"
+                       width="45"></div> -->
+                  <img ng-src="{{ getThumbnail(course.organization.logo, 'logo', { width: 45, height: 45 }) }}" width="45">
+                </a>
+              </div>
+              <div class="info">
+                <h4 class="name">
+                  <a ng-href="/course/{{ course.id }}" target="_blank">
+                    <span class="text-danger" ng-if="!!course.is_live">
+                      <span ng-if="course.live_info && course.live_info.course_live_status == 0">( 已结束 )</span>
+                      <!-- <span ng-if="course.live_info && course.live_info.course_live_status == 1">( 未开始 )</span> -->
+                      <span ng-if="course.live_info && course.live_info.course_live_status == 2">( 直播中 )</span>
+                    </span>
+                    <span>{{ course.name }}</span>
+                  </a>
+                </h4>
+                <p class="line">
+                  <span class="ornament"></span>
+                </p>
+                <p class="price">
+                  <span class="text-info study-count">
+                    <i class="icon icon-study-user"></i>{{ course.study_count }}人在学习</span>
+                  <a ng-href="/course/{{ course.id }}"
+                     target="_blank"
+                     class="pull-right text-price"
+                     ng-class="{true: 'free'}[course.rel_price <= 0]">
+                    <i class="yen" ng-if="course.rel_price">&yen;</i> {{ course.rel_price ? course.rel_price : '免费' | priceFormat }}
+                  </a>
+                </p>
+              </div>
+              <span class="live" ng-if="!!course.is_live">直播</span>
+              <span class="duration">
+                <span ng-if="!course.is_live || !course.live_info">{{ course.duration | toHHMMSS : 'HHMM' : '小时' : '分钟' }}</span>
+                <span ng-if="!!course.is_live && !!course.live_info">最近：{{ course.live_info.live_at }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- index partner -->
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="partners-title">
+          <div class="page-header">
+            <h3 class="title">
+              <span>
+                <a href="/organization">入驻机构</a>
+              </span>
+            </h3>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-xs-12">
+        <div class="partners-box">
+          <a href="" ng-click="to_right = false;toPrevPage()" class="prev-btn pull-left">
+            <i class="icon icon-arrow-left"></i>
+          </a>
+          <div class="list-position" ng-init="to_right = true">
+            <ul class="partner-lists clearfix">
+              <li class="item" 
+                  ng-class="{ true:'slide-left', false:'slide-right' }[$parent.to_right]"
+                  ng-repeat="partner in activePartners | limitTo : 8">
+                <a target="_blank" 
+                   ng-href="/organization/{{ partner.organization.id }}" 
+                   title="进入{{ partner.organization.name }}主页">
+                  <img ng-src="{{ getThumbnail(partner.organization.logo, 'index_partner', { width: 120, height: 120 }) }}">
+                </a>
+              </li>
+            </ul>
+          </div>
+          <a href="" ng-click="to_right = true;toNextPage()" class="next-btn pull-right">
+            <i class="icon icon-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

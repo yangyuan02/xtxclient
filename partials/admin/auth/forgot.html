@@ -1,0 +1,94 @@
+<div class="register" ng-controller="AuthController">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-4 col-xs-offset-4">
+        <div class="register-form">
+          <form class="form-horizontal" name="forgetForm" role="form" method="POST">
+            <div class="form-group">
+              <div class="col-xs-12">
+                <h3 class="text-center text-primary">Wind 找回密码</h3>
+              </div>
+            </div>
+            <hr>
+            <div class="form-group">
+              <div class="col-xs-10 col-xs-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">手机</div>
+                  <input type="text" 
+                         name="user_phone" 
+                         class="form-control" 
+                         maxlength="11" 
+                         placeholder="请输入手机号码" 
+                         ng-model="user.phone"
+                         validator="required, minlength=10" 
+                         minlength-error-message="." 
+                         required-error-message=".">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-xs-10 col-xs-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">验证</div>
+                  <input type="text" 
+                         name="user_code" 
+                         class="form-control" 
+                         maxlength="6" 
+                         placeholder="请输入验证码" 
+                         ng-model="user.code"
+                         validator="required" 
+                         required-error-message=".">
+                  <div class="input-group-addon btn btn-default">获取</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-xs-10 col-xs-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">密码</div>
+                  <input type="password" 
+                         name="password" 
+                         maxlength="16" 
+                         class="form-control" 
+                         placeholder="请输入密码" 
+                         ng-model="user.password" 
+                         validator="required, maxlength=16" 
+                         minlength-error-message="." 
+                         required-error-message=".">
+                </div>
+              </div>
+            </div>
+             <div class="form-group">
+              <div class="col-xs-10 col-xs-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">密码</div>
+                  <input type="password" 
+                         name="rel_password" 
+                         maxlength="16" 
+                         class="form-control" 
+                         placeholder="请再次确认密码" 
+                         ng-model="user.rel_password" 
+                         validator="required, maxlength=16" 
+                         minlength-error-message="." 
+                         required-error-message=".">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-xs-10 col-xs-offset-1">
+                <button class="btn btn-block btn-primary" validation-submit="forgetForm" ng-click="forgot()">找回密码</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-xs-10 col-xs-offset-1">
+                <span class="pull-right">
+                  <a href="/login" class="text-primary">返回登录</a>
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

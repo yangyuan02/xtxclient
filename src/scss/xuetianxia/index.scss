@@ -1,0 +1,505 @@
+.index-head {
+  position: relative;
+  // height: 630px;
+
+  .carousel-box {
+    display: block;
+    height: 450px;
+    overflow: hidden;
+  }
+  
+  // Banner
+  .carousel {
+    display: block;
+    height: 450px;
+    overflow: hidden;
+
+    > .carousel-inner {
+
+      > .item {
+
+        > a {
+          display: block;
+          height: 450px;
+          background-position: center center;
+          background-size: auto 100%;
+        }
+      }
+    }
+  }
+
+  // 首页分类
+  .categories {
+    display: block;
+    // height: 220px;
+    background-color: #f8f8f8;
+
+    .categories-box {
+      position: relative;
+
+      > ul {
+        display: block;
+        overflow: hidden;
+        margin: 0 auto;
+
+        > .item {
+          display: block;
+          width: 190px;
+          // height: 240px;
+          padding: $grid-gutter-width $grid-gutter-width / 2;
+          float: left;
+
+          &:after {
+            position: absolute;
+            top: 0;
+            margin-left: 0px;
+            width: 12px;
+            height: 12px;
+            border: 8px solid transparent;
+            border-top: 8px solid $gray-dark;
+            content: "";
+            @include opacity(0);
+            @include transition(.25s linear);
+          }
+
+          a {
+            color: #fff;
+          }
+          
+          > .inner {
+            position: relative;
+            padding: $grid-gutter-width / 2 $grid-gutter-width;
+
+            > .iconfont {
+              display: block;
+              width: 80px;
+              height: 80px;
+              margin: 0 auto;
+              border-radius: 100%;
+              background-color: $gray-dark;
+              line-height: 84px;
+              text-align: center;
+              cursor: pointer;
+
+              > .icon {
+                font-size: 50px;
+                color: #fff;
+
+                &.icon-category-1 {
+
+                  &:before {
+                    content: "\e646";
+                  }
+                }
+
+                &.icon-category-2 {
+
+                  &:before {
+                    content: "\e641";
+                  }
+                }
+
+                &.icon-category-3 {
+
+                  &:before {
+                    content: "\e644";
+                  }
+                }
+
+                &.icon-category-4 {
+
+                  &:before {
+                    content: "\e643";
+                  }
+                }
+
+                &.icon-category-5 {
+
+                  &:before {
+                    content: "\e645";
+                  }
+                }
+
+                &.icon-category-6 {
+
+                  &:before {
+                    content: "\e63a";
+                  }
+                }
+              }
+            }
+
+            > .name {
+              margin-top: $grid-gutter-width / 2;
+              margin-bottom: $grid-gutter-width / 4;
+              text-align: center;
+
+              > a {
+                display: block;
+                color: $gray-dark;
+              }              
+            }
+
+            > .sub-category {
+              margin: 0;
+              display: block;
+              width: 100%;
+              height: 48px;
+              overflow: hidden;
+
+              > a {
+                display: inline-block;
+                float: left;
+                width: 50%;
+                line-height: 24px;
+                color: $gray-light;
+
+                &:nth-child(odd) {
+                  padding-right: 5px;
+                  text-align: right;
+                }
+
+                &:nth-child(even) {
+                  padding-left: 5px;
+                  text-align: left;
+                }
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+
+          > .children {
+            position: absolute;
+            bottom: 225px;
+            left: 0;
+            padding: 20px;
+            width: 100%;
+            height: auto;
+            max-height: 450px;
+            padding: $grid-gutter-width;
+            overflow: hidden;
+            background-color: $gray-dark;
+            z-index: 21;
+
+            > dl {
+              margin-bottom: 10px;
+              width: 46%;
+              float: left;
+              margin-right: 20px;
+
+              a {
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+
+
+              > dt {
+                width: 80px;
+                text-align: left;
+
+                > .icon {
+                  margin-right: 5px;
+                  font-size: $font-size-small;
+                  color: $brand-primary;
+                }
+
+                > a {
+                  color: $brand-primary;
+                  font-weight: bold;
+                }
+              }
+
+              > dd {
+                margin-left: 70 + $grid-gutter-width;
+
+                > a {
+                  display: inline-block;
+                  margin-right: $grid-gutter-width;
+                  margin-bottom: $grid-gutter-width / 2;
+                  color: $gray-lightest;
+                }
+              }
+            }
+          }
+
+          &:hover {
+            
+            > .inner {
+
+              > .iconfont {
+                background-color: $brand-primary;
+              }
+
+              > .name a,
+              > .sub-category a {
+                color: $brand-primary;
+              }
+            }
+
+            &:after {
+              margin-left: 77px;
+              @include opacity(1);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Organiztion & Course
+.index-organization {
+  padding-top: $grid-gutter-width;
+  // min-height: $grid-gutter-width * 21.5;
+  overflow: hidden;
+  position: relative;
+
+  .school-lists,
+  .category-lists {
+    padding-top: 80px;
+
+    > .title {
+      margin-bottom: 30px;
+
+      .icon {
+        margin-right: 5px;
+        font-size: $font-size-h3 + 4;
+        vertical-align: -2px;
+      }
+    }
+
+    > li {
+      float: left;
+
+      > a {
+        display: block;
+        margin: 0 15px 15px 0;
+        padding: 8px 20px;
+        border: 1px solid $gray-xlightest;
+        border-radius: $grid-gutter-width;
+        color: $gray-light;
+
+        &:hover {
+          border-color: $brand-primary;
+          background-color: $gray-lightsuper;
+          color: $brand-primary;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .guideboard {
+    text-align: center;
+
+    > .title {
+      margin-bottom: $grid-gutter-width;
+      font-size: $font-size-h3 + 4;
+      color: $gray-dark;
+    }
+
+    > .iconfont {
+
+      > .icon {
+        display: block;
+        width: 65px;
+        height: 65px;
+        border-radius: 100%;
+        margin: 0 auto;
+        line-height: 65px;
+        background-color: $brand-primary;
+        color: #fff;
+        font-size: 40px;
+
+        &.icon-category-1 {
+
+          &:before {
+            content: "\e646";
+          }
+        }
+
+        &.icon-category-2 {
+
+          &:before {
+            content: "\e641";
+          }
+        }
+
+        &.icon-category-3 {
+
+          &:before {
+            content: "\e644";
+          }
+        }
+
+        &.icon-category-4 {
+
+          &:before {
+            content: "\e643";
+          }
+        }
+
+        &.icon-category-5 {
+
+          &:before {
+            content: "\e645";
+          }
+        }
+
+        &.icon-category-6 {
+
+          &:before {
+            content: "\e63a";
+          }
+        }
+      }
+    }
+
+    > .line {
+      display: block;
+      height: 200px;
+      width: 100%;
+      position: relative;
+
+      &.active {
+
+        > .linec {
+          height: 100%;
+          @include transition(all 1s);
+          @include transition-delay(.6s);
+
+          > .terminal {
+            @include transition(all 1s);
+            @include transition-delay(.3s);
+          }
+        }
+      }
+
+      > .linec {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        background-color: $gray-lightest;
+        width: 2px;
+        height: 30%;
+        animation: none;
+        @include transition(all 1s);
+        @include transition-delay(.6s);
+
+        > .terminal {
+          position: absolute;
+          bottom: -9px;
+          left: -4px;
+          width: 10px;
+          height: 10px;
+          border: 2px solid $gray-lightest;
+          border-radius: 100%;
+          @include transition(all 1s);
+          @include transition-delay(.3s);
+        }
+      }
+    }
+  }
+}
+
+/*index-box*/
+.index-box {
+  margin-top: $grid-gutter-width;
+
+  /*course-lists*/
+  .course-lists {
+
+    .item {
+      height: $gauge * 13.55;
+
+      > .pic {
+        height: 150px;
+      }
+    }
+  }
+}
+
+.partners-title {
+
+  > .page-header {
+
+    border-bottom: none;
+
+    > .title {
+      font-size: 24px;
+
+      > span {
+        display: inline-block;
+        margin: 0 auto;
+        padding: 15px 10px;
+        border-bottom: 2px solid $brand-primary;
+      }
+    }
+  }
+  text-align: center;
+  border-bottom: none;
+}
+
+/*index-partner*/
+.partners-box {
+  margin-bottom: $gauge * 2;
+  overflow: hidden;
+
+  > .prev-btn,
+  > .next-btn {
+    display: block;
+    width: $gauge * 2.5;
+    height: $gauge * 2.5;
+    margin-top: $gauge + 5;
+    line-height: $gauge * 2.5;
+    text-align: center;
+    border: 1px solid $btn-default-bg;
+    border-radius: 100%;
+
+    .icon {
+      font-size: $font-size-h3;
+      color: $gray-lighter;
+    }
+
+    &:hover {
+      border: 1px solid $brand-primary;
+
+      .icon {
+        color: $brand-primary;
+      }
+    }
+  }
+
+  > .list-position {
+    display: inline-block;
+    height: 100px;
+    width: 1020px;
+    overflow: hidden;
+
+    > .partner-lists {
+      white-space:nowrap;
+
+      > .item {
+        display: inline-block;
+        margin-left: $gauge + 7;
+        float: left;
+
+        > a {
+          display: block;
+          height: 100px;
+          width: 100px;
+
+          > img {
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
+}

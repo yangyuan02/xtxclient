@@ -1,0 +1,143 @@
+<div class="page-list" ng-init="organizationAction.getIndex()">
+  <div class="page-title">
+    <h3>学校列表({{ organization_list.pagination.total || '0' }})</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <a href="/organization/manage/list/add"
+         class="btn btn-sm btn-success" 
+         ng-if="page_permission['organization.manage.list.add']">新增</a>
+      <button 
+        class="btn btn-sm btn-danger" 
+        ng-click="organizationAction.del({ batch: true })"
+        ng-if="page_permission['organization.manage.list.del']"
+        ng-disabled="!organization_list.result.checked().length">删除</button>
+      <button 
+        class="btn btn-sm btn-default" 
+        ng-click="organizationAction.getIndex(organization_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form" role="search" ng-if="true">
+        <div class="form-group">
+          <select
+            class="form-control input-sm"
+            ng-model="filter.category_id"
+            ng-change="organizationAction.filterChanged('category')">
+            <option value="">所有分类</option>
+            <option value="{{ category.id }}" ng-repeat="category in category_list">{{ category.name }}</option>
+          </select>
+          <select 
+            class="form-control input-sm"
+            ng-model="filter.status"
+            ng-change="organizationAction.filterChanged('status')">>
+            <option value="">所有状态</option>
+            <option value="-1">审核失败</option>
+            <option value="0">审核中</option>
+            <option value="1">审核通过</option>
+          </select>
+          <input type="text" 
+            class="form-control input-sm" 
+            placeholder="请输入学校名称" 
+            ng-model="search.keyword">
+        </div>
+        <button type="submit" 
+          class="btn btn-sm btn-default" 
+          ng-click="organizationAction.getSearch()">搜索</button>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="organization_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>类型</th>
+          <th>LOGO</th>
+          <th>学校名称</th>
+          <th>创始人</th>
+          <th>审核状态</th>
+          <th>创建时间</th>
+          <th class="text-center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!organization_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="organization_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="organization_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="organization in organization_list.result track by $index" 
+            class="slide-down"
+            ng-class="{ 'disabled': !organization.x_status }">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="organization.checked">
+          </td>
+          <td>{{ organization.id }}</td>
+          <td>{{ organization.category.name }}</td>
+          <td><img src="{{ getThumbnail(organization.logo, 'organization_logo', { width: 40, height: 40 }) }}" width="20"></td>
+          <td>
+            <a ng-href="/organization/manage/list/{{ organization.id }}">{{ organization.name }}</a>
+          </td>
+          <td>
+            <a ng-href="/user/manage/list/{{ organization.user.id }}" target="_blank">
+              {{ organization.user.name }}
+            </a>
+          </td>
+          <td>
+            <span class="no-animation" 
+                  ng-switch="organization.status">
+              <em class="text-danger"
+                  ng-switch-when="-1">审核失败</em>
+              <em class="text-warning"
+                  ng-switch-when="0">审核中</em>
+              <em class="text-success"
+                  ng-switch-when="1">审核通过</em>
+            </span>
+          </td>
+          <td>{{ organization.created_at }}</td>
+          <td class="text-right">
+            <a href="" 
+               class="text-warning" 
+               ng-click="organizationAction.audit({ modal: true, organization: this })" 
+               ng-if="page_permission['organization.manage.list.audit']"
+               ng-show="organization.status < 1">[ 审核 ]</a>
+            <a href="/organization/manage/list/{{ organization.id }}" 
+               class="text-info" 
+               ng-if="page_permission['organization.manage.list.edit']">[ 管理 ]</a>
+            <a href="" 
+               class="text-danger" 
+               ng-if="page_permission['organization.manage.list.del']"
+               ng-click="organizationAction.del({ organization: this })">[ 删除 ]</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="organization_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="organization_list.pagination.total" 
+         items-per-page="organization_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="organizationAction.getIndex(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

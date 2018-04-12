@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title ng-bind="$root.title + ' - ' + ($root.site_config.base.WEB_SITE_TITLE || '学天下')"></title>
+  <meta name="keywords" content="{{ $root.site_config.base.WEB_SITE_KEYWORDS }}">
+  <meta name="description" content="{{ $root.site_config.base.WEB_SITE_DICRIPTION }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/style.css">
+  <!--[if lt IE 9]>
+    <meta http-equiv="Refresh" content="0; url=/partials/template/error/not-supported.html" />
+  <![endif]-->
+</head>
+<body ng-controller="MainController" ng-class="{true: 'container-learn'}[learnActive]">
+  <div ng-include="'partials/home/layout/header.html'" include-replace></div>
+  <div id="J_main_container" class="no-animation main-wrap" ui-view></div>
+  <div ng-include="'partials/home/layout/footer.html'" include-replace></div>
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/angular.libs.min.js"></script>
+  <script src="./js/angular.util.min.js"></script>
+  <script src="./js/angular.main.min.js"></script>
+</body>
+</html>

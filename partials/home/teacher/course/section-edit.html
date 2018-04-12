@@ -1,0 +1,217 @@
+<div class="section" ng-init="editSection()">
+  <div class="form-group" 
+       ng-controller="FileController"
+       sv-root
+       sv-on-sort="sectionSort($item, $partFrom, $partTo, $indexFrom, $indexTo)"
+       sv-part="chapters">
+    <div class="col-xs-12">
+      <div class="text-center panel panel-default">
+        <h5 class="text-danger">
+          <i class="icon icon-warning text-danger"></i>
+          <span>温馨提示：课程视频发布成功后，如果重新上传视频，则需要重新审核，且会覆盖原视频！（选择直播状态后，不可再更改）</span>
+        </h5>
+      </div>
+
+      <!-- 章节内容 -->
+      <div class="chapters slide-top"
+           ng-repeat="chapter in chapters"
+           ng-model-options="{ updateOn: 'change', debounce: 0 }" sv-element>
+        <div class="chapter-title" sv-handle>
+          <input type="text"
+                 name="name"
+                 class="form-control input-title inline"
+                 placeholder="请您输入本章的名称"
+                 ng-model="chapter.name"
+                 ng-change="updateChapter(chapter)"
+                 tooltit="chapter.tooltit"
+                 tooltip="event"
+                 toolpos="left"
+                 onmousedown="javascript:(function (event) { event.stopPropagation() })(event)"
+                 onmousemove="javascript:(function (event) { event.stopPropagation() })(event)">
+
+          <!-- 添加节 -->
+          <a href="" class="btn btn-link section-add" ng-click="addSection(this)">
+             <i class="icon icon-add text-primary"></i>
+             <span>添加节</span>
+          </a>
+          <a href="" class="btn btn-link section-del" ng-click="delChapter(chapter)">
+            <i class="icon icon-delete text-danger"></i>
+            <span>删除本章</span>
+          </a>
+          <a href="" 
+             class="section-open" 
+             ng-click="chapter.open = !chapter.open" 
+             ng-init="chapter.open = true">
+            <i class="icon" ng-class="{true: 'icon-arrow-top', false: 'icon-arrow-down'}[!!chapter.open]"></i>
+          </a>
+        </div>
+
+        <!-- 节列表 -->
+        <ul class="section-list slide-top"
+            ng-if="!!chapter.children.length"
+            ng-show="chapter.open"
+            sv-part="chapter.children"
+            sv-root
+            sv-on-sort="sectionSort($item, $partFrom, $partTo, $indexFrom, $indexTo)">
+          <li class="section slide-top" 
+              ng-repeat="section in chapter.children" 
+              ng-init="section.live_status = (section.live_status > 10) ? (section.live_status / 10) : ((section.live_status == 10) ? 1.05 : section.live_status)"
+              sv-element 
+              sv-handle>
+
+            <!-- 节名称/一直显示 -->
+            <input type="text"
+                   class="form-control input inline"
+                   placeholder="输入小节的名称"
+                   ng-model="section.name"
+                   ng-change="updateSection(this)"
+                   tooltit="section.tooltit"
+                   tooltip="event"
+                   toolpos="left"
+                   onmousedown="javascript:(function (event) { event.stopPropagation() })(event)"
+                   onmousemove="javascript:(function (event) { event.stopPropagation() })(event)">
+
+            <!-- 上传视频/非直播时显示 -->
+            <div ng-file-select="onFileSelect($files, 'video', 'c' + $parent.course_id + 's' + $parent.section.id)"
+                 template-url="partials/template/qupload/video.html"
+                 default-status="section.status"
+                 ng-show="!section.is_live"
+                 class="no-animation"></div>
+
+            <!-- 预览/非直播时显示 -->
+            <button ng-show="!section.is_live && section.status != -3"
+                    class="btn btn-default section-preview no-animation"
+                    ng-click="sectionPreview(section)"
+                    ng-disabled="section.status < 2">
+              <i class="icon icon-eye"></i>
+              <span>预览视频</span>
+            </button>
+
+            <!-- 审核失败/非直播 -->
+            <button ng-show="!section.is_live && section.status == -3"
+                    class="btn btn-warning section-preview no-animation"
+                    ng-click="sectionVerifyFailed(section)">
+              <i class="icon icon-eye"></i>
+              <span>失败原因</span>
+            </button>
+
+            <!-- 填写直播间信息/直播 直播开始前可使用/status >= 2/ 直播开始后禁用，且颜色更变 -->
+            <button ng-show="!!section.is_live && section.live_status != 2"
+                    class="btn section-info no-animation"
+                    ng-class="{ 
+                      'btn-warning': (!section.live_at || !section.live_duration) && (section.live_status < 2 || section.live_status == undefined), 
+                      'btn-primary': (!!section.live_at && !!section.live_duration) &&  (section.live_status < 2 || section.live_status == undefined),
+                      'btn-default': section.live_status >= 2
+                    }"
+                    ng-click="updateSectionLiveInfo({ modal: false, section: this, edit: (!!section.live_at && !!section.live_duration) })"
+                    ng-disabled="section.live_status >= 1 || section.live_status == -2">
+              <i class="icon icon-playing"></i>
+              <span class="no-animation" ng-if="!section.live_at || !section.live_duration">完善信息</span>
+              <span class="no-animation" ng-if="!!section.live_at && !!section.live_duration">修改信息</span>
+            </button>
+
+            <!-- 直播节申请失败，需要弹出原因及修改提示 -->
+            <button ng-show="!!section.is_live && section.live_status == -1"
+                    class="btn btn-danger section-init no-animation"
+                    ng-click="sectionVerifyFailed(section)">
+              <i class="icon icon-live"></i>
+              <span>审核失败</span>
+            </button>
+
+            <!-- 直播节转码失败 -->
+            <button ng-show="!!section.is_live && section.live_status == -2"
+                    class="btn btn-danger section-init no-animation"
+                    disabled>
+              <i class="icon icon-live"></i>
+              <span>转码失败</span>
+            </button>
+
+            <!-- 申请直播间/初始化 直播状态为已审核，且未进入初始化中时 -->
+            <button ng-show="!!section.is_live && ((section.live_status > -1 && section.live_status < 1.2) || section.live_status == undefined)"
+                    class="btn btn-primary section-init no-animation"
+                    ng-click="liveSectionAction({ section: section, init: true })"
+                    ng-disabled="section.live_status == 1.1 || section.live_status == 0 || section.live_status == undefined">
+              <i class="icon icon-live"></i>
+              <span class="no-animation" ng-if="section.live_status == undefined">等待完善</span>
+              <span class="no-animation" ng-if="section.live_status == 0">等待审核</span>
+              <span class="no-animation" ng-if="section.live_status == 1">申请开始</span>
+              <span class="no-animation" ng-if="section.live_status == 1.1">初始化中</span>
+              <span class="no-animation" ng-if="section.live_status == 1.05">再次尝试</span>
+            </button>
+
+            <!-- 初始化成功/获取推流地址 直播初始化成功及正在播放时可以获取推流地址 -->
+            <button ng-show="!!section.is_live && ((section.live_status == 1.2) || (section.live_status == 2))"
+                    class="btn btn-primary section-init no-animation"
+                    ng-click="getLiveSectionRtmp(section)">
+              <i class="icon icon-live"></i>
+              <span>获取地址</span>
+            </button>
+
+            <!-- 申请关闭直播间 / 只有正在直播时显示 -->
+            <button ng-show="!!section.is_live && section.live_status == 2"
+                    class="btn btn-danger section-init no-animation"
+                    ng-click="liveSectionAction({ section: section, init: false })">
+              <i class="icon icon-live"></i>
+              <span>关闭直播</span>
+            </button>
+
+            <!-- 直播结束时展示状态 / 直播结束时分别展示 -->
+            <button ng-show="!!section.is_live && section.live_status > 2"
+                    class="btn section-init no-animation"
+                    ng-class="{ true: 'btn-primary', false: 'btn-default' }[section.live_status == 5]"
+                    ng-click="toLiveSectionLearn(section)"
+                    ng-disabled="section.live_status != 5">
+              <i class="icon icon-live"></i>
+              <span ng-if="section.live_status != 5">直播结束</span>
+              <span ng-if="section.live_status == 5">直播回放</span>
+            </button>
+
+            <!-- 本节免费 -->
+            <label class="btn btn-default section-free"
+                   ng-disabled="(self_lesson.rel_price <= 0)"
+                   ng-class="{'active': !!section.is_free }">
+              <input type="checkbox"
+                     class="free-checkbox"
+                     ng-model="section.is_free"
+                     ng-change="setSectionFree(section)"
+                     ng-disabled="(self_lesson.rel_price <= 0)"
+                     ng-true-value="1"
+                     ng-false-value="0">
+              <i class="icon" ng-class="{ true: 'icon-check-fill',false:'icon-check'}[!!section.is_free]"></i>
+              <span>免费</span>
+            </label>
+
+            <!-- 设为直播课程 -->
+            <label class="btn btn-danger section-live"
+                   ng-disabled="!!section.id"
+                   ng-class="{'active': !!section.is_live }">
+              <input type="checkbox"
+                     class="live-checkbox hidden"
+                     ng-model="section.is_live"
+                     ng-change="setSectionLive(this)"
+                     ng-disabled="!!section.id"
+                     ng-true-value="1"
+                     ng-false-value="0">
+              <i class="icon" ng-class="{ true: 'icon-check-fill',false:'icon-check'}[!!section.is_live]"></i>
+              <span class="text">直播</span>
+            </label>
+
+            <!-- 删除 -->
+            <a href="" class="btn btn-link section-del" ng-click="delSection(this)">
+               <i class="icon icon-delete text-danger"></i>
+               <span>删除</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-xs-offset-1 col-xs-10">
+      <a href="" class="btn btn-lg btn-primary" ng-click="addChapter()">
+        <span>添加章</span>
+      </a>
+    </div>
+  </div>
+</div>

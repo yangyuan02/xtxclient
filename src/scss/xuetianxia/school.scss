@@ -1,0 +1,1048 @@
+// 机构列表
+.organization-lists {
+
+  // 学校列表Tab模块
+  .organization-tab {
+
+    > .nav {
+      margin-bottom: $grid-gutter-width;
+      background-color: $gray-lightsuper;
+
+      &.nav-tabs {
+
+        > li {
+
+          > a {
+            font-size: $font-size-h4;
+
+            > .icon {
+              font-size: $font-size-h3;
+            }
+          }
+        }
+      }
+    }
+
+    > .tab-content {
+
+      > .tab-pane {
+
+        .err-msg {
+          margin-bottom: $grid-gutter-width;
+        }
+
+        > .item-list {
+
+          .item {
+            position: relative;
+            margin-bottom: $grid-gutter-width;
+            text-align: center;
+            border: 1px solid $gray-xlightest;
+            overflow: hidden;
+
+            &:hover {
+              @include box-shadow(0 0 10px lighten($gray, 50%));
+            }
+
+            > a {
+              display: block;
+              padding: $grid-gutter-width * 0.75 $grid-gutter-width * 1.5;
+
+              > .logo {
+                height: $grid-gutter-width * 6.5;
+                padding-top: $grid-gutter-width;
+
+                img {
+                  display: block;
+                  @include center-block;
+                  width: $grid-gutter-width * 5;
+                  height: $grid-gutter-width * 5;
+                  border-radius: 100%;
+                  border: 4px solid rgba(238,238,238,0.5);
+                }
+              }
+              
+              > .name {
+                height: $grid-gutter-width * 2;
+                line-height: $grid-gutter-width * 2;
+                margin-top: $grid-gutter-width * 0.5;
+                @include text-overflow;
+              }
+
+              > .line {
+                height: 1px;
+                background-color: $gray-xlightest;
+                width: 100%;
+                position: relative;
+
+                > .ornament {
+                  display: block;
+                  margin: 0 auto;
+                  width: 40px;
+                  height: 3px;
+
+                  &:after {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    top: -1px;
+                    background-color: $brand-warning;
+                    width: 40px;
+                    height: 3px;
+                    border-radius: 3px;
+                  }
+                }
+              }
+
+              > .count {
+                margin-top: $grid-gutter-width;
+                overflow: hidden;
+                color: $gray-light;
+
+                > li {
+                  float: left;
+                  width: 50%;
+                }
+              }
+
+              > .backdrop {
+                opacity: 0;
+                visibility: hidden;
+                @include position(absolute, top 0 left 0);
+                @include square(100%);
+
+                > .scenery {
+                  @include position(absolute, top 0 left 0);
+                  @include square(100%);
+
+                  > img {
+                    @include position(absolute, top 0 left 0);
+                    @include square(100%);
+                  }
+
+                  > .mask {
+                    @include position(absolute, top 0 left 0);
+                    @include square(100%);
+                    background-color: $gray-base;
+                    opacity: .7;
+                  }
+                }
+
+                > .mask-count {
+                  @include position(absolute, top 0 left 0);
+                  @include square(100%);
+                  padding: 30% 0;
+                  color: #fff;
+
+                  > .name {
+                    margin-bottom: $grid-gutter-width;
+                    color: $body-bg;
+                  }
+
+                  > .count {
+
+                    > li {
+                      float: left;
+                      margin-left: 30%;
+                      width: 50%;
+                      text-align: left;
+
+                      > h4 {
+                        margin: $grid-gutter-width / 4 0;
+
+                        .icon {
+                          color: $brand-primary;
+                        }
+                      }
+                        
+                    }
+
+                    h4 {
+                      color: $body-bg;
+                    }
+                  }
+                }
+              }
+
+              &:hover {
+
+                > .backdrop {
+                  @include opacity(1);
+                  visibility: visible;
+
+                  > .scenery {
+
+                    > img {
+                      @include transform(scale(1.2));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 机构搜索页
+.organization-search {
+
+  .organization-content {
+    margin-bottom: $grid-gutter-width;
+
+    .organization-list {
+
+      .item {
+        position: relative;
+        margin-bottom: $grid-gutter-width;
+        text-align: center;
+        border: 1px solid $gray-xlightest;
+        overflow: hidden;
+
+        &:hover {
+          @include box-shadow(0 0 10px lighten($gray, 50%));
+        }
+
+        > a {
+          display: block;
+          padding: $grid-gutter-width * 0.75 $grid-gutter-width * 1.5;
+
+          > .logo {
+            height: $grid-gutter-width * 6.5;
+            padding-top: $grid-gutter-width;
+
+            > img {
+              display: block;
+              @include center-block;
+              width: $grid-gutter-width * 5;
+              height: $grid-gutter-width * 5;
+              border-radius: 100%;
+            }
+          }
+          
+          > .name {
+            height: $grid-gutter-width * 2;
+            line-height: $grid-gutter-width * 2;
+            margin-top: $grid-gutter-width * 0.5;
+          }
+
+          > .line {
+            height: 1px;
+            background-color: $gray-lightest;
+            width: 100%;
+            position: relative;
+
+            > .ornament {
+              display: block;
+              margin: 0 auto;
+              width: 40px;
+              height: 3px;
+
+              &:after {
+                content: '';
+                display: block;
+                position: absolute;
+                top: -1px;
+                background-color: $brand-warning;
+                width: 40px;
+                height: 3px;
+              }
+            }
+          }
+
+          > .count {
+            margin-top: $grid-gutter-width;
+            overflow: hidden;
+            color: $gray-light;
+
+            > li {
+              float: left;
+              width: 50%;
+            }
+          }
+
+          > .backdrop {
+            opacity: 0;
+            visibility: hidden;
+            @include position(absolute, top 0 left 0);
+            @include square(100%);
+
+            > .scenery {
+              @include position(absolute, top 0 left 0);
+              @include square(100%);
+
+              > img {
+                @include position(absolute, top 0 left 0);
+                @include square(100%);
+              }
+
+              > .mask {
+                @include position(absolute, top 0 left 0);
+                @include square(100%);
+                background-color: $gray-base;
+                opacity: .75;
+              }
+            }
+
+            > .mask-count {
+              @include position(absolute, top 0 left 0);
+              @include square(100%);
+              padding: 30% 0;
+              color: #fff;
+
+              > .name {
+                margin-bottom: $grid-gutter-width;
+                color: $body-bg;
+              }
+
+              > .count {
+
+                h4 {
+                  color: $body-bg;
+                }
+              }
+            }
+          }
+
+          &:hover {
+
+            > .backdrop {
+              @include opacity(1);
+              visibility: visible;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 机构主页
+.organization-index {
+  // padding-bottom: $grid-gutter-width;
+  // background-color: lighten($gray-lightest, 3.75%);
+
+  /*不同模板*/
+  // 春之蓬勃
+  &.pink {
+
+    > .banner {
+      background-color: #159988;
+      background-image: url($static-file-api + "organization-top-banner-1.jpg");
+    }
+
+  }
+
+  // 夏之激昂
+  &.blue {
+
+    > .banner {
+      background-color: #159988;
+      background-image: url($static-file-api + "organization-top-banner-3.jpg");
+    }
+
+  }
+
+  // 秋之萧瑟
+  &.yellow {
+
+    > .banner {
+      background-color: #159988;
+      background-image: url($static-file-api + "organization-top-banner-6.jpg");
+    }
+
+  }
+
+  // 冬之空灵
+  &.gray {
+
+    > .banner {
+      background-color: $gray-lightest;
+      background-image: url($static-file-api + "organization-top-banner-8.jpg");
+    }
+
+  }
+
+  // 生之喜悦
+  &.green {
+
+    > .banner {
+      background-color: $brand-primary;
+      background-image: url($static-file-api + "organization-top-banner-2.jpg");
+    }
+
+  }
+
+  // 爱之漩涡
+  &.love {
+
+    > .banner {
+      background-color: $brand-primary;
+      background-image: url($static-file-api + "organization-top-banner-12.jpg");
+    }
+  }
+
+  // Banner
+  > .banner {
+    position: relative;
+    height: $grid-gutter-width * 15;
+    background-size: cover;
+    background-position: center;
+
+    // 概要信息
+    .brief {
+      @include position(absolute, top $grid-gutter-width * 2);
+      // width: $grid-gutter-width * 12;
+      // height: $grid-gutter-width * 13;
+      background-color: rgba(0, 0, 0, .5);
+
+      // 信息
+      > .info {
+
+        > .logo {
+          position: relative;
+          margin-bottom: 0;
+          padding: $grid-gutter-width;
+          padding-bottom: 10px;
+          width: 100%;
+          overflow: hidden;
+
+          > img {
+            @include center-block;
+            width: $grid-gutter-width * 7.5;
+            height: $grid-gutter-width * 7.5;
+            border: 3px solid $gray-xlightest;
+            border-radius: 100%;
+          }
+        }
+
+        > .title {
+          margin-top: 0;
+          padding-bottom: $grid-gutter-width / 2;
+          text-align: center;
+          color: #fff;
+        }
+
+        // 认证图标
+        > .audit {
+          position: absolute;
+          width: $grid-gutter-width * 2.5;
+          padding: $grid-gutter-width / 2 0;
+          top: 0;
+          right: - $grid-gutter-width * 2.5;
+          background-color: rgba(0,0,0,.3);
+          color: $body-bg;
+          text-align: center;
+          line-height: 1;
+
+          > .icon {
+            font-size: 40px;
+          }
+
+          > .slug {
+            font-size: $font-size-small;
+          }
+        }
+      }
+    }
+  }
+
+  // 学校主页Tab模块
+  .organization-tab {
+
+    > .nav {
+      margin: 0 auto;
+      margin-top: $grid-gutter-width;
+      margin-bottom: $grid-gutter-width;
+      width: $container-large-desktop;
+      background-color: $gray-lightsuper;
+
+      > li {
+
+        > a {
+          font-size: $font-size-h4;
+        }
+      }
+    }
+
+    > .tab-content {
+
+      > .tab-pane {
+
+        // 所有容器
+        > div {
+          overflow: hidden;
+          margin-bottom: $grid-gutter-width;
+        }
+
+        // box-header
+        .box-header {
+          margin: $grid-gutter-width 0;
+          text-align: center;
+
+          > .title {
+            margin: 0 0 $grid-gutter-width;
+            color: $gray-dark;
+          }
+
+          > .iconfont {
+
+            > .icon {
+              padding: $grid-gutter-width / 2;
+              background-color: $brand-primary;
+              border-radius: 100%;
+              font-size: $font-size-h3 * 2;
+              color: #fff;
+            }
+          }
+
+          &.course {
+            margin-bottom: $grid-gutter-width * 2;
+          }
+        }
+
+        .course-lists {
+          // margin-top: $grid-gutter-width * 2.5;
+          overflow: hidden;
+        }
+
+        // 首页老师
+        .index-teachers {
+          position: relative;
+          margin-bottom: 0;
+          padding: $grid-gutter-width 0;
+          text-align: center;
+          background-image: url('../images/organization/background/teacher_bg.jpg');
+          background-position: center;
+          background-size: auto, cover;
+          background-attachment: fixed;
+
+          > .box-header {
+
+            > .title {
+              color: #fff;
+            }
+          }
+
+          > .teacher-lists {
+            display: inline-block;
+
+            > .item {
+              float: left;
+              margin: $grid-gutter-width * 2 $grid-gutter-width * 2 $grid-gutter-width / 2  $grid-gutter-width * 2;
+
+              > a {
+
+                .avatar {
+                  border: 3px solid rgba(117, 117, 117, 0.4);
+                  padding: 3px;
+                  transform: scale(1);
+                  @include transition(transform .2s, padding 0s, border 0s);
+                }
+
+                .name {
+                  margin-top: 20px;
+                  color: #fff;
+                }
+
+                &:hover {
+
+                  .avatar {
+                    border: 0;
+                    @include scale(1.1);
+                    @include transition(transform .2s, padding 0s, border 0s);
+                  }
+
+                  .name {
+                    color: $brand-primary;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // 首页信息
+        > .index-descrption {
+          padding: $grid-gutter-width * 2.5 0;
+          margin-bottom: 0;
+          background-image: url('../images/organization/background/info_bg.jpg');
+          background-position: 0 0, 50% 50%;
+          background-size: auto, cover;
+          background-attachment: fixed;
+
+          .index-announcement,
+          .index-logo,
+          .index-thumb,
+          .index-brief {
+            display: block;
+            float: left;
+            width: 50%;
+            height: $grid-gutter-width * 25;
+            padding: $grid-gutter-width $grid-gutter-width * 2;
+            background-color: $gray-lightsuper;
+          }
+
+          // 首页公告
+          .index-announcement {
+            background-color: $body-bg;
+
+            > .title {
+              margin-bottom: $grid-gutter-width;
+              color: $gray-dark;
+            }
+
+            > .announcement-list {
+
+              > li {
+                height: $line-height-computed * 1.8;
+                position: relative;
+                padding-left: $grid-gutter-width * 1.5;
+                line-height: $line-height-computed * 1.8;
+                
+                .icon {
+                  position: absolute;
+                  left: 0;
+                  display: block;
+                  width: 15px;
+                  height: 15px;
+                  border-radius: 100%;
+                  line-height: 15px;
+                  text-align: center;
+                  top: 10px;
+                  color: $brand-warning;
+                }
+
+                > a {
+                  display: block;
+                  @include text-overflow;
+                }
+              }
+            }
+          }
+
+          .index-announcement-content {
+            margin-top: $grid-gutter-width;
+            padding: $grid-gutter-width / 2;
+            line-height: $line-height-computed + 5;
+            background-color: $body-bg;
+
+            > .title {
+              color: $gray-dark;
+            }
+          }
+
+          .index-logo {
+            background-image: url("../images/organization/background/logo_bg.jpg");
+            background-position: center;
+            background-size: cover;
+            text-align: center;
+
+            > .logo-content {
+
+              > .logo {
+                margin-top: $grid-gutter-width * 1.5;
+
+                > img {
+                  @include center-block;
+                  height: $grid-gutter-width * 8.5;
+                  width: $grid-gutter-width * 8.5;
+                  border-radius: 100%;
+                  background-color: rgba(238,238,238,0.5);
+                  border: 5px solid rgba(238,238,238,0.5);
+                }
+              }
+
+              > .title {
+                margin: $grid-gutter-width * 2 0;
+                color: #fff;
+              }
+
+              > .share {
+                margin-bottom: $grid-gutter-width;
+
+                > .share-title {
+
+                  > .title-carrier {
+                    color: #fff;
+                    font-size: $font-size-h4;
+                    position: relative;
+                    display: inline-block;
+                    width: $grid-gutter-width * 8;
+
+                    &:before {
+                      content: '';
+                      width: $grid-gutter-width * 2;
+                      height: 1px;
+                      background-color: $gray-lightest;
+                      position: absolute;
+                      left: 0;
+                      top: $grid-gutter-width / 2 + 1;
+                      opacity: .5;
+                    }
+
+                    &:after {
+                      content: '';
+                      width: $grid-gutter-width * 2;
+                      height: 1px;
+                      background-color: $gray-lightest;
+                      position: absolute;
+                      right: 0;
+                      top: $grid-gutter-width / 2 + 1;
+                      opacity: .5;
+                    }
+                  }
+                }
+
+                > .share-btn {
+
+                  > a {
+                    display: inline-block;
+                    border: 1px solid #fff;
+                    border-radius: 100%;
+                    width: 30px;
+                    height: 30px;
+                    margin: $grid-gutter-width * 0.5 $grid-gutter-width * 0.7;
+                    line-height: 30px;
+                    color: #fff;
+                    font-size: 20px;
+                    text-align: center;
+                  }
+                }
+              }
+
+              > .site {
+
+                > a {
+                  display: inline-block;
+                  border: 1px solid #fff;
+                  border-radius: $grid-gutter-width * 2.5;
+                  padding: $grid-gutter-width / 4 $grid-gutter-width;
+                  color: #fff;
+                  font-size: $font-size-h4;
+                }
+              }
+
+              > .share,
+              > .site {
+
+                a {
+
+                  &:hover {
+                    border: 1px solid $brand-primary;
+                    color: $brand-primary;
+                  }
+                }
+              }
+
+              > .audit {
+
+              }
+            }
+          }
+
+          .index-thumb {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+          }
+
+          // 首页简介
+          .index-brief {
+            position: relative;
+            padding: $grid-gutter-width $grid-gutter-width * 4;
+            background-color: $body-bg;
+
+            > .org-icon {
+              display: block;
+              position: absolute;
+              left: $grid-gutter-width * 2.5;
+              top: $grid-gutter-width * 4;
+
+              > .icon {
+                color: $gray-lightest;
+              }
+            }
+
+            > .title {
+              margin-bottom: $grid-gutter-width * 1.5;
+              color: $gray-dark;
+            }
+
+            > .content {
+              overflow: hidden;
+              margin-bottom: $grid-gutter-width;
+              line-height: $line-height-computed + 8;
+              text-indent: 2em;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 12;
+              -webkit-box-orient: vertical;
+              color: $gray-dark;
+
+              > p,
+              > span {
+                line-height: $line-height-computed + 8;
+                text-indent: 2em;
+              }
+            }
+
+            .read-more {
+
+              > a {
+                float: right;
+              }
+            }
+          }
+        }
+
+        // 机构老师
+        .teacher {
+
+          > .teacher-list {
+            overflow: hidden;
+
+            > li {
+              margin-top: 0;
+              margin-bottom: $grid-gutter-width;
+              // background-color: $body-bg;
+              overflow: hidden;
+
+              .media {
+                padding: $grid-gutter-width;
+                height: $grid-gutter-width * 10;
+                border: 1px solid $gray-xlightest;
+
+                > .media-left {
+                  padding-right: $grid-gutter-width;
+                }
+
+                > .media-body {
+
+                  p:last-child {
+                    margin: 0;
+                  }
+                }
+              }
+
+              .read-more {
+                cursor: pointer;
+              }
+            }
+          }
+
+          > .page-wrap {
+            background-color: $body-bg;
+          }
+        }
+
+        // 认证资料
+        .school-sign {
+
+          .sidebar {
+            margin-bottom: $grid-gutter-width;
+            padding: $grid-gutter-width / 2;
+            background-color: $gray-lightsuper;
+
+            > .score-info {
+              overflow: hidden;
+              
+              > .name {
+                margin-top: 0;
+              }
+
+              > .title {
+                color: $gray-dark;
+              }
+
+              > p:last-child {
+                margin-bottom: 0;
+              }
+              
+            }
+
+            > .other-course {
+              // background-color: $body-bg;
+
+              > .title {
+                margin-bottom: $grid-gutter-width;
+                color: $gray-dark;
+              }
+
+              > .course-list-grid {
+
+                > .media {
+
+                  > .media-body {
+
+                    > .price {
+                      margin: 0;
+                      @include position(absolute, bottom 0);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .content {
+            float: right;
+            padding: $grid-gutter-width / 2;
+            background-color: $gray-lightsuper;
+
+            > .title {
+              color: $gray-dark;
+            }
+
+            > .item-list {
+              overflow: hidden;
+              padding: $grid-gutter-width 0;
+
+              > li {
+                margin-bottom: $grid-gutter-width * 1.5;
+
+                > .title {
+                  text-align: right;
+                  color: $gray-dark;
+                }
+
+                .papers {
+                  width: $grid-gutter-width * 5;
+                  height: $grid-gutter-width * 3;
+                  margin-right: $grid-gutter-width / 2;
+                }
+
+                p {
+                  line-height: $line-height-computed * 1.3;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 老师主页
+.teacher-index {
+  padding: $grid-gutter-width 0;
+  background-color: lighten($gray-lightest, 3.75%);
+
+  // 老师信息
+  .teacher-info {
+    overflow: hidden;
+    margin-bottom: $grid-gutter-width;
+    padding: $grid-gutter-width / 2;
+    min-height: $grid-gutter-width * 6;
+    background-color: $body-bg;
+    transition: all .2s;
+
+    &:hover {
+      transition: all .2s;
+      box-shadow: 0 0px 10px 10px $gray-lightest;
+
+      .media-left {
+
+        > img {
+          transform: rotate(360deg);
+          transition: all 1s;
+        }
+      }
+    }
+
+    > .media {
+      border-right: 1px solid $gray-xlightest;
+
+      > .media-left {
+        padding-left: $grid-gutter-width / 2;
+        padding-right: $grid-gutter-width * 1.5;
+        vertical-align: middle;
+
+        > img {
+          border: 4px solid #eee;
+          transition: all 1s;
+        }
+      }
+
+      > .media-body {
+        padding-right: $grid-gutter-width * 2.5;
+        color: $gray-dark;
+        
+        > .title {
+          margin-top: $grid-gutter-width / 2;
+        }
+
+        // 用户等级
+        > .level {
+          margin-bottom: $grid-gutter-width / 2;
+
+          // 进度条
+          > .progress{
+            @include radius($radius);
+            @include size(20%, 8px);
+            margin: 0;
+            margin-right: $grid-gutter-width;
+            display: inline-block;
+            box-shadow: none;
+            background-color: $gray-lightest;
+
+            > .progress-bar {
+              box-shadow: none;
+              background-color: $brand-primary;
+            }
+          }
+        }
+
+        > .medals {
+          margin-bottom: $grid-gutter-width / 2;
+        }
+
+        // 简介
+        > .intro {
+          color: $gray-light;
+        }
+      }
+    }
+
+    > .act {
+      min-height: $grid-gutter-width * 6;
+      line-height: $grid-gutter-width * 6;
+      border-left: 1px solid $gray-xlightest;
+    }
+  }
+
+  /*课程列表*/
+  .teacher-course {
+    overflow: hidden;
+    margin-bottom: $grid-gutter-width;
+    padding: $grid-gutter-width / 2;
+    background-color: $body-bg;
+
+    > .course-order {
+      background-color: $gray-lightsuper;
+    }
+
+    > .course-lists {
+
+      .item {
+
+        > .info {
+
+          > .description {
+            height: 24px;
+            line-height: 24px;
+            @include text-overflow;
+          }
+        }
+      }
+    }
+  }
+
+  /*翻页*/
+  .page-wrap {
+    background-color: $body-bg;
+  }
+}

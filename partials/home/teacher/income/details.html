@@ -1,0 +1,55 @@
+<script src="./js/echarts.min.js"></script>
+<div class="income-details" >
+
+  <!-- 图表数据 -->
+  <div tabset justified="false" largesize="false" class="details-charts">
+
+    <!-- 近7天收入 -->
+    <div tab heading="近7天" select="getIncomeCharts('w')">
+      <div class="detail-chart" id="J_chart_w"></div>
+    </div>
+
+    <!-- 近一个月收入 -->
+    <div tab heading="近一个月" select="getIncomeCharts('M')">
+      <div class="detail-chart" id="J_chart_M"></div>
+    </div>
+
+    <!-- 近三个月收入 -->
+    <div tab heading="近三个月" select="getIncomeCharts('Q')">
+      <div class="detail-chart" id="J_chart_Q"></div>
+    </div>
+  </div>
+
+  <!-- 列表数据 -->
+  <table class="table table-striped details-table" ng-init="getIncomeLists({})">
+    <thead>
+      <tr>
+        <th>时间</th>
+        <th>课程</th>
+        <th>金额（元）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in income.lists.result | limitTo: 7">
+        <td>{{ item.updated_at }}</td>
+        <td>《{{ item.course_name }}》</td>
+        <td>
+          <span class="sum">+{{ item.rel_price }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagenavi">
+    <div class="page-wrap" ng-show="!!income.lists.pagination.total">
+      <div pagination 
+           total-items="income.lists.pagination.total" 
+           items-per-page="income.lists.pagination.per_page" 
+           ng-model="income.lists.pagination.current_page" 
+           ng-change="getIncomeLists({ page: income.lists.pagination.current_page })" 
+           class="pagination-sm" 
+           boundary-links="true" 
+           rotate="false">
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="row" ng-controller="UserController">
+  <div class="col-xs-7 col-xs-offset-2">
+    <div class="register-form">
+      <form class="form-horizontal" name="addUserForm" role="form" method="POST">
+        <div class="form-group">
+          <label for="user_name" class="col-xs-3 control-label">名字</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="user_name" 
+                   name="user_name" 
+                   class="form-control" 
+                   maxlength="40" 
+                   placeholder="请输入用户昵称" 
+                   validator="required" 
+                   required-error-message="请输入用户昵称" 
+                   ng-model="user.name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="user_phone" class="col-xs-3 control-label">手机</label>
+          <div class="col-xs-9">
+            <input type="text" 
+                   id="user_phone" 
+                   name="user_phone" 
+                   class="form-control" 
+                   maxlength="11" 
+                   placeholder="请输入手机号码" 
+                   ng-model="user.phone"
+                   validator="required, mobile"  
+                   required-error-message="请输入手机号码">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="user_password" class="col-xs-3 control-label">密码</label>
+          <div class="col-xs-9">
+            <input type="password" 
+                   id="user_password" 
+                   name="user_password" 
+                   class="form-control" 
+                   maxlength="26" 
+                   placeholder="请输入用户密码" 
+                   ng-model="user.password"
+                   validator="required, minlength=6" 
+                   required-error-message="请输入用户密码">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="user_role" class="col-xs-3 control-label">角色</label>
+          <div class="col-xs-9">
+            <p></p>
+            <p ng-repeat="role in role_list.result track by $index">
+              <label>
+                <input type="checkbox" 
+                       name="user_role" 
+                       ng-model="role.checked"
+                       ng-init="role.checked = ($root.user_edit.roles.contain(role.id, 'id'))">
+                <span>{{ role.name }}</span>
+              </label>
+            </p>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-9 col-xs-offset-3">
+            <button class="btn btn-primary" 
+                    validation-submit="addUserForm" 
+                    ng-click="userAction.add({ modal: false })">确认添加</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

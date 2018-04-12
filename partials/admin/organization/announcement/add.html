@@ -1,0 +1,59 @@
+<div class="row" ng-controller="AnnouncementController">
+  <div class="col-xs-9">
+    <form class="form-horizontal" 
+          name="addAnnouncementForm" 
+          role="form" 
+          method="POST">
+      <div class="form-group">
+        <label for="announcement_type" class="col-xs-3 control-label">公告类型</label>
+        <div class="col-xs-5">
+          <select type="text" 
+                  id="announcement_type" 
+                  name="announcement_type" 
+                  class="form-control" 
+                  ng-model="announcement.type"
+                  validator="required" 
+                  required-error-message="请选择公告类型">
+            <option>请选择公告类型</option>
+            <option value="1">面向机构</option>
+            <option value="2">面向教师</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="announcement_title" class="col-xs-3 control-label">公告标题</label>
+        <div class="col-xs-9">
+          <input type="text" 
+                 id="announcement_title" 
+                 class="form-control" 
+                 name="announcement_title" 
+                 maxlength="40" 
+                 placeholder="请输入公告标题" 
+                 ng-model="announcement.title"
+                 validator="required" 
+                 required-error-message="请输入公告标题">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="announcement_content" class="col-xs-3 control-label">公告内容</label>
+        <div class="col-xs-9">
+          <textarea id="announcement_content" 
+                    class="form-control" 
+                    name="announcement_content" 
+                    rows="8" 
+                    placeholder="请输入公告内容" 
+                    ng-model="announcement.content"
+                    validator="required" 
+                    required-error-message="请输入公告内容"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-9 col-xs-offset-3">
+          <button class="btn btn-primary" 
+                  validation-submit="addAnnouncementForm"
+                  ng-click="announcementAction.add({ modal: false })">提交保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

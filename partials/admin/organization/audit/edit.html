@@ -1,0 +1,128 @@
+<div class="page-title">
+  <h3>资质认证详情</h3>
+</div>
+<div class="row" ng-init="auditAction.getItem()">
+  <div class="col-xs-6">
+    <form class="form-field" 
+          name="auditEditForm" 
+          role="form" 
+          method="POST">
+      <div class="form-group">
+        <label for="audit_name" class="control-label">
+          公司名称
+        </label>
+        <input type="text" 
+               id="audit_name" 
+               class="form-control input-30" 
+               disabled="true" 
+               ng-model="audit.name">
+      </div>
+      <div class="form-group">
+        <label class="control-label">营业执照</label>
+        <div class="input-group">
+          <a href="">
+            <img src="{{ getThumbnail(audit.business_license, 'audit_business_license', { width: 160, height: 160 }) }}"
+                 ng-click="modal.imagePreview(getThumbnail(audit.business_license, 'audit_business_license', { width: 400, height: 400 }))">
+          </a>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="audit_user_name" class="control-label">申请人</label>
+        <input type="text" 
+               id="audit_user_name" 
+               class="form-control input-30" 
+               disabled="true" 
+               ng-model="audit.user_name">
+      </div>
+      <div class="form-group">
+        <label for="audit_id_card" class="control-label">
+          身份证
+        </label>
+        <div class="input-group">
+          <a href="">
+            <img src="{{ getThumbnail(audit.id_card, 'audit_id_card', { width: 160, height: 160 }) }}" 
+              ng-click="modal.imagePreview(getThumbnail(audit.id_card, 'audit_id_card', { width: 400, height: 400 }))">
+          </a>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="audit_phone" class="control-label">
+          手机号
+        </label>
+        <input type="text" 
+          id="audit_phone" 
+          class="form-control input-30" 
+          disabled="true" 
+          ng-model="audit.phone">
+      </div>
+      <div class="form-group">
+        <label for="audit_email" class="control-label">
+          邮箱
+        </label>
+        <input type="text" 
+          id="audit_email" 
+          class="form-control input-30" 
+          disabled="true" 
+          ng-model="audit.email">
+      </div>
+      <div class="form-group">
+        <label for="audit_id_card" class="control-label">
+          教育资质
+        </label>
+        <div class="input-group">
+          <a href="">
+            <img src="{{ getThumbnail(audit.education_qualification, 'audit_education_qualification', { width: 160, height: 160 }) }}" 
+              ng-click="modal.imagePreview(getThumbnail(audit.education_qualification, 'audit_education_qualification', { width: 400, height: 400 }))">
+          </a>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          资质审核状态
+        </label>
+        <div class="radio">
+          <label class="radio-inline text-danger" for="audit_status_01">
+            <input type="radio" 
+              name="status" 
+              id="audit_status_01" 
+              value="-1" 
+              ng-model="audit.status"> 审核失败
+          </label>
+          <label class="radio-inline text-warning" for="audit_status_0">
+            <input type="radio" 
+              name="status" 
+              id="audit_status_0" 
+              value="0" 
+              ng-model="audit.status"> 审核中
+          </label>
+          <label class="radio-inline text-success" for="audit_status_1">
+            <input type="radio" 
+              name="status" 
+              id="audit_status_1" 
+              value="1" 
+              ng-model="audit.status"> 审核成功
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="audit_memo" class="control-label">失败原因（如果审核失败）</label>
+        <input type="text" 
+               id="audit_memo" 
+               class="form-control input-30" 
+               ng-disabled="audit.status != '-1'"
+               ng-model="audit.memo">
+      </div>
+      <div class="form-group">
+        <label for="audit_created_at" class="control-label">添加时间</label>
+        <input type="text" 
+          id="audit_created_at" 
+          class="form-control input-30" 
+          disabled="true" 
+          ng-model="audit.created_at">
+      </div>
+      <div class="form-group form-action">
+        <button type="submit" class="btn btn-primary" ng-click="auditAction.edit()">保存提交</button>
+      </div>
+    </form>
+  </div>
+</div>

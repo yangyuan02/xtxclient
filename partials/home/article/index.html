@@ -1,0 +1,43 @@
+<div class="container article" ng-controller="ArticleController">
+  <div class="row">
+    <div class="col-xs-12">
+      <ol class="ab-nav breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li ng-if="!!currentArticle.category.name" class="no-animation">
+          <a href="">{{ currentArticle.category.name }}</a>
+        </li>
+        <li ng-if="!!currentArticle.title" class="no-animation">
+          <a href="">{{ currentArticle.title }}</a>
+        </li>
+      </ol>
+    </div>
+    <div class="col-xs-12 no-animation" ng-if="articles == undefined">
+      <div class="error">
+        <br>
+        <h3 class="text-center text-info"><i class="icon icon-time h3"></i>&nbsp;加载中</h3>
+        <br>
+      </div>
+    </div>
+    <div class="col-xs-2 no-animation" ng-init="getArticleList()" ng-show="!!articles">
+      <div class="sidebar">
+        <div class="box">
+          <h4>{{ currentArticle.category.name }}</h4>
+          <ul>
+            <li ng-repeat="article in articles"
+                ng-class="{ 'active' : currentArticle == article }">
+              <a href="" ng-click="$parent.currentArticle = article">{{ article.title }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-10" ng-show="!!articles">
+      <div class="main">
+        <h3 class="text-center toggle">{{ currentArticle.title }}</h3>
+        <hr>
+        <div ng-bind-html="currentArticle.content || '' | toHtml" class="content toggle"></div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+.payment {
+  margin-top: $grid-gutter-width;
+  border: 1px solid $gray-xlightest;
+
+  > .title {
+    height: 50px;
+    border-bottom: 1px solid $gray-xlightest;
+
+    > h3 {
+      margin-top: 0;
+      padding: 0 $grid-gutter-width;
+      line-height: 50px;
+    }
+  }
+
+  > .courses {
+    padding: $grid-gutter-width $grid-gutter-width 0 $grid-gutter-width;
+    border-bottom: 1px solid $gray-xlightest;
+
+    > .course {
+      padding-bottom: $grid-gutter-width;
+      border-bottom: 1px solid $gray-xlightest;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      > .media-left {
+        padding-right: $grid-gutter-width;
+        width: 20%;
+
+        .media-object {
+          max-width: 100%;
+        }
+      }
+
+      > .media-body {
+
+        > .info,
+        > .price,
+        > .discount {
+          float: left;
+        }
+
+        > .info {
+          width: 50%;
+          min-height: 100px;
+
+          > .media-heading {
+            margin-bottom: $grid-gutter-width;
+          }
+        }
+
+        > .price,
+        > .discount {
+          width: 25%;
+          line-height: 100px;
+        }
+      }
+    }
+  }
+
+  > .amount {
+    padding: $grid-gutter-width / 2 $grid-gutter-width * 4 $grid-gutter-width / 2;
+    border-bottom: 1px solid $gray-xlightest;
+
+    > p {
+      margin: 0;
+    }
+  }
+
+  > .item-list {
+    padding: 0 $grid-gutter-width;
+
+    > .item {
+      padding: $grid-gutter-width / 2 0;
+      border-bottom: 1px solid $gray-xlightest;
+
+      > .inner {
+        padding: 0 $grid-gutter-width;
+        border: 1px solid #fff;
+
+        > .title {
+          display: block;
+          margin-bottom: 0;
+          padding: $grid-gutter-width / 2 0;
+          
+          > input[type='checkbox'] {
+            margin-right: $grid-gutter-width / 2;
+          }
+        }
+
+        > .box {
+
+          > .type {
+            margin-bottom: $grid-gutter-width / 2;
+            padding: $grid-gutter-width / 2 0 $grid-gutter-width / 2 $grid-gutter-width;
+            border-bottom: 1px solid $gray-xlightest;
+
+            &:last-child {
+              padding-bottom: 0;
+              border-bottom: none;
+            }
+
+            > .type-item {
+              float: left;
+              margin-bottom: $grid-gutter-width / 2;
+              width: 205px;
+
+              > label {
+                margin-bottom: 0;
+                cursor: pointer;
+
+                > input[type='radio'] {
+                  margin-right: $grid-gutter-width / 2;
+                }
+
+                > img {
+                  width: 150px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &.active {
+
+        > .inner {
+          border: 1px solid $brand-primary;
+
+        }
+      }
+
+      &.disabled {
+
+        > .inner {
+          cursor: not-allowed;
+          background-color: $gray-lightest;
+        }
+      }
+    }
+  }
+
+  > .action {
+    padding: $grid-gutter-width $grid-gutter-width * 2;
+
+    > .warning-prompt {
+      margin-left: $gauge;
+
+      > .icon {
+        color: $brand-warning;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+

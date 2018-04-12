@@ -1,0 +1,31 @@
+<div class="note-edit" ng-controller="UserController">
+  <form name="editNote" ng-submit="saveNote(note)">
+  <div class="form-group" ng-init="note = $root.note_edit">
+    <!-- 输入框 -->
+    <textarea class="form-control textarea" 
+              placeholder="在这里输入笔记内容" 
+              name="note_content" 
+              rows="4" 
+              required ng-pattern="/.{3,}/" 
+              ng-model="note.content">
+    </textarea>
+    <!-- 是否公开 -->
+    <input type="checkbox" 
+           name="note_publish" 
+           class="ng-hide" 
+           id="note_publish" 
+           ng-init="note.is_publish = !!note.is_publish"
+           ng-model="note.is_publish">
+    </div>
+    <!-- 保存按钮 -->
+    <button class="btn btn-primary pull-right" ng-disabled="editNote.$invalid">保存笔记</button>
+    <!-- 公开按钮 -->
+    <label class="pull-right btn btn-link" for="note_publish">
+      <span class="icon" 
+            ng-class="{true:'text-primary icon-check-fill',false:'text-default icon-check'}[!!note.is_publish]">
+      </span>
+      <span class="explain" class="small" 
+            ng-class="{true:'text-primary',false:'text-default'}[!!note.is_publish]">设为公开</span>
+    </label>
+  </form>
+</div>

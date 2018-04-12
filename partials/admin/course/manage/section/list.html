@@ -1,0 +1,133 @@
+<div class="contents-list" ng-init="courseAction.getSection()">
+  <div class="page-title">
+    <h3>管理章节</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <a href="" onclick="javascript:window.history.go(-1);" class="btn btn-sm btn-default">返回</a>
+      <a ng-href="/course/manage/list/{{ course_id }}" class="btn btn-sm btn-primary">编辑课程</a>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form clearfix" role="search" ng-init="filter = {section_status: 'all', section_type: 'all'}">
+        <div class="form-group">
+          <select class="form-control input-sm"
+                  ng-model="filter.section_status"
+                  ng-change="courseAction.sectionFilterChanged()">
+            <option value="all">所有状态</option>
+            <option value="0">待审核</option>
+            <option value="1">审核成功</option>
+            <option value="-1">审核失败</option>
+          </select>
+          <select class="form-control input-sm"
+                  ng-model="filter.section_type"
+                  ng-change="courseAction.sectionFilterChanged()">
+                  <option value="all">所有类型</option>
+                  <option value="1">直播</option>
+                  <option value="0">录播</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="list-empty no-animation" 
+         ng-show="sections.length <= 0" 
+         ng-include="'partials/admin/layout/empty.html'">
+    </div>
+    <div class="contents-item toggle" ng-repeat="chapter in sections">
+      <div class="section-title"> {{ chapter.name }}</div>
+      <ul class="section-list">
+        <li ng-repeat="section in chapter.children" class="toggle">
+          <div class="col-xs-6">
+            <span>{{ section.name }}（{{ section.id }}）</span>
+          </div>
+          <div class="col-xs-5">
+            <!-- 录播 -->
+            <div ng-switch="section.status" ng-if="!section.is_live">
+              <span class="status no-animation">
+                <em class="btn btn-xs btn-success">录播</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="0">
+                <em class="text-danger info">未上传</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="1">
+                <em class="text-info info">转码中</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="2">
+                <em class="text-danger info">等待审核</em>
+                <a href="" class="text-warning info" 
+                  ng-click="courseAction.preview(section.id)">[ 视频预览 ]</a>
+                <a href="" class="text-success info" 
+                  ng-click="courseAction.audit({ section: this })">[ 审核通过 ]</a>
+                <a href="" class="text-danger info" 
+                  ng-click="courseAction.auditRefuse({ section: section, ismodel: true })">[ 审核拒绝 ]</a>
+              </span>
+              <span class="status no-animation" ng-switch-when="3">
+                <em class="text-success info">审核成功</em>
+                <a href="" class="text-warning no-animation info"
+                   ng-click="courseAction.preview(section.id)">[ 视频预览 ]</a>
+              </span>
+              <span class="status no-animation" ng-switch-when="-1">
+                <em class="text-danger info">上传失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-2">
+                <em class="text-danger info">转码失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-3">
+                <em class="text-danger">审核失败</em>
+                <em class="text-muted">（{{ section.remark || '暂无原因' }}）</em>
+              </span>
+            </div>
+            <!-- 直播 -->
+            <div ng-switch="section.live_status" ng-if="section.is_live">
+              <span class="status no-animation">
+                <em class="btn btn-xs btn-danger">直播</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-2">
+                <em class="text-danger">转码失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-1">
+                <em class="text-danger">审核失败</em>
+                <em class="text-muted">（{{ section.remark || '暂无原因' }}）</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="0">
+                <em class="text-danger info">等待审核</em>
+                <a href="" class="text-warning info" 
+                  ng-click="courseAction.liveAudit({ section: section, ismodel: true })">[ 预览审核 ]</a>
+              </span>
+              <span class="status no-animation" ng-switch-when="1">
+                <em class="text-info info">审核成功</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="10">
+                <em class="text-danger info">初始化失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="11">
+                <em class="text-warning info">初始化中</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="12">
+                <em class="text-success info">初始化成功</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="2">
+                <em class="text-success info">直播中</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="3">
+                <em class="text-info info">直播结束</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="4">
+                <em class="text-success info">转码结束</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="5">
+                <em class="text-success info">可回放</em>
+                <a href="" class="text-warning info" 
+                  ng-click="courseAction.preview(section.id)">[ 直播回放 ]</a>
+              </span>
+            </div>
+          </div>
+        </li>
+        <h5 class="no-animation text-center" ng-if="!chapter.children.length">无有效数据</h5>
+      </ul>
+    </div>
+  </div>
+</div>
+  

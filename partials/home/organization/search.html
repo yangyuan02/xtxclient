@@ -1,0 +1,92 @@
+<div class="container" ng-init="getOrganizationSearchList({})">
+  <div class="row organization-search">
+    <div class="col-xs-12">
+      <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li><a href="/organization">全部学校</a></li>
+        <li class="active">共 <span class="text-primary"> {{ organizations.pagination.total }} </span> 个<span class="text-primary">{{ keyword ? (' "' + keyword + '" ') : ''}}</span> 相关机构</li>
+      </ol>
+      <div class="organization-content">
+        <div class="err-msg no-animation" ng-if="!organizations.pagination.total">
+          <div ng-if="organizations.pagination.total == undefined" class="no-animation">
+            <div class="loader">
+              <p><img src="images/loader.svg" width="48" height="48"></p>
+               学校正在努力加载中...
+            </div>
+          </div>
+          <div ng-if="organizations.pagination.total == 0" class="no-animation">
+            <div class="empty">
+              <p><i class="icon icon-warning"></i></p>
+              <span ng-if="!!keyword">没有更多与“{{ keyword }}”相关的机构</span>
+              <span ng-if="!keyword">这里没有更多机构</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <ul class="organization-list clearfix">
+            <li class="col-xs-3 slide-top" ng-repeat="organization in organizations.result">
+              <div class="item">
+                <a ng-href="/organization/{{ organization.id }}">
+                  <p class="logo">
+                    <img ng-src="{{ getThumbnail(organization.logo, 'organization_logo',{ width: 100, height: 100 })}}">
+                  </p>
+                  <h3 class="name">{{ organization.name }}</h3>
+                  <p class="line">
+                    <span class="ornament"></span>
+                  </p>
+                  <ul class="count">
+                    <li>
+                      <i class="icon icon-catalogue h4"></i>
+                      <span>课程：{{ organization.course_count }}</span>
+                    </li>
+                    <li>
+                      <i class="icon icon-teacher h4"></i>
+                      <span>名师：{{ organization.teacher_count }}</span>
+                    </li>
+                  </ul>
+                  <div class="backdrop">
+                    <div class="scenery">
+                      <img ng-src="{{ getThumbnail(organization.scenery, 'scenery',{ width: 275, height: 280 })}}">
+                      <span class="mask"></span>
+                    </div>
+                    <div class="mask-count">
+                      <h3 class="name">{{ organization.name }}</h3>
+                      <ul class="count">
+                        <li>
+                          <h4 class="course">
+                            <i class="icon icon-catalogue text-warning h4"></i>
+                            <span>课程：{{ organization.course_count }}</span>
+                          </h4>
+                        </li>
+                        <li>
+                          <h4 class="teacher">
+                            <i class="icon icon-teacher text-warning h4"></i>
+                            <span>名师：{{ organization.teacher_count }}</span>
+                          </h4>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- 课程列表分页 -->
+        <div class="page-wrap" ng-if="!!organizations.pagination.total">
+          <div pagination 
+               total-items="organizations.pagination.total" 
+               ng-model="organizations.pagination.current_page" 
+               items-per-page="organizations.pagination.per_page" 
+               max-size="6" 
+               class="pagination" 
+               boundary-links="true" 
+               rotate="false" 
+               ng-change="getOrganizationSearchList({ page: organizations.pagination.current_page })">
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

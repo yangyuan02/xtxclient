@@ -1,0 +1,18 @@
+<div class="api">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>权限ID</th>
+        <th>权限名称</th>
+        <th>权限信息</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="permission in current_role_permissions">
+        <td class="default">{{ permission.id }}</td>
+        <td class="">{{ permission.name }}</td>
+        <td class="">{{ permission.pivot }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

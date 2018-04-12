@@ -1,0 +1,174 @@
+<div class="page-title">
+  <h3>编辑课程</h3>
+</div>
+<div class="row" ng-init="courseAction.getItem()">
+  <div class="col-xs-10">
+    <form class="form-field" 
+          name="courseEditForm" 
+          role="form" 
+          method="POST">
+      <div class="form-group">
+        <label class="control-label">
+          所属类别<span class="text-muted">（课程所属的上级类别）</span>
+        </label>
+        <style>
+          .control-group.selects{width: 40%}
+          .control-group.selects .form-control{float:left;display:inline-block;margin-right: 10px;}
+        </style>
+        <div class="control-group selects">
+          <!-- 联动选择组件 -->
+          <div related-select 
+               selects="categories" 
+               is-edit="!!course.id" 
+               select-id="course.category_id" 
+               select-change="courseAction.courseCateChange">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_input_organization_id" class="control-label">
+          所属机构<span class="text-muted">（发布课程的机构名称）</span>
+        </label>
+        <div class="control-group">
+          <select id="J_input_organization_id" 
+                class="form-control" 
+                disabled="true" 
+                ng-model="course.organization.id">
+            <option value="{{ course.organization.id }}" selected="selected">{{ course.organization.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_course_name" class="control-label">
+          课程名称
+        </label>
+        <div class="control-group">
+          <input type="text" 
+                 id="J_course_name" 
+                 class="form-control input-50" 
+                 name="course_name" 
+                 placeholder="请您输入课程名称" 
+                 validator="required" 
+                 required-error-message="请您输入课程名称" 
+                 ng-model="course.name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_course_description" class="control-label">
+          课程简介<span class="text-muted">（课程简介不超过500字）</span>
+        </label>
+        <div class="control-group">
+          <textarea id="J_course_description" 
+                    class="form-control input-50" 
+                    rows="5" 
+                    placeholder="请您输入课程简介"  
+                    ng-model="course.description">
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_course_rel_price" class="control-label">
+          价格
+        </label>
+        <div class="input-group input-20">
+          <input type="text" 
+                 id="J_course_rel_price" 
+                 class="form-control" 
+                 validator="required" 
+                 required-error-message="请您输入课程价格" 
+                 ng-model="course.rel_price">
+          <div class="input-group-addon">元</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_input_price" class="control-label">
+          市场价格
+        </label>
+        <div class="input-group input-20">
+          <input type="text" 
+                 id="J_input_price" 
+                 class="form-control" 
+                 name="price" 
+                 placeholder="请您输入课程名称"  
+                 ng-model="course.price">
+          <div class="input-group-addon">元</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="J_input_duration" class="control-label">
+          课程时长
+        </label>
+        <div class="input-group input-20">
+          <input type="text" 
+                 id="J_input_duration" 
+                 class="form-control" 
+                 disabled="true"  
+                 ng-model="course.duration">
+          <div class="input-group-addon">分钟</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          课程缩略图
+        </label>
+        <div class="input-group">
+          <div class="pull-left" 
+               style="width: 167px"
+               ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 500, min_height: 300 })" 
+               default-file="getThumbnail(course.thumb, 'course_thumb', { width: 167, height: 100 })" 
+               uploaded="courseAction.getUploadThumb"></div>
+          <div class="pull-left text-info">
+            <p></p>
+            <p class="small">请上传大于500 x 300像素的图片</p>
+            <p class="small">文件小于2M</p>
+            <p class="small">支持JPG/PNG/BMP等格式图片</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          课程描述
+        </label>
+        <div umeditor
+             ng-model="course.introduction"
+             id="J_input_introduction"
+             style="width: 800px; height: 300px;display:block">
+          {{ course.introduction }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          审核状态
+        </label>
+        <div class="radio">
+          <label class="radio-inline text-danger" for="J_input_status_0">
+            <input type="radio"
+                   name="status" 
+                   id="J_input_status_0"
+                   value="0"
+                   ng-model="course.status"> 待审核
+          </label>
+          <label class="radio-inline text-success" for="J_input_status_1">
+            <input type="radio"
+                   name="status" 
+                   id="J_input_status_1"
+                   value="1"
+                   ng-model="course.status"> 审核通过
+          </label>
+        </div>
+      </div>
+      <div class="form-group form-action">
+        <button type="submit"
+                class="btn btn-primary"
+                validation-submit="courseEditForm"
+                ng-click="courseAction.edit()">保存修改</button>
+        <a href="/course/manage/list/section/{{ course.id }}" class="btn btn-success">管理章节</a>
+        <a href="/course/manage/list/index" class="btn btn-default">返回</a>
+      </div>
+    </form>
+  </div>
+</div>
+<link href="editor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="editor/umeditor.config.js"></script>
+<script type="text/javascript" src="editor/umeditor.js"></script>
+<script type="text/javascript" src="editor/lang/zh-cn/zh-cn.js"></script>

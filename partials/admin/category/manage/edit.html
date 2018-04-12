@@ -1,0 +1,80 @@
+<div class="row" ng-controller="CategoryController">
+  <div class="col-xs-9">
+    <form class="form-horizontal" 
+          name="editCategoryForm" 
+          role="form" 
+          method="POST" 
+          ng-init="category = $root.category_edit">
+      <div class="form-group">
+        <label for="category_name" class="col-xs-3 control-label">分类名称</label>
+        <div class="col-xs-9">
+          <input type="text" 
+                 id="category_name" 
+                 class="form-control" 
+                 name="category_name" 
+                 maxlength="40" 
+                 placeholder="请输入分类名称" 
+                 ng-model="category.name"
+                 validator="required" 
+                 required-error-message="请输入分类名称">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="category_icon" class="col-xs-3 control-label">分类图标</label>
+        <div class="col-xs-9">
+          <div class="pull-left"
+               ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 200, min_height: 200 }, true)"
+               default-file="getThumbnail(category.icon, 'category_icon', { width: 200, height: 200 })"
+               uploaded="categoryAction.getUploadThumb"></div>
+          <div class="pull-left text-info">
+            <h5 class="small">请上传大于200 x 200像素的图片</h5>
+            <h5 class="small">文件小于2M</h5>
+            <h5 class="small">支持JPG/PNG/BMP等格式图片</h5>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="category_meta_title" class="col-xs-3 control-label">网页标题</label>
+        <div class="col-xs-9">
+          <input type="text" 
+                 id="category_meta_title" 
+                 class="form-control" 
+                 name="category_meta_title" 
+                 maxlength="140" 
+                 placeholder="请输入网页标题" 
+                 ng-model="category.meta_title">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="category_meta_keywords" class="col-xs-3 control-label">网页关键词</label>
+        <div class="col-xs-9">
+          <input type="text" 
+                   id="category_meta_keywords" 
+                   class="form-control" 
+                   name="category_meta_keywords" 
+                   maxlength="70" 
+                   placeholder="请输入网页关键词" 
+                   ng-model="category.meta_keywords">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="category_meta_description" class="col-xs-3 control-label">网页描述</label>
+        <div class="col-xs-9">
+          <textarea id="category_meta_description" 
+                    class="form-control" 
+                    name="category_meta_description" 
+                    placeholder="请输入网页描述" 
+                    ng-model="category.meta_description">
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-9 col-xs-offset-3">
+          <button class="btn btn-primary" 
+                  validation-submit="editCategoryForm"
+                  ng-click="categoryAction.edit({ modal: false })">提交保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

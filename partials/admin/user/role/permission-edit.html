@@ -1,0 +1,81 @@
+<div class="user-role-edit" ng-init="roleAction.getRole()">
+  <div class="page-title">
+    <h3>
+      {{ role.name || '角色' }}的权限
+      <span class="small muted no-animation" ng-if="role.type == 1">（系统管理员）</span>
+      <span class="small muted no-animation" ng-if="role.type == 2">（普通用户）</span>
+      <span class="small muted no-animation" ng-if="!role.type">（获取中）</span>
+    </h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <a class="btn btn-sm btn-default" href="/user/manage/role/list">返回</a>
+      <a class="btn btn-sm btn-primary" 
+         ng-click="roleAction.edit_permissions()">保存</a>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="panel panel-sm panel-default no-animation" ng-if="!role">
+      <div class="panel-body">权限获取中</div>
+    </div>
+    <div class="panel panel-sm panel-default slide-down"
+         ng-if="role" 
+         ng-repeat="permission in permission_list.result track by $index">
+      <div class="panel-heading">
+        <label>
+          <input type="checkbox" 
+                 name="permission_list_{{ $index }}" 
+                 ng-init="permission.checked = role.permissions.contain(permission.id, 'id')" 
+                 ng-model="permission.checked"
+                 ng-change="permission.children.setCheck(permission.checked, 'children')">
+          <span>{{ permission.name }}</span>
+          <a ng-href="{{ permission.url }}" target="_blank" ng-if="permission.url" class="text-muted">（前往）</a>
+        </label>
+      </div>
+      <ul class="panel-body" ng-show="permission.children.length">
+        <li ng-repeat="permission in permission.children">
+          <p>
+            <label>
+              <input type="checkbox" 
+                     name="permission_list_{{ $index }}" 
+                     ng-init="permission.checked = role.permissions.contain(permission.id, 'id')" 
+                     ng-model="permission.checked"
+                     ng-change="permission.children.setCheck(permission.checked, 'children')">
+              <span>{{ permission.name }}</span>
+            </label>
+          </p>
+          <ul class="tree-list">
+            <li ng-repeat="permission in permission.children">
+              <label>
+                <input type="checkbox" 
+                       name="permission_list_{{ $index }}" 
+                       ng-init="permission.checked = role.permissions.contain(permission.id, 'id')" 
+                       ng-model="permission.checked"
+                       ng-change="permission.children.setCheck(permission.checked, 'children')">
+                <span>{{ permission.name }}</span>
+                <a ng-href="{{ permission.url }}" target="_blank" ng-if="permission.url"  class="text-muted">（前往）</a>
+              </label>
+              <p ng-hide="$last && $parent.$last && !permission.children.length"></p>
+              <ul class="tree-list list-inline">
+                <li ng-repeat="permission in permission.children">
+                  <label>
+                    <input type="checkbox" 
+                           name="permission_list_{{ $index }}" 
+                           ng-init="permission.checked = role.permissions.contain(permission.id, 'id')" 
+                           ng-model="permission.checked"
+                           ng-change="permission.children.setCheck(permission.checked, 'children')">
+                    <span>{{ permission.name }}</span>
+                  </label>
+                  <p></p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="">
+      <button class="btn btn-primary" ng-click="roleAction.editPermissions()">提交保存</button>
+    </div>
+  </div>
+</div>

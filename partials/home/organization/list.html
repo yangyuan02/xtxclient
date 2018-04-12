@@ -1,0 +1,98 @@
+<div class="container" ng-init="getOrganizations()">
+  <div class="row organization-lists">
+    <div class="col-xs-12">
+
+      <!-- 面包屑导航 -->
+      <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li><a href="/organization">全部学校</a></li>
+        <li class="active">共 <span class="text-primary"> {{ organizations[currrent_category.id].pagination.total || 0 }} </span> 个<span class="text-primary"> {{ currrent_category.name || '' }}</span> 相关机构</li>
+      </ol>
+
+      <div tabset justified="true" 
+           largesize="true" 
+           class="organization-tab">
+        <div tab 
+             heading="{{ cate.name }}" 
+             ng-repeat="cate in categorys" 
+             icon="{{ organizationIcon(cate) }}"
+             select="changeCate(cate)">
+          <div class="err-msg no-animation" ng-if="!organizations[cate.id].pagination.total">
+            <div ng-if="organizations[cate.id].pagination.total == undefined" class="no-animation">
+              <div class="loader">
+                <p><img src="images/loader.svg" width="48" height="48"></p>
+                 学校正在努力加载中...
+              </div>
+            </div>
+            <div ng-if="organizations[cate.id].pagination.total == 0" class="no-animation">
+              <div class="empty">
+                <p><i class="icon icon-warning"></i></p>
+                <span ng-if="!keyword">抱歉，没有相关学校</span>
+              </div>
+            </div>
+          </div>
+          <div class="row item-list">
+            <div class="col-xs-3 slide-top" 
+                 ng-repeat="organization in organizations[cate.id].result">
+              <div class="item">
+                <a ng-href="/organization/{{ organization.id }}">
+                  <div class="logo">
+                    <div afkl-lazy-image="{{ getThumbnail(organization.logo, 'organization_logo',{ width: 200, height: 200 })}}" class="afkl-img-ratio-{{ organization.logo }}"></div>
+                  </div>
+                  <h3 class="name">{{ organization.name }}</h3>
+                  <p class="line">
+                    <span class="ornament"></span>
+                  </p>
+                  <ul class="count">
+                    <li>
+                      <i class="icon icon-catalogue h4"></i>
+                      <span>课程：{{ organization.course_count }}</span>
+                    </li>
+                    <li>
+                      <i class="icon icon-teacher h4"></i>
+                      <span>名师：{{ organization.teacher_count }}</span>
+                    </li>
+                  </ul>
+                  <div class="backdrop">
+                    <div class="scenery">
+                      <div afkl-lazy-image="{{ getThumbnail(organization.scenery, 'scenery',{ width: 275, height: 280 })}}" class="afkl-img-ratio-{{ organization.scenery }}"></div>
+                      <span class="mask"></span>
+                    </div>
+                    <div class="mask-count">
+                      <h3 class="name">{{ organization.name }}</h3>
+                      <ul class="count">
+                        <li>
+                          <h4 class="course">
+                            <i class="icon icon-catalogue h4"></i>
+                            <span>课程：{{ organization.course_count }}</span>
+                          </h4>
+                        </li>
+                        <li>
+                          <h4 class="teacher">
+                            <i class="icon icon-teacher h4"></i>
+                            <span>名师：{{ organization.teacher_count }}</span>
+                          </h4>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="page-wrap" ng-if="!!organizations[cate.id].pagination.total">
+            <div pagination total-items="organizations[cate.id].pagination.total" 
+                 items-per-page="organizations[cate.id].pagination.per_page" 
+                 ng-model="current_page" 
+                 ng-change="getOrganizationLists({ cate: cate, page: current_page })" 
+                 class="pagination" 
+                 boundary-links="true" 
+                 rotate="false">
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

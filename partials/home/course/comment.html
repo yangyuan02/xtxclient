@@ -1,0 +1,65 @@
+<p class="col-xs-12">
+  <span class="pull-left" ng-if="type == 'A'" ng-class="{ 'col-xs-2': sizeWide }">学习满意程度：</span>
+  <span class="pull-left" ng-if="type == 'B'" ng-class="{ 'col-xs-2': sizeWide }">课程内容质量：</span>
+  <span class="pull-left" ng-if="type == 'C'" ng-class="{ 'col-xs-2': sizeWide }">老师授课服务：</span>
+  <span class="pull-left" 
+        ng-class="{ 'col-xs-2': sizeWide }" 
+        ng-mouseleave="reset()" 
+        ng-keydown="onKeydown($event)" 
+        tabindex="0" 
+        role="slider" 
+        aria-valuemin="0" 
+        aria-valuemax="{{range.length}}" 
+        aria-valuenow="{{value}}">
+      <span ng-repeat-start="r in range track by $index" 
+            class="sr-only">({{ $index < value ? '*' : ' ' }})</span>
+      <i ng-repeat-end 
+         ng-mouseenter="enter($index + 1)" 
+         ng-click="rate($index + 1)" 
+         class="icon icon-star" 
+         style="cursor: pointer" 
+         ng-class="$index < value && (r.stateOn || 'text-warning') || (r.stateOff || 'text-default')" 
+         ng-attr-title="{{r.title}}" aria-valuetext="{{r.title}}"></i>
+  </span>
+  <span class="pull-left col-xs-8 no-animation" ng-if="type == 'A'">
+    <strong class="text-warning pull-left no-animation" ng-if="value > 0">{{ value }}分</strong>
+    <span class="pull-left no-animation" 
+          ng-show="value == 1">&nbsp; - 学习过程阻碍重重，谈不上学习，非常不满意</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 2">&nbsp; - 便捷性有待提高，不太满意</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 3">&nbsp; - 一般般，半知半解的样子</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 4">&nbsp; - 还好不错，大概都听懂吸收了，还是挺满意的</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 5">&nbsp; - 感觉很好，各方面都很细致和流畅，整个学习过程非常满意</span>
+  </span>
+  <span class="pull-left col-xs-8 no-animation" ng-if="type == 'B'">
+    <strong class="text-warning pull-left no-animation" 
+          ng-if="value > 0">{{ value }}分</strong>
+    <span class="pull-left no-animation" 
+          ng-show="value == 1">&nbsp; - 差得太离谱，与课程描述的严重不符，各种不满</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 2">&nbsp; - 部分有误差，与课程描述的不符，不满意</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 3">&nbsp; - 课程一般，没有老师描述的那么好</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 4">&nbsp; - 课程不错，与老师描述的基本一致，还是挺满意的</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 5">&nbsp; - 课程非常好，与老师描述的完全一致，非常满意</span>
+  </span>
+  <span class="pull-left col-xs-8 no-animation" ng-if="type == 'C'">
+    <strong class="text-warning pull-left no-animation" 
+          ng-if="value > 0">{{ value }}分</strong>
+    <span class="pull-left no-animation" 
+          ng-show="value == 1">&nbsp; - 老师态度很差，还骂人、说脏话，简直不把学生当回事</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 2">&nbsp; - 老师有点没耐心，承诺的服务也兑现不了</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 3">&nbsp; - 老师回复问题很慢，态度一般，谈不上沟通顺畅</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 4">&nbsp; - 老师服务挺好的，沟通挺顺畅的，总体满意</span>
+    <span class="pull-left no-animation" 
+          ng-show="value == 5">&nbsp; - 老师的服务太棒了，考虑非常周到，完全超出期望值</span>
+  </span>
+</p>

@@ -1,0 +1,165 @@
+<div class="header" ng-controller="HeaderController" ng-init="getBaseConfig()">
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar-nav">
+        <ul class="auth-act">
+          <li ng-if="!user" class="no-animation"><a href="/auth/login">登录<em class="sep">|</em></a></li>
+          <li ng-if="!user" class="no-animation"><a href="/auth/register">注册<em class="sep">|</em></a></li>
+          <li ng-if="!user" class="no-animation"><a href="/auth/login/welfare">公益教学</a></li>
+          <li ng-if="!!user" 
+              class="no-animation"
+              ng-mouseover="active = true"
+              ng-mouseleave="active = false">
+            <a href="/user/index" class="authed-act">
+              <span>{{ user.phone }}</span>
+              <b class="arrow"></b>
+            </a>
+            <div class="authed-box toggle" ng-show="active">
+              <div class="inner">
+                <div class="user-info-head">
+                  <img ng-src="{{ getThumbnail(user.gravatar, 'gravatar', { width: 120, height: 120 }) }}" 
+                       class="gravatar img-circle" 
+                       width="60" 
+                       height="60">
+                  <h4 class="name">{{ user.name }}</h4>
+                  <p class="loginout">
+                    <a href="user/profile">个人设置</a>
+                    <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                    <a href="#" ng-click="logout()">退出</a>
+                  </p>
+                </div>
+                <ul class="user-info-body clearfix">
+                  <li>
+                    <a href="user/bill">
+                      <i class="icon icon-money-stroke"></i>
+                      <span>余额</span>
+                      <h4 class="text-warning">
+                        <strong>￥</strong>{{ user.profile.account_remain || 0 }}
+                      </h4>
+                    </a>
+                  </li>
+                  <li class="mid">
+                    <a href="user/score">
+                      <i class="icon icon-level"></i>
+                      <span>等级</span>
+                      <h4>{{ user.profile.level_id || 0 }}</h4>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="user/medal">
+                      <i class="icon icon-badge"></i>
+                      <span>勋章</span>
+                      <h4>0</h4>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li ng-if="!!user" class="no-animation"><a ng-click="logout()" href="#">退出</a></li>
+        </ul>
+        <ul class="user-act">
+          <li ng-if="true"
+              ng-mouseover="active = true"
+              ng-mouseleave="active = false">
+            <a href="/user/index" class="usered-act">我要学习<b class="arrow"></b></a>
+            <ul class="drop-list toggle" ng-show="active">
+              <li><a ng-href="{{ user.id ? 'space/student/' + user.id : 'auth/login' }}">学习主页</a></li>
+              <li><a href="user/course">我的课程</a></li>
+              <li><a href="user/history">学习记录</a></li>
+              <li><a href="user/favorite">我的收藏</a></li>
+              <li><a href="user/question">我的问答</a></li>
+              <li><a href="user/note">我的笔记</a></li>
+            </ul>
+          </li>
+          <li ng-if="true"
+              ng-mouseover="active = true"
+              ng-mouseleave="active = false">
+            <a href="/teacher/index" class="usered-act">我要开课<b class="arrow"></b></a>
+            <ul class="drop-list toggle" ng-show="active">
+              <li><a href="teacher/index">教师中心</a></li>
+              <li><a href="teacher/trade">已售课程</a></li>
+              <li><a href="teacher/rate">评价管理</a></li>
+              <li><a href="teacher/course/add">发布课程</a></li>
+              <li><a href="teacher/course/list">已开课程</a></li>
+              <li><a href="teacher/organization/list">我的学校</a></li>
+              <li><a href="teacher/income/index">我的收入</a></li>
+              <li><a href="teacher/income/apply">申请提现</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="/mobile">
+              <i class="icon icon-phone"></i>
+              <span>手机版</span>
+            </a>
+          </li>
+          <li>
+            <span>
+              <i class="icon icon-tel"></i>
+              <span>{{ $root.site_config.base.SITE_PHONE }}</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="navbar no-animation" ng-hide="navBarHide">
+    <div class="container">
+      <div class="navbar-header">
+        <a href="/" class="navbar-brand"></a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li ng-class="{ active: isActive.index }"><a href="/">首页</a></li>
+          <li ng-class="{ active: isActive.course }"><a href="/course">课程</a></li>
+          <li ng-class="{ active: isActive.organization }"><a href="/organization">学校</a></li>
+          <!-- <li ng-class="{active:isActive('/ui')}"><a href="/ui">商城</a></li> -->
+          <!-- <li ng-class="{active:isActive('/ui')}"><a href="/ui">社区</a></li> -->
+          <!-- <li ng-class="{active:isActive('/ui')}"><a href="/ui">创业</a></li> -->
+        </ul>
+        <form class="navbar-form navbar-right navbar-search" 
+              role="search" 
+              name="headerSearch" 
+              ng-init="searchBoxInit()"
+              ng-submit="searchResult(search.keyword)">
+          <div class="form-group">
+            <!-- 搜索类型 -->
+            <div class="search-type">
+              <a class="item" ng-click="searchTypeChange()">
+                <i class="icon" ng-class="{ 1: 'icon-book', 2: 'icon-school-stroke'}[search.type]"></i>
+              </a>
+            </div>
+            <!-- 搜索框 -->
+            <input type="text" 
+                   class="form-control" 
+                   x-webkit-speech 
+                   x-webkit-grammar="builtin:translate" 
+                   placeholder="{{ '搜索相关' + ( search.type == 1 ? '课程' : '机构') }}" 
+                   ng-model="search.keyword" 
+                   ng-model-options="{ 
+                      updateOn: 'submit default blur', 
+                      debounce: { default: 500, blur: 0, submit: 0 }, 
+                      getterSetter: true 
+                   }"
+                   ng-init="search.input_blur = true;search.input_focus = false"
+                   ng-focus="search.input_focus = true;search.input_blur = false"
+                   ng-blur="search.input_blur = true;search.input_focus = false"
+                   typeahead="items.name for items in searchSuggest($viewValue) | limitTo: 8"
+                   typeahead-focus-first="false"
+                   typeahead-show-hint="true">
+            <!-- 热词推荐 -->
+            <ul class="hot-list no-animation" 
+                ng-if="search.input_blur && !search.keyword && !!search.hotwords[(search.type == 1) ? 'courses' : 'organizations']">
+              <li class="item no-animation" 
+                  ng-repeat="keyword in search.hotwords[(search.type == 1) ? 'courses' : 'organizations'] | limitTo: 2">
+                <a href="" ng-click="hotWordClick(keyword)">{{ keyword }}</a>
+              </li>
+            </ul>
+          </div>
+          <!-- 搜索按钮 -->
+          <button type="submit" class="btn btn-default btn-search"><i class="icon icon-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,266 @@
+<div class="page-list" ng-init="sectionAction.getLists()">
+  <div class="page-title">
+    <h3>章节列表（{{ section_list.pagination.total || '0' }}）</h3>
+  </div>
+  <div class="page-action clearfix">
+    <div class="pull-left">
+      <button class="btn btn-sm btn-danger" 
+              ng-click="sectionAction.del({ batch: true })"
+              ng-if="page_permission['course.manage.section.del']"
+              ng-disabled="!section_list.result.checked().length">删除</button>
+      <button class="btn btn-sm btn-default" 
+              ng-click="sectionAction.getLists(section_list.pagination.current_page)">刷新</button>
+    </div>
+    <div class="pull-right">
+      <form class="navbar-form clearfix" role="search">
+        <div class="form-group">
+
+          <!-- 课程排序 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.order_field"
+                  ng-change="sectionAction.filterChanged()">
+                  <option value="all">综合排序</option>
+                  <option value="updated_at">最近修改</option>
+                  <option value="created_at">最新创建</option>
+          </select>
+
+          <!-- 课程免费 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.is_free"
+                  ng-change="sectionAction.filterChanged()">
+                  <option value="all">所有价格</option>
+                  <option value="1">免费</option>
+                  <option value="0">收费</option>
+          </select>
+
+          <!-- 课程类型 -->
+          <select class="form-control input-sm"
+                  ng-model="filter.is_live"
+                  ng-change="sectionAction.filterChanged()">
+                  <option value="all">所有类型</option>
+                  <option value="1">直播</option>
+                  <option value="0">录播</option>
+          </select>
+
+          <!--录播课程的状态 -->
+          <select class="form-control input-sm no-animation"
+                  ng-if="filter.is_live == '0'"
+                  ng-model="$parent.filter.status"
+                  ng-change="$parent.sectionAction.filterChanged()">
+            <option value="all">所有状态</option>
+            <option value="0">等待上传</option>
+            <option value="1">上传成功</option>
+            <option value="-1">上传失败</option>
+            <option value="-2">转码失败</option>
+            <option value="2">等待审核</option>
+            <option value="3">审核成功</option>
+            <option value="-3">审核失败</option>
+          </select>
+
+          <!-- 直播课程的状态 -->
+          <select class="form-control input-sm no-animation"
+                  ng-if="filter.is_live == '1'"
+                  ng-model="$parent.filter.live_status"
+                  ng-change="$parent.sectionAction.filterChanged()">
+            <option value="all">所有状态</option>
+            <option value="-2">转码失败</option>
+            <option value="-1">审核失败</option>
+            <option value="0">待审核</option>
+            <option value="1">审核成功</option>
+            <option value="11">初始化中</option>
+            <option value="12">初始化成功</option>
+            <option value="13">初始化失败</option>
+            <option value="2">直播中</option>
+            <option value="3">直播结束</option>
+            <option value="4">转码成功</option>
+            <option value="5">可以回放</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="page-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            <input class="check-all" 
+                   type="checkbox"
+                   ng-model="check_all"
+                   ng-change="section_list.result.setCheck(check_all)">
+          </th>
+          <th>ID</th>
+          <th>章节名称</th>
+          <th>免费</th>
+          <th>课程</th>
+          <th>类型</th>
+          <th>状态</th>
+          <th>操作</th>
+          <th>通用</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!section_list.pagination.total" class="no-animation">
+          <td colspan="9">
+            <div class="list-loader" 
+              ng-if="section_list.pagination.total == undefined"
+              ng-include="'partials/admin/layout/loading.html'">
+            </div>
+            <div class="list-empty" 
+              ng-if="section_list.pagination.total == 0" 
+              ng-include="'partials/admin/layout/empty.html'">
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="section in section_list.result track by $index" class="slide-down">
+          <td>
+            <input class="ids" 
+                   type="checkbox" 
+                   name="ids[{{ $index }}]" 
+                   ng-model="section.checked">
+          </td>
+          <td>{{ section.id }}</td>
+          <td>
+            <a ng-href="http://www.xuetianxia.cn/course/{{ section.course.id }}/learn/{{ section.id }}" 
+               target="_blank">{{ section.name | textOverflow: 22 }}</a>
+          </td>
+          <td>
+            <span class="text-danger no-animation"  ng-if="!section.is_free">收费</span>
+            <span class="text-success no-animation" ng-if="!!section.is_free">免费</span>
+          </td>
+          <td>
+            <a ng-href="/course/manage/list/section/{{ section.course.id }}" target="_blank">《{{ section.course.name }}》</a>
+          </td>
+          <td>
+            <span class="status no-animation" ng-if="!section.is_live">
+              <em class="btn btn-xs btn-success">录播</em>
+            </span>
+            <span class="status no-animation" ng-if="!!section.is_live">
+              <em class="btn btn-xs btn-danger">直播</em>
+            </span>
+          </td>
+          <!-- 状态 -->
+          <td>
+            <!-- 录播 -->
+            <div ng-switch="section.status" ng-if="!section.is_live" class="no-animation">
+              <span class="status no-animation" ng-switch-when="0">
+                <em class="text-danger">未上传</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="1">
+                <em class="text-info">转码中</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="2">
+                <em class="text-warning">等待审核</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="3">
+                <em class="text-info">审核成功</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-1">
+                <em class="text-danger">上传失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-2">
+                <em class="text-danger">转码失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-3">
+                <em class="text-danger">审核失败</em>
+                <em class="text-muted">（{{ section.remark || '暂无原因' }}）</em>
+              </span>
+            </div>
+            <!-- 直播 -->
+            <div ng-switch="section.live_status" ng-if="section.is_live" class="no-animation">
+              <span class="status no-animation" ng-switch-when="-2">
+                <em class="text-danger">转码失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="-1">
+                <em class="text-danger">审核失败</em>
+                <em class="text-muted">（{{ section.remark || '暂无原因' }}）</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="0">
+                <em class="text-danger">等待审核</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="1">
+                <em class="text-info">审核成功</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="10">
+                <em class="text-danger">初始化失败</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="11">
+                <em class="text-warning">初始化中</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="12">
+                <em class="text-success">初始化成功</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="2">
+                <em class="text-success">直播中</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="3">
+                <em class="text-info">直播结束</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="4">
+                <em class="text-success">转码结束</em>
+              </span>
+              <span class="status no-animation" ng-switch-when="5">
+                <em class="text-success">可回放</em>
+              </span>
+            </div>
+          </td>
+          <!-- 操作 -->
+          <td>
+            <!-- 录播 -->
+            <div ng-switch="section.status" ng-if="!section.is_live" class="no-animation">
+              <span class="status no-animation" ng-switch-when="2">
+                <a href="" 
+                   class="text-warning" 
+                   ng-click="sectionAction.preview(section.id)">[ 视频预览 ]</a>
+                <a href="" 
+                   class="text-success" 
+                   ng-click="sectionAction.audit({ section: this })">[ 审核通过 ]</a>
+                <a href="" 
+                   class="text-danger" 
+                   ng-click="sectionAction.auditRefuse({ section: section, ismodel: true })">[ 审核拒绝 ]</a>
+              </span>
+              <span class="status no-animation" ng-if="section.status == 3 || section.status == -3">
+                <a href="" 
+                   class="text-warning" 
+                   ng-click="sectionAction.preview(section.id)">[ 视频预览 ]</a>
+              </span>
+            </div>
+            <!-- 直播 -->
+            <div ng-switch="section.live_status" ng-if="section.is_live" class="no-animation">
+              <span class="status no-animation" ng-switch-when="0">
+                <a href="" 
+                   class="text-warning" 
+                   ng-click="sectionAction.liveAudit({ section: section, ismodel: true })">[ 预览审核 ]</a>
+              </span>
+              <span class="status no-animation" ng-if="section.live_status == 5 || section.live_status == 2">
+                <a href="" 
+                   class="text-warning" 
+                   ng-click="sectionAction.preview(section.id)">
+                  <span ng-if="section.live_status == 2" class="no-animation">[ 查看直播 ]</span>
+                  <span ng-if="section.live_status == 5" class="no-animation">[ 直播回放 ]</span>
+                </a>
+              </span>
+            </div>
+          </td>
+          <td>
+            <span class="status no-animation">
+              <a href="" class="text-danger" 
+               ng-click="sectionAction.del({ batch: false, section: section })">[ 删除 ]</a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-wrap" ng-show="section_list.pagination.total_page > 1">
+    <div pagination 
+         total-items="section_list.pagination.total" 
+         items-per-page="section_list.pagination.per_page" 
+         ng-model="current_page" 
+         ng-change="sectionAction.getLists(current_page)" 
+         class="pagination" 
+         boundary-links="true" 
+         max-size="5"
+         rotate="false"></div>
+  </div>
+</div>

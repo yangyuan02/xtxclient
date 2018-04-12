@@ -1,0 +1,76 @@
+<div class="auth-service welfare-login">
+  <div class="auth-bg"></div>
+  <div class="container" ng-init="user.auto_login = true">
+    <div class="row">
+      <div class="col-xs-6 pull-right">
+        <div class="auth-wrap clearfix">
+          <div class="auth-content clearfix">
+            <h2 class="title">
+              <span>公益用户登录</span>
+            </h2>
+            <!-- 登录表单 -->
+            <form name="loginFrom" class="form-horizontal" role="form" method="POST" autocomplete="off">
+              <div class="form-group">
+                <div class="col-xs-10 col-xs-offset-1">
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="icon icon-user"></i></div>
+                    <input type="text" 
+                           name="phone" 
+                           class="form-control form-input" 
+                           id="J_input_mobile" 
+                           maxlength="11" 
+                           placeholder="请输入公益学号" 
+                           ng-model="user.phone" 
+                           validator="required, minlength=10" 
+                           minlength-error-message="请输入公益学号" 
+                           required-error-message="请您输入正确的公益学号" 
+                           autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-10 col-xs-offset-1">
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="icon icon-password"></i></div>
+                    <input type="password" 
+                           name="password" 
+                           maxlength="16" 
+                           class="form-control form-input" 
+                           id="J_input_password" 
+                           placeholder="长度6~16位" 
+                           ng-model="user.password" 
+                           validator="required, minlength=6, maxlength=16" 
+                           required-error-message="请您输入密码" 
+                           minlength-error-message="密码长度至少为6位字符" 
+                           maxlength-error-message="密码长度不能超过16位字符" 
+                           autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-10 col-xs-offset-1">
+                  <label class="pull-left">
+                    <input type="checkbox" 
+                           name="auto_login" 
+                           id="J_input_auto_login" 
+                           class="for-control checkbox-inline" 
+                           ng-model="user.auto_login">&nbsp;下次自动登录</label>
+                  <span class="pull-right">
+                    <a href="/auth/forgot" target="_blank">忘记密码？</a>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-10 col-xs-offset-1">
+                  <button validation-submit="loginFrom" 
+                          class="btn btn-lg btn-block btn-primary" 
+                          ng-click="login({ user: user, modal: false })">登录</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

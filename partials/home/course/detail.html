@@ -1,0 +1,647 @@
+<div ng-init="getDetail()">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <ol class="breadcrumb">
+          <li><a href="/course">全部课程</a></li>
+          <li related-select 
+              selects="categories" 
+              is-edit="true" 
+              select-id="course.info.category_id"
+              template-url="partials/template/related-select/course.html"></li>
+          <li class="active">{{ course.info.name }}</li>
+        </ol>
+      </div>
+      <!-- 课程图片 -->
+      <div class="col-xs-5">
+        <div class="course-thumb">
+          <img alt="{{ course.name }}"
+               ng-src="{{ course.info.thumb != '' ? getThumbnail(course.info.thumb, 'course') : config.fileUrl + 'images/thumbnail-course.png' }}">
+          <div class="live" ng-if="!!course.info.is_live">直播课程</div>
+        </div>
+      </div>
+      <!-- 课程信息 -->
+      <div class="col-xs-7">
+        <div class="course-info">
+          <h3 class="name">{{ course.info.name }}</h3>
+          <ul class="info">
+            <li class="organization">
+              <div class="logo">
+                <img class="img-circle" width="48"
+                     ng-src="{{ getThumbnail(course.info.organization.logo, 'organization_logo', { width: 48, height: 48 }) }}">
+              </div>
+              <div class="pull-left">
+                <div class="title">开课机构</div>
+                <div class="content">
+                  <a class="" 
+                     ng-href="/organization/{{ course.info.organization.id }}" 
+                     ng-bind="course.info.organization.name"></a>
+                </div>
+              </div>
+            </li>
+            <li class="teacher">
+              <div class="avatar">
+                <img class="img-circle" width="48"
+                     ng-src="{{ getThumbnail(course.info.teacher.gravatar, 'teacher_logo', { width: 48, height: 48 }) }}" >
+              </div>
+              <div class="pull-left">
+                <div class="title">老师</div>
+                <div class="content">
+                  <a class="" 
+                     target="_blank"
+                     ng-href="/organization/{{ course.info.organization.id }}/teacher/{{ course.info.teacher.id }}">{{ course.info.teacher.profile.rel_name }}</a>
+                </div>
+              </div>
+            </li>
+            <li class="student-count">
+              <div class="title">已学习</div>
+              <div class="content">{{ course.info.study_count }}人</div>
+            </li>
+            <li class="lists">
+              <div class="title">课程</div>
+              <div class="content">共{{ course.info.section_count }}节</div>
+            </li>
+          </ul>
+          <p class="description">{{ course.info.description | limitTo: 160 }}</p>
+          <div class="price">
+            <span class="text-danger" ng-if="course.info.rel_price > 0">
+              <small class="yen">&yen;</small>
+              <strong>{{ course.info.rel_price | priceFormat }}</strong>
+            </span>
+            <strong class="text-primary" ng-if="course.info.rel_price <= 0">免费</strong>
+            <span class="small" ng-if="false">
+              <s class="text-info" 
+                 ng-if="course.info.price > course.info.rel_price && course.info.price > 0">原价:&yen;{{ course.price }}</s>
+            </span>
+            <span class="share">
+              <span class="share-title">分享到：</span>
+              <a href="" class="icon icon-weibo" ng-click="share('weibo')"></a>
+              <a href="" class="icon icon-wechat" ng-click="share('qrcode')"></a>
+              <a href="" class="icon icon-qq" ng-click="share('qq')"></a>
+            </span>
+          </div>
+          <!-- <div class="classes">1班：6月27日起，6月24日、6月28日</div> -->
+          <div class="act">
+            <span>
+              <a href="" 
+                 class="btn btn-lg btn-danger" 
+                 ng-if="course.btn.primary.show" 
+                 ng-click="primaryBtnEvent()">{{ course.btn.primary.text }}</a>
+              <a href="" 
+                 class="btn btn-lg btn-default" 
+                 ng-if="course.btn.secondary.show" 
+                 ng-click="secondaryBtnEvent()">{{ course.btn.secondary.text }}</a>
+            </span>
+            <a class="btn btn-link btn-follow" 
+               ng-class="{ true: 'text-primary' }[!!course.relation.follow]" 
+               ng-click="addFav(course.info.id)">
+              <i class="icon icon-like" ng-class="{ true:'text-primary' }[!!course.relation.follow]"></i>
+              <span ng-show="!!course.relation.follow">已</span>收藏({{ course.info.follow_count }})
+            </a>
+            <a href="" 
+               ng-if="!!course.info.is_live"
+               class="btn btn-link btn-live" 
+               ng-click="$parent.live_progress_active = !$parent.live_progress_active"
+               ng-class="{ 'active': !!$parent.live_progress_active }"
+               ng-init="$parent.live_progress_active = !!course.info.is_live">
+              <i class="icon icon-playing"></i>
+              <span>最近直播</span>
+              <i class="icon"
+                 ng-class="{ false: 'icon-sort-down', true: 'icon-price-sort-top' }[!!$parent.live_progress_active]"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- 直播信息 -->
+      <div class="col-xs-12 toggle" ng-if="!!course.info.is_live" ng-show="$parent.live_progress_active">
+        <div class="course-progress" ng-class="{ 'active': sections.live.ids('active').contain(true) }">
+          <ul class="progress-indicator">
+            <li ng-repeat="section in sections.live track by $index"
+                ng-class="{ 3: 'completed', 4: 'completed', 5: 'completed', 2: 'danger' }[section.live_status]"
+                ng-mouseover="section.active = true;"
+                ng-mouseleave="section.active = false;"
+                ng-init="section.active = !!(section.live_status == 2) || false">
+
+              <!-- <a href="" class="bubble"></a> -->
+              <a href="" class="bubble" ng-click="sectionClickEvent(section)"></a>
+
+              <span class="icon icon-playing"   ng-if="section.live_status  < 2"></span>
+              <span class="icon icon-play"      ng-if="section.live_status == 2"></span>
+              <span class="icon icon-play-over" ng-if="section.live_status == 3 || section.live_status == 4"></span>
+              <span class="icon icon-success"   ng-if="section.live_status == 5"></span>
+
+              <span ng-if="section.live_status  < 2">待直播</span>
+              <span ng-if="section.live_status == 2">直播中</span>
+              <span ng-if="section.live_status == 3 || section.live_status == 4">已结束</span>
+              <span ng-if="section.live_status == 5">可回放</span>
+
+              <div class="content toggle" ng-show="section.active">
+                <span class="name">《{{ section.name }}》</span>
+                <span class="desc" 
+                      ng-if="section.live_status  < 2">直播将于 {{ section.live_at }} 开始</span>
+                <span class="desc" ng-if="section.live_status == 2">正在直播</span>
+                <span class="desc" ng-if="section.live_status == 3 || section.live_status == 4">直播已结束</span>
+                <span class="desc" ng-if="section.live_status == 5">直播已结束，可回放</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="course-detail">
+    <div class="container">
+      <div class="row">
+        <!-- 课程详情 -->
+        <div class="col-xs-8">
+          <div class="inner main">
+            <div tabset justified="true" largesize="true" id="detailTab">
+
+              <!-- 课程概述 -->
+              <div tab heading="课程概述" icon="icon-course-descrption">
+                <div class="content">
+                  <h3 class="title">
+                    <i class="icon icon-target-right"></i>
+                    <span>课程概述</span>
+                  </h3>
+                  <div class="intro" ng-bind-html="course.info.introduction || '' | toHtml"></div>
+                  <!-- 课程目录 -->
+                  <h3 class="title">
+                    <i class="icon icon-target-right"></i>
+                    <span>课程目录（ 共{{ course.chapters.length }}章 / {{ course.info.section_count }}节 ）</span>
+                  </h3>
+                  <div class="section">
+                    <p class="text-muted" ng-if="course.chapters.length == 0">暂无章节</p>
+                    <ul class="item-list">
+                      <li class="active" 
+                          ng-repeat="chapter in course.chapters | limitTo: 5" 
+                          ng-init="chapter.open = !!chapter.open">
+                        <a href="" 
+                           class="item" 
+                           ng-click="chapter.open = !chapter.open">
+                            <span>{{ chapter.name }}</span>
+                            <i class="icon" 
+                              ng-class="{ true: 'icon-arrow-top', false: 'icon-arrow-down' }[chapter.open]">
+                            </i>
+                        </a>
+                        <ul class="sub-section slide-down" ng-show="chapter.open">
+                          <li class="section" 
+                              ng-repeat="section in chapter.children" 
+                              ng-init="pushSections(section);section.live_status = (section.live_status > 10) ? (section.live_status / 10) : ((section.live_status == 10) ? 1.05 : section.live_status)">
+                            <div class="progress">
+                              <div class="progress-bar" 
+                                   ng-style="{ 'width': course.relation.study_records.learning.contain(section.id, 'id') ? ( course.relation.study_records.learning.find(section.id, 'id').time / section.duration * 100 | number:2 ) : 0 + '%' }">
+                              </div>
+                            </div>
+                            <!-- 各种信息 -->
+                            <a href="" ng-click="sectionClickEvent(section)">
+                              <i class="icon icon-play pull-left"></i>
+                              <span class="name" title="{{ section.name }}">{{ section.name | textOverflow: 10 }}</span>
+                              <!-- <span class="text-primary small" ng-if="!!section.is_free">可试听整节</span> -->
+                              <!-- <span class="pull-right small"  -->
+                                    <!-- ng-if="course.relation.study_records.learning.find(section.id, 'id')"> -->
+                                <!-- <span>已学习 {{ course.relation.study_records.learning.find(section.id, 'id').time / section.duration * 100 | number:0 }}%</span> -->
+                              <!-- </span> -->
+                              <span class="pull-right">
+                                <span>
+
+                                  <!-- 最后学习 -->
+                                  <i class="icon icon-playing" 
+                                     title="最后学习" 
+                                     ng-if="section.id == course.relation.last_study_section_id">
+                                  </i>
+
+                                  <!-- 已学习完 -->
+                                  <i class="icon icon-play-over" 
+                                     title="已学习过" 
+                                     ng-if="section.id != course.relation.last_study_section_id && course.relation.study_records.finished.contain(section.id)">
+                                  </i>
+                                </span>
+                                <span ng-if="section.is_live" class="no-animation">
+                                  <span class="btn btn-xs btn-danger video-type-slug">直播</span>
+                                  <span ng-if="section.live_status < 2">未开始</span>
+                                  <span ng-if="section.live_status == 2" class="text-danger">直播中</span>
+                                  <span ng-if="section.live_status == 3 || section.live_status == 4">已结束</span>
+                                  <span ng-if="section.live_status == 5">可回放</span>
+                                </span>
+                                <span ng-if="!section.is_live" class="no-animation">
+                                  <span class="btn btn-xs btn-primary video-type-slug">录播</span>
+                                  <span>可播放</span>
+                                </span>
+                                <span ng-class="{ 'text-danger': section.live_status == 2 }">/</span>
+                                <span ng-class="{ 'text-danger': section.live_status == 2 }">{{ section.duration | toHHMMSS : 'HHMMSS' : ':' : ':' : '' }}</span>
+                              </span>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <h4 class="clearfix"></h4>
+                    <p class="text-center">
+                      <a href="" 
+                         ng-click="section_is_active = true;goTo('detailTab');" 
+                         class="btn btn-default btn-more">查看更多</a>
+                      </p>
+                  </div>
+                  <hr>
+                  <h3 class="title">
+                    <i class="icon icon-target-right"></i>
+                    <span>学员评价（{{ course.comments.pagination.total || 0 }}）</span>
+                  </h3>
+
+                  <!-- 评论列表 -->
+                  <div class="comment">  
+                    <ul class="media-list">
+                      <li class="media" ng-repeat="comment in course.comments.result">
+                        <div class="media-left">
+                          <a ng-href="/space/student/{{ comment.user.id }}" target="_blank">
+                            <img class="media-object img-circle"  
+                                 width="48"
+                                 ng-src="{{ getThumbnail(comment.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <h4 class="media-heading">
+                            <a ng-href="/space/student/{{ comment.user.id }}" target="_blank">{{ comment.user.name }}</a>&nbsp;&nbsp;<small class="text-info">评论于{{ comment.created_at | relativeTime }}</small>
+                          </h4>
+                          <p class="text-dark">{{ comment.content }}</p>
+                          <p ng-if="comment.description_score || comment.quality_score || comment.satisfaction_score" 
+                             class="comment-score">
+                            <span class="score-content" ng-if="!!comment.description_score">
+                              <span class="score-title">课程内容：</span>
+                              <span uib-rating 
+                                    ng-model="comment.description_score" 
+                                    readonly="true" 
+                                    aria-labelledby="default-rating" 
+                                    class="score-star">
+                              </span>
+                            </span>
+                            <span class="score-content" ng-if="!!comment.quality_score">
+                              <span class="score-title">授课服务：</span>
+                              <span uib-rating 
+                                    ng-model="comment.quality_score" 
+                                    readonly="true" 
+                                    aria-labelledby="default-rating" 
+                                    class="score-star">
+                              </span>
+                            </span>
+                            <span class="score-content" ng-if="!!comment.satisfaction_score">
+                              <span class="score-title">满意程度：</span>
+                              <span uib-rating 
+                                    ng-model="comment.satisfaction_score" 
+                                    readonly="true" 
+                                    aria-labelledby="default-rating" class="score-star">
+                              </span>
+                            </span>
+                          </p>
+                          <!-- 评价回复 -->
+                          <div class="media" ng-if="!!comment.reply.length" ng-repeat="reply in comment.reply">
+                            <div class="media-left">
+                              <a ng-href="/space/student/{{ reply.user_id }}">
+                                <img class="media-object img-circle" width="48"
+                                     ng-src="{{ getThumbnail(reply.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                              </a>
+                            </div>
+                            <div class="media-body">
+                              <h4 class="media-heading">
+                                <span>老师回复&nbsp;&nbsp;</span>
+                                <small class="text-info">回复于{{ reply.created_at | relativeTime }}</small>
+                              </h4>
+                              <p>{{ reply.content }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                    <p class="text-center">
+                      <a href="" class="btn btn-default btn-more"
+                         ng-click="comment_is_active = true;goTo('detailTab');">查看更多</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 课程目录 -->
+              <div tab heading="课程目录" icon="icon-catalogue" active="section_is_active">
+                <div class="content">
+                  <div class="section">
+                    <p class="text-muted text-center" ng-if="course.chapters.length == 0"><br>暂无章节</p>
+                    <ul class="item-list">
+                      <li class="active" 
+                          ng-repeat="chapter in course.chapters" 
+                          ng-init="chapter.open = !!chapter.open">
+                        <a href="" 
+                           class="item" 
+                           ng-click="chapter.open = !chapter.open">
+                            <span>{{ chapter.name }}</span>
+                            <i class="icon" 
+                              ng-class="{true: 'icon-arrow-top', false: 'icon-arrow-down'}[chapter.open]">
+                            </i>
+                        </a>
+                        <ul class="sub-section slide-down" ng-show="chapter.open">
+                          <li class="section" 
+                              ng-repeat="section in chapter.children">
+                            <div class="progress">
+                              <div class="progress-bar" 
+                                   ng-style="{ 'width': course.relation.study_records.learning.contain(section.id, 'id') ? ( course.relation.study_records.learning.find(section.id, 'id').time / section.duration * 100 | number:2 ) : 0 + '%' }">
+                              </div>
+                            </div>
+                            <!-- 各种信息 -->
+                            <a href="" ng-click="sectionClickEvent(section)">
+                              <i class="icon icon-play pull-left"></i>
+                              <span title="{{ section.name }}">{{ section.name | textOverflow: 10 }}</span>
+                              <span class="pull-right">
+                                <span>
+                                  <!-- 最后学习 -->
+                                  <i class="icon icon-playing" 
+                                     title="最后学习" 
+                                     ng-if="section.id == course.relation.last_study_section_id">
+                                  </i>
+                                  <!-- 已学习完 -->
+                                  <i class="icon icon-play-over" 
+                                     title="已学习过" 
+                                     ng-if="section.id != course.relation.last_study_section_id && course.relation.study_records.finished.contain(section.id)">
+                                  </i>
+                                </span>
+                                <span ng-if="section.is_live" class="no-animation">
+                                  <span class="btn btn-xs btn-danger video-type-slug">直播</span>
+                                  <span ng-if="section.live_status <  2">未开始</span>
+                                  <span ng-if="section.live_status == 2" class="text-danger">直播中</span>
+                                  <span ng-if="section.live_status == 3 || section.live_status == 4">已结束</span>
+                                  <span ng-if="section.live_status == 5">可回放</span>
+                                </span>
+                                <span ng-if="!section.is_live" class="no-animation">
+                                  <span class="btn btn-xs btn-primary video-type-slug">录播</span>
+                                  <span>可播放</span>
+                                </span>
+                                <span ng-class="{ 'text-danger': section.live_status == 2 }">/</span>
+                                <span ng-class="{ 'text-danger': section.live_status == 2 }">{{ section.duration | toHHMMSS : 'HHMMSS' : ':' : ':' : '' }}</span>
+                              </span>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 评价 -->
+              <div tab heading="学员评价" icon="icon-comment" active="comment_is_active">
+                <div class="content">
+                  <div class="comment">
+                    <div class="comment-add">
+
+                      <!-- 未登录 -->
+                      <h5 ng-if="course.relation.trade_status == undefined" 
+                          class="text-center text-info no-animation">
+                          <span>购买本课程之后才可以作出评价，</span>
+                          <a class="text-primary" href="" ng-click="loginGetRelation()">点此登录购买完整课程</a>
+                          <hr>
+                      </h5>
+
+                      <!-- 发布者 -->
+                      <h5 ng-if="!!course.relation.author" 
+                          class="text-center text-info no-animation">您是课程的发布者，不能评价自己的课程<hr></h5>
+
+                      <!-- 未购买 -->
+                      <h5 ng-if="(course.relation.trade_status < 1) && !course.relation.author" 
+                          class="text-center text-info no-animation">
+                          <span>购买本课程之后才能作出评价，</span>
+                          <a class="text-primary" href="" ng-click="buy(course.info.id)">点此购买完整课程</a>
+                          <hr>
+                      </h5>
+
+                      <!-- 未付款 -->
+                      <h5 ng-if="course.relation.trade_status == 1 && !course.relation.author" 
+                          class="text-center text-info no-animation">
+                          <span>付款之后才能做出评价</span>
+                          <a class="text-primary" ng-href="/payment/{{ course.id }}" >点此前去付款</a>
+                          <hr>
+                      </h5>
+
+                      <!-- 已评价 -->
+                      <h5 ng-if="course.relation.trade_status == 3 && !course.relation.author" 
+                          class="text-center text-info no-animation">
+                          <span>您已对本课程做出过评价，感谢您的支持，祝学习顺利</span>
+                          <hr>
+                      </h5>
+
+                      <!-- 评价表单 -->
+                      <form name="newComment" 
+                            ng-if="course.relation.trade_status == 2 && !course.relation.author"
+                            ng-submit="postComment(comment)">
+                        <div class="form-group comment-score">
+                          <p class="col-xs-12"></p>
+                          <div comment-rating 
+                               ng-init="comment.score.satisfaction = 5"
+                               ng-model="comment.score.satisfaction" 
+                               type="A" 
+                               aria-labelledby="default-rating"></div>
+                          <div comment-rating 
+                               ng-init="comment.score.description = 5"
+                               ng-model="comment.score.description" 
+                               type="B" 
+                               aria-labelledby="default-rating"></div>
+                          <div comment-rating 
+                               ng-init="comment.score.quality = 5"
+                               ng-model="comment.score.quality" 
+                               type="C" 
+                               aria-labelledby="default-rating"></div>
+                        </div>
+                        <div class="form-group">
+                          <textarea class="form-control textarea" 
+                                    placeholder="您还没有对本课程作出评价，请用10个字以上来发表你对本课程的评价" 
+                                    name="new_comment_content" 
+                                    rows="3" 
+                                    required  
+                                    ng-pattern="/.{10,}/" 
+                                    ng-model="comment.content">
+                          </textarea>
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-primary pull-right submit-comment" 
+                                  ng-disabled="newComment.$invalid" >评价</button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <!-- 评论列表 -->
+                    <h5 ng-show="!course.comments.pagination.total" class="text-center text-info">
+                      <hr ng-if="course.relation.trade_status == 2 && !course.relation.author">
+                      <span>暂无评价</span>
+                    </h5>
+
+                    <ul class="media-list" ng-show="!!course.comments.pagination.total">
+                      <li class="media" ng-repeat="comment in course.comments.result">
+                        <div class="media-left">
+                          <a ng-href="/space/student/{{ comment.user.id }}" target="_blank">
+                            <img class="media-object img-circle" width="48"
+                                 ng-src="{{ getThumbnail(comment.user.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <h4 class="media-heading">
+                            <a ng-href="/space/student/{{ comment.user.id }}" target="_blank">{{ comment.user.name }}</a>
+                            <span>&nbsp;&nbsp;</span>
+                            <small class="text-info">评论于{{ comment.created_at | relativeTime }}</small>
+                          </h4>
+                          <p class="text-dark">{{ comment.content }}</p>
+                          <p ng-if="comment.description_score || comment.quality_score || comment.satisfaction_score" 
+                             class="comment-score">
+                            <span class="score-content" ng-if="comment.description_score > 0">
+                              <span class="score-title">课程内容：</span>
+                              <span uib-rating 
+                                    class="score-star"
+                                    readonly="true"
+                                    ng-model="comment.description_score" 
+                                    aria-labelledby="default-rating"></span>
+                            </span>
+                            <span class="score-content" ng-if="comment.quality_score > 0">
+                              <span class="score-title">授课服务：</span>
+                              <span uib-rating 
+                                    ng-model="comment.quality_score" 
+                                    readonly="true" 
+                                    aria-labelledby="default-rating" 
+                                    class="score-star"></span>
+                            </span>
+                            <span class="score-content" ng-if="comment.satisfaction_score > 0">
+                              <span class="score-title">满意程度：</span>
+                              <span uib-rating 
+                                    ng-model="comment.satisfaction_score" 
+                                    readonly="true" 
+                                    aria-labelledby="default-rating" 
+                                    class="score-star"></span>
+                            </span>
+                          </p>
+                          <!-- 评价回复 -->
+                          <div class="media" ng-if="!!comment.reply.length" ng-repeat="reply in comment.reply">
+                            <div class="media-left">
+                              <a ng-href="/space/student/{{ reply.user_id }}">
+                                <img class="media-object img-circle" width="48"
+                                     ng-src="{{ getThumbnail(reply.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}">
+                              </a>
+                            </div>
+                            <div class="media-body">
+                              <h4 class="media-heading">
+                                <span>老师回复&nbsp;&nbsp;</span>
+                                <small class="text-info">回复于{{ reply.created_at | relativeTime }}</small>
+                              </h4>
+                              <p>{{ reply.content }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 侧边信息 -->
+        <div class="col-xs-4">
+          <div class="sidebar">
+            <div class="inner box clearfix" ng-if="course.organization_id">
+              <h4><span>课程评分</span></h4>
+              <p class="logo" ng-if="false">
+                <img ng-src="{{ getThumbnail(course.organization.logo, 'organization_logo', { width: 300, height: 100 }) }}" width="300">
+              </p>
+              <h3 class="title" ng-if="false">
+                <a ng-href="/organization/{{ course.organization.id }}" ng-bind="course.organization.name"></a>
+                <span class="text-primary" ng-if="course.organization.type == 2 && course.organization.is_audit == 2">
+                  <i class="icon icon-audit h1"></i>
+                  <i class="icon icon-auth h2"></i>
+                </span>
+              </h3>
+              <div class="org">
+                <ul class="score-lists">
+                  <li>
+                    <span>课程内容评分：</span>
+                    <span uib-rating 
+                          ng-model="course.avg_description" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                    <span class="score">{{ course.avg_description }}分</span>
+                  </li>
+                  <li>
+                    <span>授课服务评分：</span>
+                    <span uib-rating 
+                          ng-model="course.avg_quality" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                    <span class="score">{{ course.avg_quality }}分</span>
+                  </li>
+                  <li>
+                    <span>学生满意评分：</span>
+                    <span uib-rating 
+                          ng-model="course.avg_satisfaction" 
+                          readonly="true" 
+                          aria-labelledby="default-rating" 
+                          class="score-star">
+                    </span>
+                    <span class="score">{{ course.avg_satisfaction }}分</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="inner box clearfix">
+              <h4>
+                <span>其它课程</span>
+                <a href="" 
+                   class="pull-right" 
+                   ng-click="refreshRelated()">
+                   <i class="icon icon-refresh"></i>
+                </a>
+              </h4>
+              <div class="course-list-grid">
+                <p ng-if="!course.related.pagination.total" class="text-info text-center no-animation"><br>暂无课程</p>
+                <div class="media slide-top" ng-repeat="course in course.related.result | limitTo: 7">
+                  <div class="media-left">
+                    <a ng-href="/course/{{ course.id }}">
+                      <img class="media-object" 
+                           width="100"
+                           ng-src="{{ getThumbnail(course.thumb, 'other_course', { width: 100, height: 60 }) }}">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <h4 class="media-heading">
+                      <a ng-href="/course/{{ course.id }}">{{ course.name | textOverflow: 11 }}</a>
+                    </h4>
+                    <a href="/organization/{{ course.organization.id }}">{{ course.organization.name }}</a>
+                    <!-- <p class="text-danger"><small class="yen">&yen;</small>180</p> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="inner box clearfix">
+              <h4>
+                <span>我的同学</span>
+                <a href="" class="pull-right" ng-click="refreshClassmates()">
+                  <i class="icon icon-refresh"></i>
+                </a>
+              </h4>
+              <ul class="students-list clearfix">
+                <p ng-if="!course.classmates.pagination.total" class="text-info text-center"><br>暂无同学</p>
+                <li ng-repeat="classmate in course.classmates.result" class="no-animation">
+                  <a ng-href="/space/student/{{ classmate.id }}" target="_blank">
+                    <img class="img-circle" 
+                         ng-src="{{ getThumbnail(classmate.gravatar, 'small_gravatar', { width: 48, height: 48 }) }}" 
+                         width="48">
+                    <h5 class="name" title="{{ classmate.name }}">{{ classmate.name ? (classmate.name | textOverflow: 4) : '匿名用户' }}</h5>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

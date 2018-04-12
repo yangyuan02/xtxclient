@@ -1,0 +1,93 @@
+<div class="page-title">
+  <h3>编辑广告</h3>
+</div>
+<div class="row" ng-init="advertiseAction.getItem()">
+  <div class="col-xs-6">
+    <form class="form-field" 
+          name="advertiseEditForm" 
+          role="form" 
+          method="POST">
+      <div class="form-group" 
+           ng-init="advertiseAction.getAdConfig()">
+        <label for="advertise_type" class="control-label">
+          广告位置<span class="text-muted">（广告显示位置）</span>
+        </label>
+        <div class="control-group">
+          <select id="advertise_type" 
+                  class="form-control" 
+                  name="type" 
+                  validator="required" 
+                  required-error-message="请您选择所属类别" 
+                  ng-model="advertise.type"
+                  ng-options="key as value for (key, value) in ad_config.value">
+            <option value="">请您选择广告位置</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="advertise_title" class="control-label">
+          广告标题
+        </label>
+        <div class="control-group">
+          <input type="text" 
+                 id="advertise_title" 
+                 class="form-control input-40" 
+                 name="advertise_title" 
+                 placeholder="请您输入广告标题" 
+                 validator="required" 
+                 required-error-message="请您输入广告标题" 
+                 ng-model="advertise.title">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="advertise_image" class="control-label">广告图片</label>
+        <div class="control-group">
+          <div class="pull-left" 
+               ng-file-select="onFileSelect($files, 'image', '', { max_size: 2, min_width: 200, min_height: 200 })" 
+               default-file="getThumbnail(advertise.image, 'advertise_image', { width: 200, height: 200 })" 
+               uploaded="advertiseAction.getUploadThumb"></div>
+          <div class="pull-left text-info">
+            <h5 class="small">请上传大于200 x 200像素的图片</h5>
+            <h5 class="small">文件小于2M</h5>
+            <h5 class="small">支持JPG/PNG/BMP等格式图片</h5>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="advertise_link" class="control-label">链接地址</label>
+        <div class="control-group">
+          <input type="text" 
+                 id="advertise_link" 
+                 class="form-control input-40" 
+                 name="advertise_link" 
+                 placeholder="请您输入广告链接地址" 
+                 validator="required" 
+                 required-error-message="请您输入广告链接地址" 
+                 ng-model="advertise.link">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="advertise_remark" class="control-label">
+          广告备注
+        </label>
+        <div class="control-group">
+          <input type="text" 
+                 id="advertise_remark" 
+                 class="form-control input-40" 
+                 name="advertise_remark" 
+                 placeholder="请您输入广告备注信息" 
+                 ng-model="advertise.remark">
+        </div>
+      </div>
+      <div class="form-group form-action">
+        <button type="submit"
+                class="btn btn-primary"
+                validation-submit="advertiseEditForm"
+                ng-click="advertiseAction.edit()">
+          提交保存
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

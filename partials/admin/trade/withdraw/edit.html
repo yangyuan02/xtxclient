@@ -1,0 +1,82 @@
+<div class="row" ng-controller="WithdrawController">
+  <div class="col-xs-8 col-xs-offset-1">
+    <form class="form-horizontal form-static" 
+          name="editWithdrawForm" 
+          role="form" 
+          method="POST" 
+          ng-init="withdraw = $root.withdraw_edit">
+      <div class="form-group">
+        <label class="col-xs-3 control-label">提现账户</label>
+        <div class="col-xs-6">
+          <p class="form-control-static">{{ withdraw.bank_account.account_name }}({{ withdraw.bank_account.account_num }})</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label">提现用户</label>
+        <div class="col-xs-9">
+          <p class="form-control-static">{{ withdraw.user.name }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label">提现金额</label>
+        <div class="col-xs-9">
+          <p class="form-control-static">{{ withdraw.amount }}元</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label">申请时间</label>
+        <div class="col-xs-9">
+          <p class="form-control-static">{{ withdraw.created_at }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-3 control-label">审核状态</label>
+        <div class="col-xs-9">
+          <label class="radio-inline text-danger" for="withdraw_status_01">
+            <input type="radio"
+                   name="status" 
+                   id="withdraw_status_01"
+                   value="-1"
+                   ng-model="withdraw.status"> 审核失败
+          </label>
+          <label class="radio-inline text-danger" for="withdraw_status_02">
+            <input type="radio"
+                   name="status" 
+                   id="withdraw_status_02"
+                   value="-2"
+                   ng-model="withdraw.status"> 付款失败
+          </label>
+          <label class="radio-inline text-warning" for="withdraw_status_0">
+            <input type="radio"
+                   name="status" 
+                   id="withdraw_status_0"
+                   value="0"
+                   ng-model="withdraw.status"> 已申请
+          </label>
+          <br>
+          <label class="radio-inline text-warning" for="withdraw_status_1">
+            <input type="radio"
+                   name="status" 
+                   id="withdraw_status_1"
+                   value="1"
+                   ng-model="withdraw.status"> 已审核通过
+          </label>
+          <label class="radio-inline text-success" for="withdraw_status_2">
+            <input type="radio"
+                   name="status" 
+                   id="withdraw_status_2"
+                   value="2"
+                   ng-model="withdraw.status"> 已付款
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-9 col-xs-offset-3">
+          <button class="btn btn-primary" 
+                  validation-submit="editWithdrawForm" 
+                  ng-click="withdrawAction.edit({ modal: false })">提交保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
